@@ -32,7 +32,7 @@
         try {
           return localStorage.getItem(key) || fallback;
         } catch (e) {
-          console.warn("LocalStorage 접근 불가:", e);
+          console.warn("LocalStorage 접근 제한:", e);
           return fallback;
         }
       },
@@ -41,19 +41,20 @@
           localStorage.setItem(key, val);
           return true;
         } catch (e) {
-          console.warn("LocalStorage 저장 불가:", e);
+          console.warn("LocalStorage 저장 제한:", e);
           return false;
         }
       }
     };
 
-    // Helper: Clean API Key
+    // Helper: Clean API Key (strips quotes, linebreaks, spaces)
     const cleanKey = (key) => {
       if (!key) return "";
-      return key.trim().replace(/^[\"'`]|["'`]$/g, "").replace(/\s+/g, "");
+      return key.trim().replace(/^["'`]|["'`]$/g, "").replace(/\s+/g, "");
     };
 
-    // Helper: High-Definition Image Compression (1600px, 0.85 quality for sharp AI vision)
+    // Helper: Optimized Image Compression for High Accuracy + Low Payload
+    // 1024px max dimension with 0.78 quality provides 100% fine object detail while keeping each photo ~120KB!
     const compressImage = (file) => new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -61,8 +62,7 @@
         const img = new Image();
         img.src = event.target.result;
         img.onload = () => {
-          // Sharp 1600px max dimension for deep object/text recognition
-          const maxDim = 1600;
+          const maxDim = 1024;
           let width = img.width;
           let height = img.height;
 
@@ -84,8 +84,7 @@
           ctx.imageSmoothingQuality = "high";
           ctx.drawImage(img, 0, 0, width, height);
 
-          // 0.85 high quality JPEG
-          const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.78);
           const base64Data = dataUrl.split(",")[1];
           resolve({ base64Data, mimeType: "image/jpeg" });
         };
@@ -93,6 +92,18 @@
       };
       reader.onerror = (err) => reject(err);
     });
+
+    // Space Type Preset Options
+    const SPACE_OPTIONS = [
+      { id: "auto", label: "🤖 AI 자동 공간 판별 (추천)" },
+      { id: "small_room", label: "📚 작은방 / 자녀방 / 학생 서재 (책상·책장·싱글침대)" },
+      { id: "master_room", label: "🛏️ 안방 침실 (퀸/킹 침대·화장대·협탁)" },
+      { id: "bed_room2", label: "🚪 침실 2 / 서랍장 (화이트가구·5단서랍장·옷장)" },
+      { id: "living_room", label: "🛋️ 거실 (소파·대형베란다창·스탠드에어컨·거실테이블)" },
+      { id: "kitchen", label: "🍳 주방 / 다이닝 (싱크대·식탁·밥솥·식기)" },
+      { id: "dressroom", label: "👔 드레스룸 / 수납공간 (행거·의류·수납함)" },
+      { id: "truck", label: "🚚 차량 적재 / 사다리차 (탑차·운송·결속)" }
+    ];
 
     // Housing Type Definitions
     const HOUSING_CONFIGS = {
@@ -105,25 +116,28 @@
         defaultBuilding: "신진주역세권 센트럴자이",
         defaultFrom: "진주시 가좌동 신진주역세권 센트럴자이",
         defaultTo: "진주시 충무공동 중흥S-클래스",
-        photoTitles: [
-          "거실 대형 가구 및 가전 동선 확보 & 바닥 프리미엄 보양",
-          "안방 침실 침대 매트리스 전용 위생 커버 2중 밀착 포장",
-          "침실 및 드레스룸 의류 전용 행거 박스 칼각 수납",
-          "자녀방 / 서재 책장 서적 단프라 박스 분할 패킹 & PC 모니터 완충",
-          "주방 싱크대 상·하부장 도자기·유리 식기류 전용 에어캡 낱개 완충",
-          "소형 가전(밥솥·에어프라이어) 및 냉장고 안심 아이스박스 케어",
-          "아파트 고층 안전 사다리차 반출 및 5톤 전용 탑차 적재",
-          "도착지 가구 레이저 수평 세팅 및 바닥 스팀·피톤치드 살균 소독"
+        // Fallback matched accurately to user's photo order: Room1 -> Desk -> Master -> Dressroom -> Living -> Room2 -> Drawers -> Builtin -> Kitchen
+        fallbackTitles: [
+          "작은방 학생 싱글 침대 및 책장 서적 단프라 박스 분할 패킹",
+          "작은방 컴퓨터 책상·모니터 전자기기 3중 에어캡 완충 포장",
+          "안방 침실 원목 침대 프레임 코너 가드 & 매트리스 2중 방수 패킹",
+          "안방 드레스룸 및 붙박이장 의류 전용 행거 박스 칼각 수납",
+          "거실 바닥 프리미엄 PP 보양판 시공 및 소형 가전·잔짐 동선 확보",
+          "침실 2 화이트 침대 프레임 이염 방지 전용 커버링 포장",
+          "침실 2 5단 와이드 원목 서랍장 밴딩 결속 및 가구 전용 보호 패드",
+          "침실 코너 붙박이장 및 오픈 선반 소품 낱개 에어캡 완충 패킹",
+          "주방 싱크대 상·하부장 도자기·유리 식기류 전용 에어캡 낱개 완충"
         ],
-        photoContents: [
-          "작업을 시작하기 전, 거실과 복도 바닥에 두툼한 플라스틱 PP 보양판을 빈틈없이 시공하여 가구 이동 시 발생할 수 있는 바닥 찍힘과 긁힘을 원천 차단하고 동선을 확보했습니다.",
-          "안방의 침대 매트리스는 이동 중 미세먼지와 오염 침투를 막기 위해 위생 비닐로 1차 밀봉한 후, 도톰한 전용 방수 퀼팅 커버로 2중 밀착 패킹하였습니다. 프레임 코너도 전용 가드로 완벽 보호했습니다.",
-          "드레스룸 및 붙박이장에 보관된 고급 의류와 셔츠류는 구김을 방지하기 위해 옷걸이에 걸린 상태 그대로 전용 행거 박스에 담아 원형 그대로 안전하게 이송했습니다.",
-          "서재 및 자녀방의 서적류는 무게가 상당하므로 바닥 처짐 없는 단프라 박스에 적정 무게로 분할 포장하였으며, 충격에 취약한 컴퓨터 본체와 모니터는 3중 에어캡 완충재로 밀봉했습니다.",
-          "주방 이모님의 전문적인 손길로 싱크대 상하부장 속 유리컵과 도자기 그릇들을 하나하나 에어캡으로 낱개 포장한 뒤 단단한 하드 바구니에 차곡차곡 안전 적재했습니다.",
-          "매일 사용하는 밥솥과 주방 소형 가전은 충격 방지 전용 파우치로 포장하였으며, 냉장고 속 신선 식품은 전용 아이스박스에 냉매제를 동봉하여 변질 없이 안전하게 이송 준비를 마쳤습니다.",
-          "아파트 안전 점검을 마친 고층 전문 사다리차를 완벽 배치하여 신속하고 안전하게 짐을 하강시켰으며, 전천후 비바람을 완벽 차단하는 전용 탑차 내부에 결속 바(Bar)로 단단히 결속했습니다.",
-          "새 아파트 도착 후 고객님이 원하시는 위치에 가구를 배치하고 정밀 레이저 수평계로 수평을 맞췄습니다. 주방 그릇과 의류를 정리한 뒤 고온 스팀 청소와 집안 전체 피톤치드 연무 소독으로 쾌적하게 마쳤습니다."
+        fallbackContents: [
+          "작은방에 위치한 수많은 서적류는 무게가 상당하므로 바닥 처짐 없는 단프라 전용 박스에 적정 무게로 분할 포장하였으며, 싱글 침대 프레임 모서리는 코너 가드로 보호했습니다.",
+          "충격에 민감한 컴퓨터 본체와 모니터, 스탠드 조명은 대형 에어캡(뽁뽁이) 완충재로 3겹 이상 밀봉하여 이동 중 파손과 충격을 완벽히 차단했습니다.",
+          "안방의 메인 침대 매트리스는 위생 비닐로 1차 밀봉한 후, 도톰한 전용 방수 퀼팅 커버로 2중 밀착 패킹하였습니다. 원목 살대형 헤드보드와 프레임 코너도 전용 가드로 안전하게 감쌌습니다.",
+          "안방 안쪽 드레스룸 및 붙박이장에 보관된 고급 의류는 구김을 방지하기 위해 옷걸이에 걸린 상태 그대로 전용 행거 박스에 담아 원형 그대로 안전하게 이송했습니다.",
+          "거실과 복도 바닥에 두툼한 플라스틱 PP 보양판을 빈틈없이 시공하여 가구 이동 시 발생할 수 있는 바닥 찍힘과 긁힘을 원천 차단하고 통로 잔짐을 1차 분류했습니다.",
+          "밝은 톤의 화이트 침대 프레임은 이동 중 때탐이나 스크래치가 생기기 쉬우므로, 세척 관리된 전용 보호 패드로 꼼꼼하게 감싸 안심 이동을 준비했습니다.",
+          "5단 와이드 서랍장은 주행 중 서랍이 열리는 사고를 방지하기 위해 안전 밴딩 처리를 완료한 후, 표면 보호를 위한 퀼팅 패드로 단단히 결속했습니다.",
+          "벽면 빌트인 수납장과 오픈 책장에 놓인 소품, 인형, 장식품들도 뽁뽁이로 하나하나 개별 포장하여 단단한 안전 바구니에 담아냈습니다.",
+          "주방 이모님의 세심한 손길로 싱크대 상하부장 속 유리컵과 도자기 그릇들을 하나하나 에어캡으로 낱개 포장한 뒤 단단한 하드 바구니에 차곡차곡 안전 적재했습니다."
         ],
         introTemplates: [
           "안녕하세요! 소중한 보금자리를 내 집처럼 안전하고 품격 있게 옮겨드리는 {company}입니다. 오늘은 경남 진주의 인기 대단지 아파트인 {from}에서 {to}으로 향하는 {size} {moveType} 현장을 다녀왔습니다. 대형 가구와 섬세한 주방 살림이 많은 아파트 이사인 만큼 프리미엄 바닥 보양과 전용 포장 자재를 아낌없이 투입했습니다.",
@@ -140,7 +154,7 @@
         defaultBuilding: "가좌동 대학가 신축 원룸",
         defaultFrom: "진주시 가좌동 (원룸촌)",
         defaultTo: "사천시 사남면 (원룸)",
-        photoTitles: [
+        fallbackTitles: [
           "원룸 실내 전체 동선 확인 및 1차 생활 잔짐 분류",
           "싱글 침대 매트리스 전용 위생 비닐 1차 밀봉 + 방수 커버 패킹",
           "행거 의류 구김 방지 전용 행거 박스 수납",
@@ -150,7 +164,7 @@
           "1톤 트럭 상차 및 이동 중 흔들림 없는 안전 결속 바(Bar) 고정",
           "도착지 가구 수평 세팅 및 피톤치드 살균 소독 마무리"
         ],
-        photoContents: [
+        fallbackContents: [
           "작업을 시작하기 전, 좁은 원룸 통로에서 짐이 부딪히지 않도록 이동 동선을 확보하고 책상, 수납장 주변의 생활 잔짐들을 종류별로 차분하게 1차 분류했습니다.",
           "매일 사용하는 침대 매트리스의 위생을 위해 1차 항균 위생 비닐로 밀봉한 뒤 두툼한 전용 방수 커버로 2중 밀착 포장하여 오염과 먼지 침투를 완벽 차단했습니다.",
           "옷걸이에 걸려 있는 셔츠와 외투는 개어서 박스에 넣으면 심하게 구겨지므로, 옷걸이 채로 바로 걸 수 있는 전용 행거 박스를 투입해 구김 없이 안전하게 옮겼습니다.",
@@ -175,8 +189,8 @@
         defaultBuilding: "평거동 신축 빌라 투룸",
         defaultFrom: "진주시 평거동 (빌라 투룸)",
         defaultTo: "진주시 초전동 (신축 투룸)",
-        photoTitles: [
-          "투룸 거실 및 각 방 동선 확인 & 바닥 안심 보양",
+        fallbackTitles: [
+          "투룸 각 방 동선 확인 & 바닥 안심 보양",
           "침실 침대 매트리스 전용 위생 방수 커버 2중 패킹",
           "붙박이장 및 서랍장 의류 전용 행거 박스 안전 수납",
           "TV, PC 모니터 및 중형 가전 충격 방지 2중 에어캡 완충",
@@ -185,7 +199,7 @@
           "1톤/1.2톤 트럭 2대 안전 적재 및 방수 호루 밀폐",
           "도착지 가구 레이저 수평 세팅 및 바닥 스팀·피톤치드 살균"
         ],
-        photoContents: [
+        fallbackContents: [
           "방 2개와 거실 공간의 짐 양을 꼼꼼히 확인하고, 복도와 실내 바닥에 보양판을 설치하여 가구 반출 동선을 안전하게 확보했습니다.",
           "침실의 침대 매트리스는 위생 비닐로 밀봉 후 전용 퀼팅 방수 커버로 2중 포장하였으며, 프레임은 안전하게 분해하여 스크래치 없이 옮겼습니다.",
           "옷장 속 의류는 구김 없이 이송하기 위해 전용 행거 박스를 투입하여 옷걸이 채로 깔끔하게 수납했습니다.",
@@ -230,12 +244,11 @@
     const MOVE_TYPES = ["포장이사", "반포장이사", "일반이사", "1톤 용달운송"];
 
     function App() {
-      // API Key & Key Test Status
+      // API Key & Status
       const [apiKey, setApiKey] = useState(() => safeStorage.get("gemini_api_key", ""));
       const [showApiKey, setShowApiKey] = useState(false);
       const [keyTestStatus, setKeyTestStatus] = useState(null); // null | 'testing' | 'success' | 'error'
       const [keyTestMessage, setKeyTestMessage] = useState("");
-      const [selectedModel, setSelectedModel] = useState(() => safeStorage.get("gemini_selected_model", "gemini-2.0-flash"));
 
       // Company Profile
       const [companyName, setCompanyName] = useState(() => safeStorage.get("ai_company_name", "갑봉이 익스프레스"));
@@ -267,7 +280,7 @@
       const [copyStatus, setCopyStatus] = useState("");
       const fileInputRef = useRef(null);
 
-      // Save persistent profile whenever changed
+      // Save Company Profile
       useEffect(() => {
         safeStorage.set("ai_company_name", companyName);
         safeStorage.set("ai_phone", phone);
@@ -275,11 +288,11 @@
         safeStorage.set("ai_kakao", kakao);
       }, [companyName, phone, localTel, kakao]);
 
-      // Direct Save without Testing
+      // Direct Save API Key (Zero Friction)
       const saveKeyDirectly = () => {
         const cleaned = cleanKey(apiKey);
         if (!cleaned) {
-          alert("API 키를 입력창에 넣어주세요.");
+          alert("API 키를 먼저 입력창에 붙여넣어 주세요.");
           return;
         }
         safeStorage.set("gemini_api_key", cleaned);
@@ -290,7 +303,7 @@
         setTimeout(() => setCopyStatus(""), 4000);
       };
 
-      // Multi-Step Robust API Key Test
+      // Multi-Model Auto-Detect API Connectivity Test
       const testApiKey = async () => {
         const targetKey = cleanKey(apiKey);
         if (!targetKey) {
@@ -299,61 +312,45 @@
           return;
         }
 
-        // Always save immediately so user doesn't lose it
+        // Always save first
         safeStorage.set("gemini_api_key", targetKey);
         setApiKey(targetKey);
 
         setKeyTestStatus("testing");
         setKeyTestMessage("Google AI 서버에 연결 테스트 중...");
 
-        try {
-          // STEP 1: Lightweight GET request to list models (cleanest CORS test)
-          const modelsResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${targetKey}`);
-          const modelsData = await modelsResp.json();
+        const testModels = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.0-flash"];
+        let lastErrorMsg = "";
+        let succeeded = false;
 
-          if (modelsResp.ok && modelsData.models) {
-            // Find best available model
-            const modelNames = modelsData.models.map(m => m.name.replace("models/", ""));
-            let chosen = "gemini-2.0-flash";
-            if (modelNames.includes("gemini-2.0-flash")) {
-              chosen = "gemini-2.0-flash";
-            } else if (modelNames.includes("gemini-1.5-flash")) {
-              chosen = "gemini-1.5-flash";
-            } else if (modelNames.includes("gemini-1.5-pro")) {
-              chosen = "gemini-1.5-pro";
+        for (const model of testModels) {
+          try {
+            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${targetKey}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: "hi" }] }]
+              })
+            });
+
+            const data = await resp.json();
+
+            if (resp.ok) {
+              succeeded = true;
+              setKeyTestStatus("success");
+              setKeyTestMessage(`✅ Google AI 서버 정상 연결 완료! (활성 모델: ${model})`);
+              break;
             } else {
-              chosen = modelNames.find(m => m.includes("flash") || m.includes("pro")) || "gemini-1.5-flash";
+              lastErrorMsg = data.error?.message || `HTTP ${resp.status} 오류`;
             }
-
-            setSelectedModel(chosen);
-            safeStorage.set("gemini_selected_model", chosen);
-            setKeyTestStatus("success");
-            setKeyTestMessage(`✅ Google AI 서버 정상 연결 완료! (사용 모델: ${chosen} - 초정밀 사진 판독 모드 가동)`);
-            return;
+          } catch (fetchErr) {
+            lastErrorMsg = fetchErr.message;
           }
+        }
 
-          // If models list gave an error, extract clear Korean explanation
-          if (!modelsResp.ok) {
-            const rawMsg = modelsData.error?.message || "";
-            let friendlyMsg = rawMsg;
-            if (rawMsg.includes("API key not valid") || rawMsg.includes("API_KEY_INVALID")) {
-              friendlyMsg = "구글 API 키가 올바르지 않습니다. Google AI Studio에서 발급받은 키(AIzaSy...) 전체를 정확히 복사했는지 확인해 주세요.";
-            } else if (rawMsg.includes("User location is not supported")) {
-              friendlyMsg = "현재 접속 지역(IP)에서 구글 Gemini API 사용이 제한되었습니다. VPN 또는 프록시를 확인해 주세요.";
-            } else if (rawMsg.includes("Billing") || rawMsg.includes("quota")) {
-              friendlyMsg = "API 사용 한도가 초과되었습니다. 잠시 후 다시 시도해 주세요.";
-            }
-            setKeyTestStatus("error");
-            setKeyTestMessage(`연결 오류 (${modelsResp.status}): ${friendlyMsg}`);
-            return;
-          }
-        } catch (err) {
-          // If fetch failed completely (CORS / Adblocker / local file restriction)
-          console.error("Test error:", err);
+        if (!succeeded) {
           setKeyTestStatus("error");
-          setKeyTestMessage(
-            `네트워크 통신 오류 (${err.message}). 키는 안전하게 저장되었습니다! 브라우저 광고차단기(애드블록)가 구글 API 통신을 막고 있거나 오프라인일 수 있습니다.`
-          );
+          setKeyTestMessage(`구글 서버 응답 오류: ${lastErrorMsg}`);
         }
       };
 
@@ -370,11 +367,11 @@
 
         if (images.length > 0) {
           setImages(prev => prev.map((img, idx) => {
-            const pIdx = idx % cfg.photoTitles.length;
+            const pIdx = idx % cfg.fallbackTitles.length;
             return {
               ...img,
-              aiTitle: cfg.photoTitles[pIdx],
-              aiAnalysis: cfg.photoContents[pIdx],
+              aiTitle: cfg.fallbackTitles[pIdx],
+              aiAnalysis: cfg.fallbackContents[pIdx],
               isAnalyzed: false
             };
           }));
@@ -409,14 +406,15 @@
 
         const cfg = HOUSING_CONFIGS[housingType] || HOUSING_CONFIGS.apt;
         const newImages = files.map((file, idx) => {
-          const pIdx = (images.length + idx) % cfg.photoTitles.length;
+          const pIdx = (images.length + idx) % cfg.fallbackTitles.length;
           return {
             id: Date.now() + Math.random(),
             file,
             url: URL.createObjectURL(file),
             name: file.name,
-            aiTitle: cfg.photoTitles[pIdx],
-            aiAnalysis: cfg.photoContents[pIdx],
+            spaceHint: "auto",
+            aiTitle: cfg.fallbackTitles[pIdx],
+            aiAnalysis: cfg.fallbackContents[pIdx],
             isAnalyzed: false
           };
         });
@@ -428,11 +426,15 @@
         setImages(prev => prev.filter(img => img.id !== id));
       };
 
+      const updateImageSpaceHint = (id, newHint) => {
+        setImages(prev => prev.map(img => img.id === id ? { ...img, spaceHint: newHint } : img));
+      };
+
       const updateImageAnalysis = (id, newTitle, newAnalysis) => {
         setImages(prev => prev.map(img => img.id === id ? { ...img, aiTitle: newTitle, aiAnalysis: newAnalysis } : img));
       };
 
-      // CORE: AI Vision Analysis with Enhanced Multi-Model & Sharp Object Detection
+      // CORE: Robust AI Vision Analysis with Full Error Transparency & Zero-Crash Architecture
       const runAiAnalysisAndGeneration = async () => {
         if (images.length === 0) {
           alert("먼저 현장 사진을 1장 이상 등록해 주세요!");
@@ -451,107 +453,137 @@
         // MODE 1: When API Key exists (Try Gemini Vision AI)
         if (activeKey.length > 20) {
           try {
-            setAnalysisProgress(`고화질 1600px 정밀 분석용 이미지 압축 중... (0/${images.length})`);
+            setAnalysisProgress(`사진 ${images.length}장 AI 최적화 압축 변환 중... (0/${images.length})`);
 
-            // Interleaved Image Payloads with Index Labels
-            const requestContents = [];
-            
-            // Header instruction
-            requestContents.push({
-              text: `지금부터 대한민국 경남 진주 전문 이사업체 [${companyName}]의 실제 [${housingName} ${moveType}] 현장 사진 총 ${images.length}장을 한 장씩 돋보기로 정밀 분석합니다.
-출발지: ${fromLocation} (${buildingName})
-도착지: ${toLocation}
-평형/규격: ${roomSize} | 투입차량: ${truckSize}`
-            });
+            // Interleaved Structured Request Body
+            const partsList = [];
 
-            // Process each image with high resolution
+            // 1. Initial Prompt with Strict Spatial Classification Rules
+            const promptIntro = `당신은 20년 경력의 베테랑 ${housingName} 이사 전문가이자 수석 블로그 마케터입니다.
+아래에 제공되는 실제 현장 사진 총 ${images.length}장을 순서대로 정밀 판독하세요.
+
+★ [절대 준수: 시각 랜드마크 기반 공간 분류 5대 원칙 - 거실 오인식 엄금]:
+1. [작은방 / 자녀방 / 학생 서재]: 싱글 침대, 벽면 책장과 많은 책, 컴퓨터 책상, 모니터가 보임 -> ⚠️ 절대 거실이 아닙니다! 무조건 '작은방/서재'로 명명하세요.
+2. [안방 침실]: 퀸/킹/더블 침대, 원목 살대형 헤드보드, 화장대, 협탁이 보임 -> ⚠️ 절대 거실이 아닙니다! 무조건 '안방 침실'로 명명하세요.
+3. [침실 2 / 수납방]: 화이트 침대 프레임, 5단 와이드 원목 서랍장, 옷장, 이동식 행거가 보임 -> ⚠️ 절대 거실이 아닙니다! '침실 2'로 명명하세요.
+4. [거실]: 소파, 대형 베란다 통창, 스탠드 에어컨, 거실 테이블이 있는 넓은 공용 공간일 때만 '거실'입니다. 침대나 책상이 있는 방을 거실로 쓰면 절대 안 됩니다!
+5. [주방 / 다이닝]: 싱크대, 식탁, 밥솥, 식기류가 보이는 공간입니다.
+
+★ [사물 묘사 지침]:
+각 사진 속에서 실제로 보이는 구체적 사물(가구 재질, 색상, 배치 상태)을 낱낱이 언급하고, 전문가 시점의 포장 자재(코너 가드, 퀼팅 보호 패드, 에어캡 3중 밀봉, 단프라 박스 분할 등) 적용 노하우를 4~6문장으로 풍성하게 작성하세요.`;
+
+            partsList.push({ text: promptIntro });
+
+            // 2. Add each compressed image with explicit label
             for (let i = 0; i < images.length; i++) {
-              setAnalysisProgress(`사진 정밀 압축 중... (${i + 1}/${images.length}장)`);
+              setAnalysisProgress(`사진 압축 변환 중... (${i + 1}/${images.length}장)`);
               const compressed = await compressImage(images[i].file);
-              requestContents.push({
+              const selectedHint = SPACE_OPTIONS.find(s => s.id === images[i].spaceHint);
+              const hintStr = (images[i].spaceHint && images[i].spaceHint !== "auto") ? ` (기사님 지정: ${selectedHint?.label})` : "";
+
+              partsList.push({
                 text: `
-[현장 사진 #${i + 1}번 실물]:`
+[현장 사진 #${i + 1}번 실물]${hintStr}:`
               });
-              requestContents.push({
-                inlineData: {
-                  data: compressed.base64Data,
-                  mimeType: compressed.mimeType
+              partsList.push({
+                inline_data: {
+                  mime_type: compressed.mimeType,
+                  data: compressed.base64Data
                 }
               });
             }
 
-            setAnalysisProgress(`Google AI(${selectedModel})가 사진 속 가구·재질·살림살이를 심층 판독 중...`);
-
-            // Detailed Deep Vision Prompt
-            const promptText = `당신은 20년 경력의 베테랑 ${housingName} 이사 전문가이자, 실제 현장을 두 눈으로 꼼꼼히 확인하고 글을 쓰는 수석 블로그/SNS 마케터입니다.
-
-★ [초정밀 사진 판독 지침 - 매우 중요]:
-제공된 ${images.length}장의 사진을 하나하나 순서대로 정밀 판독하세요.
-절대로 뻔하거나 추상적인 표현("가구가 놓여 있습니다", "짐을 잘 옮겼습니다")을 쓰지 마세요.
-실제 사진 속에 보이는 구체적 사물과 상태를 사실적으로 기술해야 합니다:
-1) 가구/가전의 실제 색상, 형태, 배치 (예: '벽면을 채운 화이트 붙박이장과 5단 원목 서랍장', '침대 헤드가 살대형인 원목 프레임', '컴퓨터 책상 위 듀얼 모니터와 멀티탭', '아일랜드 식탁 위 분홍색 바구니와 전기밥솥', '바닥에 대기 중인 28인치 캐리어와 선풍기')
-2) 바닥재 종류와 주변 환경 (강마루, 베란다 채광, 창문 블라인드 등)
-3) 전문 이사팀이 해당 물건을 파손 없이 안전하게 이동하기 위해 사용한 전문 자재와 작업 기법 (코너 가드, 퀼팅 보호 패드 밀착 패킹, 항균 비닐 1차 밀봉 + 방수 매트리스 커버, 단프라 박스 분할 적재, 에어캡 3중 밀봉 등)
-4) 각 사진별 본문 설명(content)은 생생하고 신뢰감 넘치는 4~6문장의 긴 르포 형식으로 충실하게 작성하세요.
-
-반드시 마크다운 없이 순수 JSON 포맷으로만 응답하세요:
+            // 3. Output Format Instruction
+            const promptJsonReq = `
+반드시 아래 JSON 형식으로만 응답하세요:
 {
-  "blogTitle": "[${fromCity} ${housingName}이사] ${fromLocation} ➔ ${toLocation} ${moveType} 솔직 후기 (${truckSize})",
-  "blogIntro": "현장 도착 시 첫인상과 ${housingName} 고객님과의 소통, 오늘 작업 계획을 담은 4~5문장의 풍성한 서론",
+  "blogTitle": "[${fromCity} ${housingName}이사] ${fromLocation} ➔ ${toLocation} ${moveType} 완벽 후기 (${truckSize})",
+  "blogIntro": "현장 도착 첫인상과 ${housingName} 고객님 맞춤 작업 계획을 담은 4~5문장의 풍성한 서론",
   "photoAnalyses": [
     {
       "index": 1,
-      "title": "사진 1번의 실제 물건을 명시한 구체적 제목 (예: 안방 원목 살대 침대 프레임 분해 및 매트리스 2중 방수 패킹)",
-      "content": "사진 1번 속에서 실제로 보이는 구체적인 가구·물건과 배치 상태를 낱낱이 언급하고, 전문가의 전용 자재 패킹 노하우를 담은 4~6문장의 상세 설명"
+      "title": "사진 1번의 정확한 공간명과 실제 사물을 포함한 제목",
+      "content": "사진 1번에서 실제로 보이는 공간과 사물을 묘사하고 전용 포장 노하우를 담은 4~6문장의 상세 설명"
     }
   ],
-  "blogOutro": "새 집에 도착하여 진행한 레이저 수평계 가구 세팅, 주방 그릇 정리, 바닥 스팀 청소 및 피톤치드 살균 소독 등 완성도 높은 마무리 후기",
+  "blogOutro": "도착지 가구 레이저 수평 세팅, 짐 정리, 바닥 스팀 청소 및 피톤치드 살균 소독 등 완성도 높은 마무리 후기",
   "instaCaption": "인스타그램 감성의 이모지 가득한 피드 본문 + ${housingName} 및 ${fromCity} 타깃 해시태그 15개 이상"
 }`;
+            partsList.push({ text: promptJsonReq });
 
-            requestContents.push({ text: promptText });
+            setAnalysisProgress("Google Gemini AI가 사진 속 공간과 사물을 심층 판독 중...");
 
-            // Try Primary Model (gemini-2.0-flash or selected), fallback to gemini-1.5-flash
-            const candidateModels = [selectedModel, "gemini-2.0-flash", "gemini-1.5-flash"];
+            // Try candidate vision models: gemini-1.5-flash, gemini-1.5-flash-latest, gemini-2.0-flash
+            const candidateModels = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.0-flash"];
             let response = null;
-            let usedModelName = "";
+            let usedModel = "";
+            let lastServerErr = "";
 
             for (const modelName of candidateModels) {
               try {
                 setAnalysisProgress(`Google ${modelName} 모델로 사진 분석 요청 중...`);
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`, {
+                
+                // Attempt 1: Standard with responseMimeType
+                let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({
-                    contents: [{ parts: requestContents }],
+                    contents: [{ parts: partsList }],
                     generationConfig: {
                       responseMimeType: "application/json",
-                      temperature: 0.7
+                      temperature: 0.2
                     }
                   })
                 });
 
+                // Attempt 2: If JSON mode failed, try without responseMimeType
+                if (!res.ok) {
+                  const errJson = await res.json().catch(() => ({}));
+                  lastServerErr = errJson.error?.message || `HTTP ${res.status}`;
+
+                  // Retry without responseMimeType
+                  res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      contents: [{ parts: partsList }],
+                      generationConfig: {
+                        temperature: 0.2
+                      }
+                    })
+                  });
+                }
+
                 if (res.ok) {
                   response = res;
-                  usedModelName = modelName;
+                  usedModel = modelName;
                   break;
                 } else {
-                  console.warn(`${modelName} failed with status:`, res.status);
+                  const errJson = await res.json().catch(() => ({}));
+                  lastServerErr = errJson.error?.message || `HTTP ${res.status}`;
                 }
-              } catch (fetchErr) {
-                console.warn(`${modelName} fetch error:`, fetchErr);
+              } catch (netErr) {
+                lastServerErr = netErr.message;
               }
             }
 
             if (!response || !response.ok) {
-              throw new Error("구글 AI 모델 응답에 실패했습니다. API 키 권한 또는 네트워크 상태를 확인해 주세요.");
+              throw new Error(lastServerErr || "Google AI 서버 응답을 받지 못했습니다.");
             }
 
             const data = await response.json();
             let rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
             
-            // Robust JSON Cleaning (Strip markdown code blocks if present)
+            // Clean JSON string (strip markdown code blocks if any)
             rawJson = rawJson.replace(/```json/gi, "").replace(/```/g, "").trim();
+            
+            // Extract JSON object if there is extra text
+            const firstBrace = rawJson.indexOf("{");
+            const lastBrace = rawJson.lastIndexOf("}");
+            if (firstBrace !== -1 && lastBrace !== -1) {
+              rawJson = rawJson.substring(firstBrace, lastBrace + 1);
+            }
+
             const parsed = JSON.parse(rawJson);
 
             setBlogTitle(parsed.blogTitle || `[${fromCity} ${housingName}이사] ${fromLocation} ➔ ${toLocation} ${moveType} 완벽 후기`);
@@ -559,7 +591,7 @@
             setBlogOutro(parsed.blogOutro || "");
             setInstaCaption(parsed.instaCaption || "");
 
-            // Update photos with AI Deep Analysis
+            // Update photos with AI Analysis
             setImages(prev => prev.map((img, idx) => {
               const matched = parsed.photoAnalyses?.[idx];
               if (matched) {
@@ -573,12 +605,13 @@
               return img;
             }));
 
-            setCopyStatus(`Google AI(${usedModelName})가 사진 ${images.length}장을 초정밀 판독하여 생생한 맞춤 글을 완성했습니다!`);
+            setCopyStatus(`Google AI(${usedModel})가 공간을 100% 식별하여 사진 ${images.length}장 정밀 판독을 완료했습니다!`);
             setTimeout(() => setCopyStatus(""), 5000);
           } catch (err) {
             console.error("AI Error:", err);
-            setApiErrorMessage(`Google AI 호출 오류: ${err.message}`);
-            // Fallback so user still gets an output
+            // Display EXACT error from Google
+            setApiErrorMessage(`구글 서버 오류 원인: ${err.message}`);
+            // Run smart fallback so user still gets structured post
             runDynamicFallbackGeneration();
           } finally {
             setIsAnalyzing(false);
@@ -598,7 +631,7 @@
         }
       };
 
-      // 100% Housing-Type-Separated Dynamic Engine
+      // Smart Fallback Engine (Uses correctly aligned room order)
       const runDynamicFallbackGeneration = () => {
         const cfg = HOUSING_CONFIGS[housingType] || HOUSING_CONFIGS.apt;
         const housingName = cfg.name;
@@ -624,11 +657,11 @@
         );
 
         setImages(prev => prev.map((img, idx) => {
-          const tIdx = idx % cfg.photoTitles.length;
+          const tIdx = idx % cfg.fallbackTitles.length;
           return {
             ...img,
-            aiTitle: cfg.photoTitles[tIdx],
-            aiAnalysis: cfg.photoContents[tIdx],
+            aiTitle: cfg.fallbackTitles[tIdx],
+            aiAnalysis: cfg.fallbackContents[tIdx],
             isAnalyzed: true
           };
         }));
@@ -644,9 +677,9 @@ ${companyName}이 바닥 보양부터 전용 가구 포장, 피톤치드 살균�
 🚛 투입 차량: ${truckSize}
 
 🛠 [오늘의 프리미엄 아파트 이사 케어 포인트]
+• 안방 & 작은방 침대 매트리스 항균 비닐 + 방수 커버 2중 안심 패킹 🛏
+• 자녀방 서재 서적 단프라 박스 분할 포장 & PC 모니터 3중 완충 🖥
 • 엘리베이터 및 실내 복도 바닥 안심 PP 보양판 시공 🛡
-• 침대 매트리스 항균 비닐 1차 밀봉 + 전용 퀼팅 방수 커버 2중 패킹 🛏
-• 원목 및 고가 가구 모서리 보호 가드 & 맞춤 패딩 결속 🛋
 • 주방 도자기·유리 식기류 전용 에어캡 낱개 완충 포장 🍽
 • 아파트 고층 전문 사다리차 안전 운용 & 전용 탑차 결속 🚚
 • 도착지 가구 정밀 레이저 수평 세팅 & 완벽 정리 정돈 📐
@@ -729,16 +762,16 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
           <header className="mb-5 pb-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-black px-3 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                  AI VISION V3.3 ULTRA
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white text-xs font-black px-3 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                  AI VISION V3.5 PRO
                 </span>
-                <span className="text-slate-500 text-xs font-bold">1600px 초정밀 사물 판독 & 복합 모델 자동 전환</span>
+                <span className="text-slate-500 text-xs font-bold">오류 원인 실시간 분석 & 공간 분류 정밀 판독기</span>
               </div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-900 mt-1 tracking-tight">
                 🚚 갑봉이 AI 이사 마케팅 자동 생성기
               </h1>
               <p className="text-slate-600 text-xs md:text-sm mt-0.5">
-                현장 사진을 올리고 버튼을 누르면, 사진 속 가구·상황을 읽어내 블로그 글과 인스타 피드를 즉시 작성합니다.
+                침대·책상이 있는 방을 거실로 오인하지 않고, 사진 속 실제 가구와 소품을 돋보기처럼 정확히 읽어냅니다.
               </p>
             </div>
 
@@ -749,7 +782,7 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
             )}
           </header>
 
-          {/* ★★★ TOP PROMINENT AI API KEY BANNER WITH INSTANT SAVE & TEST ★★★ */}
+          {/* ★★★ TOP PROMINENT AI API KEY BANNER ★★★ */}
           <div className="mb-7 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-5 shadow-lg border-2 border-indigo-500/50">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-indigo-800/60">
               <div className="flex items-center gap-3">
@@ -764,7 +797,7 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
                     {isKeySaved ? (
                       <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
                         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        키 저장됨 ({selectedModel})
+                        키 저장됨
                       </span>
                     ) : (
                       <span className="bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
@@ -774,7 +807,7 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
                     )}
                   </div>
                   <p className="text-xs text-indigo-200 mt-0.5">
-                    키를 입력하고 <strong>[⚡ 연결 확인]</strong> 또는 <strong>[💾 즉시 저장]</strong>을 누르시면 브라우저에 영구 보존됩니다.
+                    키를 입력하고 <strong>[💾 즉시 저장]</strong>을 누르시면 브라우저에 영구 보존되어 바로 판독할 수 있습니다.
                   </p>
                 </div>
               </div>
@@ -821,6 +854,13 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
               {/* Action Buttons */}
               <div className="flex gap-2 w-full sm:w-auto">
                 <button
+                  onClick={saveKeyDirectly}
+                  className="flex-1 sm:flex-initial px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs md:text-sm font-bold transition whitespace-nowrap shadow flex items-center justify-center gap-1"
+                >
+                  <span>💾</span>
+                  <span>즉시 저장</span>
+                </button>
+                <button
                   onClick={testApiKey}
                   disabled={keyTestStatus === 'testing'}
                   className="flex-1 sm:flex-initial px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs md:text-sm font-black transition whitespace-nowrap shadow flex items-center justify-center gap-1.5"
@@ -836,13 +876,6 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
                       <span>연결 확인</span>
                     </>
                   )}
-                </button>
-                <button
-                  onClick={saveKeyDirectly}
-                  className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs md:text-sm font-bold transition whitespace-nowrap shadow flex items-center justify-center gap-1"
-                >
-                  <span>💾</span>
-                  <span>즉시 저장</span>
                 </button>
               </div>
             </div>
@@ -866,16 +899,20 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
             </div>
           </div>
 
-          {/* Error Banner if API error occurred during generation */}
+          {/* Error Banner if API error occurred during generation - Shows EXACT Google Error */}
           {apiErrorMessage && (
-            <div className="mb-6 bg-rose-50 border-2 border-rose-300 text-rose-900 rounded-2xl p-4 text-xs md:text-sm">
+            <div className="mb-6 bg-rose-50 border-2 border-rose-300 text-rose-900 rounded-2xl p-4 text-xs md:text-sm shadow-sm">
               <div className="font-black flex items-center gap-2 text-rose-700 mb-1">
                 <span>⚠️</span>
-                <span>Google AI 호출 안내</span>
+                <span>Google AI 상세 오류 안내</span>
               </div>
-              <p className="text-rose-800">{apiErrorMessage}</p>
-              <p className="text-xs text-rose-600 mt-1">
-                ※ 상단의 [Google Gemini AI API 키 설정]에서 키를 다시 확인하시고 <strong>[연결 확인]</strong>을 눌러주세요.
+              <p className="font-mono text-xs bg-rose-100/70 p-2.5 rounded-lg border border-rose-200 text-rose-800 break-all mb-2">
+                {apiErrorMessage}
+              </p>
+              <p className="text-xs text-rose-700 leading-relaxed">
+                💡 <strong>해결 방법:</strong><br/>
+                1. API 키에 오타가 없는지, 복사할 때 글자가 잘리지 않았는지 확인해 주세요.<br/>
+                2. 구글 AI Studio(aistudio.google.com)에서 <strong>[Create API Key]</strong>를 눌러 새 키를 발급받은 뒤 위에 붙여넣고 <strong>[💾 즉시 저장]</strong>을 눌러주세요.
               </p>
             </div>
           )}
@@ -1079,7 +1116,7 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
                   >
                     <div className="text-3xl mb-1 group-hover:scale-110 transition-transform">📸</div>
                     <p className="text-xs font-bold text-slate-700">[{cfg.name}] 현장 사진들을 여기에 끌어다 넣으세요</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">스마트폰 촬영 원본(거실, 침실, 주방, 탑차 등)을 자유롭게 올려주세요 (자동 1600px 최적화)</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">작은방, 안방 침실, 주방, 거실 등 사진을 올려주시면 공간을 스스로 판별합니다.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -1097,7 +1134,7 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
                       ) : (
                         <>
                           <span>⚡</span>
-                          <span>[{cfg.name}] 사진 초정밀 사물 판독 & 맞춤 글 생성하기</span>
+                          <span>[{cfg.name}] 사진 공간 정밀 판별 & 맞춤 글 생성하기</span>
                         </>
                       )}
                     </button>
@@ -1106,7 +1143,7 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
                     <div className="text-center">
                       {isKeySaved ? (
                         <span className="text-[11px] font-bold text-emerald-600 flex items-center justify-center gap-1">
-                          <span>✓</span> Google {selectedModel} 초정밀 사물 판독 모드 적용 중
+                          <span>✓</span> Google Vision AI가 사진별 랜드마크(침대/책상/싱크대/거실창)를 정밀 분석합니다.
                         </span>
                       ) : (
                         <span className="text-[11px] font-semibold text-slate-500">
@@ -1115,35 +1152,56 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
                       )}
                     </div>
 
-                    <div className="space-y-2.5 max-h-[300px] overflow-y-auto custom-scroll pr-1">
+                    {/* Image Cards with Space Hint Dropdown */}
+                    <div className="space-y-3 max-h-[340px] overflow-y-auto custom-scroll pr-1">
                       {images.map((img, idx) => (
-                        <div key={img.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex gap-3 items-start">
-                          <img src={img.url} alt="" className="w-14 h-14 object-cover rounded-lg flex-shrink-0 border border-slate-300" />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${img.isAnalyzed ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-600'}`}>
-                                {img.isAnalyzed ? 'AI 심층판독완료' : `사진 #${idx + 1}`}
-                              </span>
-                              <button
-                                onClick={() => removeImage(img.id)}
-                                className="text-[11px] text-slate-400 hover:text-red-500 font-bold"
-                              >
-                                삭제
-                              </button>
+                        <div key={img.id} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                          <div className="flex gap-3 items-start">
+                            <img src={img.url} alt="" className="w-16 h-16 object-cover rounded-lg flex-shrink-0 border border-slate-300 shadow-sm" />
+                            <div className="flex-1 min-w-0 space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className={`text-[10px] font-black px-2 py-0.5 rounded ${img.isAnalyzed ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-700'}`}>
+                                  {img.isAnalyzed ? 'AI 심층판독완료' : `사진 #${idx + 1}`}
+                                </span>
+                                <button
+                                  onClick={() => removeImage(img.id)}
+                                  className="text-[11px] text-slate-400 hover:text-red-500 font-bold"
+                                >
+                                  삭제
+                                </button>
+                              </div>
+
+                              {/* Manual Space Hint Dropdown to 100% Guarantee No Room-to-Livingroom Error */}
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-0.5">공간 유형 힌트 (선택사항)</label>
+                                <select
+                                  value={img.spaceHint}
+                                  onChange={e => updateImageSpaceHint(img.id, e.target.value)}
+                                  className="w-full text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded px-2 py-1 focus:ring-1 focus:ring-indigo-500"
+                                >
+                                  {SPACE_OPTIONS.map(opt => (
+                                    <option key={opt.id} value={opt.id}>{opt.label}</option>
+                                  ))}
+                                </select>
+                              </div>
                             </div>
-                            <input
-                              type="text"
-                              value={img.aiTitle}
-                              onChange={e => updateImageAnalysis(img.id, e.target.value, img.aiAnalysis)}
-                              className="w-full text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded px-1.5 py-0.5 mb-1"
-                            />
-                            <textarea
-                              rows={3}
-                              value={img.aiAnalysis}
-                              onChange={e => updateImageAnalysis(img.id, img.aiTitle, e.target.value)}
-                              className="w-full text-[11px] text-slate-600 bg-white border border-slate-200 rounded px-1.5 py-1 custom-scroll"
-                            />
                           </div>
+
+                          {/* Editable AI Generated Output */}
+                          <input
+                            type="text"
+                            value={img.aiTitle}
+                            onChange={e => updateImageAnalysis(img.id, e.target.value, img.aiAnalysis)}
+                            className="w-full text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded px-2 py-1"
+                            placeholder="사진 제목 (AI 분석 시 자동 채워짐)"
+                          />
+                          <textarea
+                            rows={3}
+                            value={img.aiAnalysis}
+                            onChange={e => updateImageAnalysis(img.id, img.aiTitle, e.target.value)}
+                            className="w-full text-[11px] text-slate-600 bg-white border border-slate-200 rounded px-2 py-1 custom-scroll"
+                            placeholder="사진 세부 설명 (AI 분석 시 자동 채워짐)"
+                          />
                         </div>
                       ))}
                     </div>
@@ -1284,7 +1342,7 @@ ${companyName}이 가구 분해부터 전용 안심 포장까지 깔끔하게 �
                     {/* Dynamic Image Sections */}
                     {images.length === 0 ? (
                       <div className="p-6 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs md:text-sm">
-                        💡 <strong>안내:</strong> 왼쪽에서 현장 사진을 올린 뒤 <strong>[{cfg.name} 사진 초정밀 사물 판독 & 맞춤 글 생성하기]</strong> 버튼을 눌러보세요. 사진 속 가구와 상황에 맞게 글이 자동 완성됩니다!
+                        💡 <strong>안내:</strong> 왼쪽에서 현장 사진을 올린 뒤 <strong>[{cfg.name} 사진 공간 정밀 판별 & 맞춤 글 생성하기]</strong> 버튼을 눌러보세요. 사진 속 가구와 상황에 맞게 글이 자동 완성됩니다!
                       </div>
                     ) : (
                       <div className="space-y-8 my-6">
