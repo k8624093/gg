@@ -26,7 +26,7 @@
   <script type="text/babel">
     const { useState, useEffect, useRef, Component } = React;
 
-    // 1. Error Boundary (흰 화면 방지 안전 가드)
+    // 1. Error Boundary (화면 크래시 방지)
     class ErrorBoundary extends Component {
       constructor(props) {
         super(props);
@@ -94,7 +94,7 @@
       return String(key).trim().replace(/^["'`]|["'`]$/g, "").replace(/\s+/g, "");
     };
 
-    // 4. Ultra-Fast Image Compression (createImageBitmap + Canvas)
+    // 4. 고속 이미지 압축 (createImageBitmap + Canvas)
     const compressImage = async (file) => {
       if (!file) return { base64Data: "", mimeType: "image/jpeg" };
 
@@ -183,7 +183,7 @@
       });
     };
 
-    // 5. Move Types Config (반포장 vs 포장 차별화 상세 정의)
+    // 5. 이사 종류별 특장점 및 마케팅 카피
     const MOVE_CONFIGS = {
       "반포장이사": {
         badge: "💰 알뜰 실속형 플랜 • 큰 짐은 전문가 100% 전담 & 이사 비용 20~30% 절약",
@@ -246,7 +246,7 @@
 
     const MOVE_TYPES = ["반포장이사", "포장이사", "일반이사", "1톤 용달운송"];
 
-    // 6. Space Options
+    // 6. 공간 랜드마크 옵션
     const SPACE_OPTIONS = [
       { id: "auto", label: "🤖 AI 자동 공간 판별 (추천)" },
       { id: "small_room", label: "📚 작은방 / 자녀방 / 학생 서재 (책상·책장·싱글침대)" },
@@ -258,113 +258,58 @@
       { id: "truck", label: "🚚 차량 적재 / 사다리차 (탑차·운송·결속)" }
     ];
 
-    // 7. Housing Configurations
-    const HOUSING_CONFIGS = {
-      apt: {
-        id: "apt",
-        name: "아파트",
-        defaultMoveType: "포장이사",
-        defaultSize: "84㎡ (34평)",
-        defaultCar: "5톤 탑차 / 사다리차",
-        defaultBuilding: "신진주역세권 센트럴자이",
-        defaultFrom: "진주시 가좌동 신진주역세권 센트럴자이",
-        defaultTo: "진주시 충무공동 중흥S-클래스",
-        fallbackTitles: [
-          "작은방 학생 싱글 침대 및 책장 서적 단프라 박스 분할 패킹",
-          "작은방 컴퓨터 책상·모니터 전자기기 3중 에어캡 완충 포장",
-          "안방 침실 원목 침대 프레임 코너 가드 & 매트리스 2중 방수 패킹",
-          "안방 드레스룸 및 붙박이장 의류 전용 행거 박스 칼각 수납",
-          "거실 바닥 프리미엄 PP 보양판 시공 및 소형 가전·잔짐 동선 확보",
-          "침실 2 화이트 침대 프레임 이염 방지 전용 커버링 포장",
-          "침실 2 5단 와이드 원목 서랍장 밴딩 결속 및 가구 전용 보호 패드",
-          "침실 코너 붙박이장 및 오픈 선반 소품 낱개 에어캡 완충 패킹",
-          "주방 싱크대 상·하부장 도자기·유리 식기류 전용 에어캡 낱개 완충"
+    // 7. 사람이 쓴 생생한 현장 르포형 다이내믹 변주 뱅크 (매번 다른 톤 & 에피소드)
+    const HUMAN_STORY_VARIATIONS = {
+      intros: [
+        (company, from, to, moveType, size) => `이사를 앞두고 어떤 업체를 믿고 맡겨야 할지 고민이 정말 많으셨다는 고객님! 진주 ${from}에서 ${to}으로 향하는 ${size} ${moveType} 일정을 함께했습니다. 집안에 들어서자마자 고객님께서 "아끼는 원목 가구에 스크래치 하나 안 나게 잘 부탁드립니다"라며 따뜻한 커피 한 잔을 건네주시더라고요. 그 믿음에 보답하기 위해 현장 바닥 보양재부터 전용 원단 커버까지 아낌없이 풀세팅하고 기분 좋게 작업을 시작했습니다.`,
+        (company, from, to, moveType, size) => `안녕하세요, 20년 현장 경험을 바탕으로 내 가족의 살림살이처럼 정성을 다하는 ${company}입니다! 오늘은 진주 ${from} 현장에서 ${to} 새 보금자리로 향하는 ${size} ${moveType} 작업을 진행해 드렸습니다. 햇살이 참 좋은 날이었지만 통로 이동 동선이 좁아 가구 모서리 찍힘에 각별히 신경을 써야 했는데요. 베테랑 팀원들과 손발을 딱딱 맞춰 안전을 최우선으로 차분하게 짐을 풀어냈던 현장입니다.`,
+        (company, from, to, moveType, size) => `"이번에 새로 이사 가는 집이라 바닥 마루가 상하지 않을까 제일 걱정돼요." 상담 때부터 고객님께서 거듭 당부하셨던 ${from} ➔ ${to} ${size} ${moveType} 현장입니다. 이런 걱정을 덜어드리는 게 저희의 몫이죠! 현관 입구부터 거실, 안방 복도까지 두툼한 PP 보양판을 빈틈없이 깔아두고 본격적인 패킹에 들어갔습니다. 땀방울 가득했던 하루를 생생하게 남겨봅니다.`
+      ],
+      photoTemplates: [
+        [
+          "작은방 학생 싱글 침대 프레임 분해 & 책장 서적 단프라 박스 분할 패킹",
+          "작은방 책장에 꽂힌 두툼한 전공서적과 수험서는 한 박스에 몽땅 담으면 밑바닥이 터지거나 책 모서리가 찌그러지기 십상입니다. 단단한 단프라 전용 박스에 적정 무게로 알맞게 나누어 담고, 싱글 침대 모서리엔 플라스틱 코너 가드를 덧대어 흠집 없이 조심스레 분해해 두었습니다."
         ],
-        fallbackContents: [
-          "작은방 서재의 수많은 서적류는 무게가 상당하므로 바닥 처짐 없는 단프라 전용 박스에 적정 무게로 분할 포장하였으며, 싱글 침대 프레임 모서리는 코너 가드로 보호했습니다.",
-          "충격에 민감한 컴퓨터 본체와 모니터, 스탠드 조명은 대형 에어캡(뽁뽁이) 완충재로 3겹 이상 밀봉하여 이동 중 파손과 충격을 완벽히 차단했습니다.",
-          "안방의 메인 침대 매트리스는 위생 비닐로 1차 밀봉한 후, 도톰한 전용 방수 퀼팅 커버로 2중 밀착 패킹하였습니다. 원목 살대형 헤드보드와 프레임 코너도 전용 가드로 안전하게 감쌌습니다.",
-          "안방 안쪽 드레스룸 및 붙박이장에 보관된 고급 의류는 구김을 방지하기 위해 옷걸이에 걸린 상태 그대로 전용 행거 박스에 담아 원형 그대로 안전하게 이송했습니다.",
-          "거실과 복도 바닥에 두툼한 플라스틱 PP 보양판을 빈틈없이 시공하여 가구 이동 시 발생할 수 있는 바닥 찍힘과 긁힘을 원천 차단하고 통로 잔짐을 1차 분류했습니다.",
-          "밝은 톤의 화이트 침대 프레임은 이동 중 때탐이나 스크래치가 생기기 쉬우므로, 세척 관리된 전용 보호 패드로 꼼꼼하게 감싸 안심 이동을 준비했습니다.",
-          "5단 와이드 서랍장은 주행 중 서랍이 열리는 사고를 방지하기 위해 안전 밴딩 처리를 완료한 후, 표면 보호를 위한 퀼팅 패드로 단단히 결속했습니다.",
-          "벽면 빌트인 수납장과 오픈 책장에 놓인 소품, 인형, 장식품들도 뽁뽁이로 하나하나 개별 포장하여 단단한 안전 바구니에 담아냈습니다.",
-          "주방 이모님의 세심한 손길로 싱크대 상하부장 속 유리컵과 도자기 그릇들을 하나하나 에어캡으로 낱개 포장한 뒤 단단한 하드 바구니에 차곡차곡 안전 적재했습니다."
-        ]
-      },
-      oneroom: {
-        id: "oneroom",
-        name: "원룸 / 오피스텔",
-        defaultMoveType: "반포장이사",
-        defaultSize: "원룸 (약 7~9평)",
-        defaultCar: "1톤 트럭 1대",
-        defaultBuilding: "가좌동 대학가 신축 원룸",
-        defaultFrom: "진주시 가좌동 (원룸촌)",
-        defaultTo: "사천시 사남면 (원룸)",
-        fallbackTitles: [
-          "원룸 실내 전체 동선 확인 및 1차 생활 잔짐 분류",
-          "싱글 침대 매트리스 전용 위생 비닐 1차 밀봉 + 방수 커버 패킹",
-          "행거 의류 구김 방지 전용 행거 박스 수납",
-          "PC 모니터·노트북 및 소형 가전 2중 에어캡 완충 포장",
-          "주방 식기류 낱개 에어캡 패킹 & 아이스박스 냉장 케어",
-          "서랍장 내용물 쏟아짐 방지 특수 밴딩 및 퀼팅 패드 결속",
-          "1톤 트럭 상차 및 이동 중 흔들림 없는 안전 결속 바(Bar) 고정",
-          "도착지 가구 수평 세팅 및 피톤치드 살균 소독 마무리"
+        [
+          "컴퓨터 모니터 액정 보호 & 본체 정밀 전자기기 3중 에어캡 완충 포장",
+          "책상 위에 놓인 PC 듀얼 모니터와 본체는 작은 충격에도 패널이 나가기 쉬운 민감한 기기지요. 두툼한 대형 에어캡(뽁뽁이)을 아끼지 않고 서너 바퀴씩 단단히 돌려 감은 뒤 전용 하드 박스 안에 흔들림 없도록 완충재로 꽉 채워 포장했습니다."
         ],
-        fallbackContents: [
-          "작업을 시작하기 전, 좁은 원룸 통로에서 짐이 부딪히지 않도록 이동 동선을 확보하고 책상, 수납장 주변의 생활 잔짐들을 종류별로 차분하게 1차 분류했습니다.",
-          "매일 사용하는 침대 매트리스의 위생을 위해 1차 항균 위생 비닐로 밀봉한 뒤 두툼한 전용 방수 커버로 2중 밀착 포장하여 오염과 먼지 침투를 완벽 차단했습니다.",
-          "옷걸이에 걸려 있는 셔츠와 외투는 개어서 박스에 넣으면 심하게 구겨지므로, 옷걸이 채로 바로 걸 수 있는 전용 행거 박스를 투입해 구김 없이 안전하게 옮겼습니다.",
-          "충격에 민감한 컴퓨터 모니터와 전자레인지 등 소형 가전제품은 대형 에어캡(뽁뽁이)으로 3중 포장한 후 하드 박스에 흔들림 없이 고정 패킹했습니다.",
-          "주방 싱크대의 유리컵과 그릇들은 에어캡으로 낱개 포장하여 파손을 예방하고, 냉장고 속 잔여 음식물은 신선 유지를 위해 전용 아이스박스에 담아 운송했습니다.",
-          "수납 서랍장은 이동 중 서랍이 열리는 것을 막기 위해 특수 밴딩 처리를 마친 뒤, 표면 스크래치 방지를 위해 전용 퀼팅 보호 패드로 꼼꼼하게 결속했습니다.",
-          "1톤 전용 차량 적재함에 무게 중심을 맞춰 차곡차곡 테트리스 적재를 진행하고, 이동 중 흔들리지 않도록 라쳇 결속 바(Bar)로 단단히 고정한 뒤 방수 호루를 씌웠습니다.",
-          "새로운 자취방에 도착하여 고객님이 지정하신 위치에 침대와 책상을 수평 맞춰 재배치해 드렸으며, 바닥 스팀 청소와 피톤치드 항균 소독으로 첫날밤을 상쾌하게 맞이하실 수 있도록 마쳤습니다."
-        ]
-      },
-      tworoom: {
-        id: "tworoom",
-        name: "투룸 / 빌라",
-        defaultMoveType: "반포장이사",
-        defaultSize: "투룸 (약 15~18평)",
-        defaultCar: "1톤~1.2톤 트럭 1~2대",
-        defaultBuilding: "평거동 신축 빌라 투룸",
-        defaultFrom: "진주시 평거동 (빌라 투룸)",
-        defaultTo: "진주시 초전동 (신축 투룸)",
-        fallbackTitles: [
-          "투룸 각 방 동선 확인 & 바닥 안심 보양",
-          "침실 침대 매트리스 전용 위생 방수 커버 2중 패킹",
-          "붙박이장 및 서랍장 의류 전용 행거 박스 안전 수납",
-          "TV, PC 모니터 및 중형 가전 충격 방지 2중 에어캡 완충",
-          "주방 식기류 낱개 에어캡 완충 & 냉장고 아이스박스 포장",
-          "5단 와이드 서랍장 밴딩 결속 및 가구 전용 보호 패드",
-          "1톤/1.2톤 트럭 2대 안전 적재 및 방수 호루 밀폐",
-          "도착지 가구 레이저 수평 세팅 및 바닥 스팀·피톤치드 살균"
+        [
+          "안방 침실 원목 침대 헤드보드 안심 패딩 & 매트리스 2중 방수 퀼팅 패킹",
+          "살결이 매일 닿는 안방 매트리스는 위생이 가장 중요합니다. 먼지와 빗물 침투를 막기 위해 위생 비닐로 1차 밀봉한 후, 도톰한 전용 방수 퀼팅 커버를 씌워 2중으로 꽁꽁 패킹했지요. 묵직한 원목 살대형 헤드보드도 모서리 긁힘 방지 패드로 꼼꼼히 결속했습니다."
         ],
-        fallbackContents: [
-          "방 2개와 거실 공간의 짐 양을 꼼꼼히 확인하고, 복도와 실내 바닥에 보양판을 설치하여 가구 반출 동선을 안전하게 확보했습니다.",
-          "침실의 침대 매트리스는 위생 비닐로 밀봉 후 전용 퀼팅 방수 커버로 2중 포장하였으며, 프레임은 안전하게 분해하여 스크래치 없이 옮겼습니다.",
-          "옷장 속 의류는 구김 없이 이송하기 위해 전용 행거 박스를 투입하여 옷걸이 채로 깔끔하게 수납했습니다.",
-          "거실의 대형 TV와 PC 모니터, 전자레인지 등은 고밀도 충격 흡수재와 3중 에어캡으로 빈틈없이 감싸 단단히 고정했습니다.",
-          "주방 찬장에 보관된 그릇과 냄비류는 파손 방지를 위해 에어캡으로 개별 포장하여 단프라 전용 바구니에 담아냈습니다.",
-          "서랍장은 내용물이 쏟아지지 않도록 안전 밴드로 1차 고정한 후, 전용 퀼팅 패드로 감싸 모서리 찍힘을 사전에 방지했습니다.",
-          "투룸 짐의 부피에 맞춰 준비된 1톤 트럭들에 균형 있게 적재하고, 라쳇 결속 바로 단단히 결속하여 고속 주행 시에도 흔들림 없도록 조치했습니다.",
-          "도착지에서 가구를 고객님이 원하시는 방 위치에 정확히 안착시키고 수평계를 통해 균형을 맞춘 뒤, 바닥 스팀 청소와 피톤치드 소독으로 마무리했습니다."
+        [
+          "안방 드레스룸 의류 구김 방지 전용 행거 박스 칼각 수납",
+          "옷장과 드레스룸에 걸린 양복 정장과 코트류는 개어서 박스에 넣으면 주름이 심하게 생겨 나중에 다림질하느라 고생하십니다. 옷걸이 상태 그대로 쏙 걸 수 있는 전용 행거 박스를 투입해 구김 없이 원형 그대로 옮겨드렸습니다."
+        ],
+        [
+          "거실 및 복도 동선 바닥 안심 PP 보양판 시공 & 통로 잔짐 1차 분류",
+          "가구 반출을 시작하기 전, 신발을 벗고 다니는 실내 복도와 거실 바닥에 두툼한 플라스틱 PP 보양판을 빈틈없이 시공했습니다. 대형 짐을 실어 나를 때 바닥 찍힘이나 마루 긁힘을 원천 차단하고 이동 통로의 잔짐들을 차분하게 분류해 두었습니다."
+        ],
+        [
+          "침실 2 화이트 침대 프레임 때탐 방지 전용 보호 커버 결속",
+          "밝은 화이트 톤의 가구는 작업 장갑의 손때나 모서리 쓸림 자국이 남기 쉽습니다. 세척 관리된 전용 보호 원단으로 프레임 전체를 꼼꼼하게 감싸 안심 이동을 준비했습니다."
+        ],
+        [
+          "침실 2 5단 와이드 원목 서랍장 레일 보호 특수 밴딩 & 퀼팅 패드 포장",
+          "이동 중 서랍이 덜컹거리며 튀어나오면 레일이 휘거나 가구 모서리가 찍힐 수 있습니다. 접착 자국이 남지 않는 특수 안전 밴드로 1차 고정하고, 도톰한 누빔 퀼팅 패드로 단단히 결속하여 안전하게 반출했습니다."
+        ],
+        [
+          "코너 오픈 선반 장식 소품 및 도자기 낱개 에어캡 완충 패킹",
+          "장식장과 오픈 선반에 진열된 도자기, 유리잔, 아기자기한 소품들은 파손 위험이 크기 때문에 에어캡으로 하나하나 개별 포장한 뒤 단단한 하드 바구니에 안전하게 차곡차곡 담아냈습니다."
+        ],
+        [
+          "주방 찬장 도자기·유리 식기류 낱개 에어캡 완충 & 냉장고 신선 케어",
+          "주방 이모님의 노련한 손길로 싱크대 찬장 속 접시와 유리컵들을 에어캡으로 낱개 완충 포장했습니다. 냉장고 속 신선 식품류는 냉매제를 듬뿍 넣은 전용 아이스박스에 담아 신선도 그대로 새집으로 이동 준비를 마쳤습니다."
         ]
-      }
+      ],
+      outros: [
+        (company, moveType) => `새 보금자리에 도착하자마자 바닥 보양판을 먼저 깔고, 고객님께서 원하시는 방 위치에 큰 가구들을 하나하나 제자리에 배치했습니다. 레이저 수평계로 서랍장과 침대 균형을 반듯하게 맞춰드렸지요. 짐 정리가 끝난 뒤 고온 바닥 스팀 청소와 집안 전체 피톤치드 연무 소독까지 싹 돌려드리니 집안에 상쾌한 숲속 향이 가득 퍼졌습니다. "날도 더운데 기사님들이 친절하게 끝까지 신경 써주셔서 정말 든든했습니다"라며 환하게 웃어주신 고객님의 한마디에 피로가 눈 녹듯 사라졌던 하루입니다.`,
+        (company, moveType) => `도착지에서도 서두르지 않고 침대 프레임부터 단단하게 재조립하고, 문 열림과 서랍 레일 수평을 정밀하게 다시 맞췄습니다. ${moveType === '반포장이사' ? '잔짐 박스들은 고객님께서 정리하시기 편하도록 각 방으로 깔끔하게 넣어드렸고' : '주방 찬장 그릇부터 옷장 수납까지 원래 쓰시던 동선에 맞춰 착착 정돈해 드렸고'}, 마무리로 바닥 스팀 청소와 피톤치드 살균 소독까지 말끔히 마쳤습니다. 기분 좋게 새 집에서의 첫날밤을 맞이하시길 진심으로 응원합니다!`
+      ]
     };
 
-    const REGION_PRESETS = [
-      { name: "진주 관내 (가좌➔평거)", from: "진주시 가좌동", to: "진주시 평거동" },
-      { name: "진주→사천", from: "진주시 가좌동", to: "사천시 사남면" },
-      { name: "진주→창원", from: "진주시 충무공동", to: "창원시 성산구" },
-      { name: "진주→김해", from: "진주시 초전동", to: "김해시 율하동" },
-      { name: "진주→순천", from: "진주시 평거동", to: "순천시 신대지구" },
-      { name: "진주→부산", from: "진주시 충무공동", to: "부산시 해운대구" },
-      { name: "진주→대구", from: "진주시 하대동", to: "대구시 수성구" },
-      { name: "진주→수도권", from: "진주시 가좌동", to: "서울시 강남구" }
-    ];
-
+    // 8. 진주 아파트 단지 목록
     const JINJU_APTS = [
       { name: "신진주역세권 센트럴자이", dong: "가좌동", pyeong: "84㎡ (34평)" },
       { name: "신진주역세권 시티프라디움", dong: "가좌동", pyeong: "84㎡ (34평)" },
@@ -376,6 +321,17 @@
       { name: "평거 엠코타운 더 프라하", dong: "평거동", pyeong: "84㎡ (34평)" },
       { name: "평거 엘크루", dong: "평거동", pyeong: "84㎡ (34평)" },
       { name: "충무공동 한림풀에버", dong: "충무공동", pyeong: "84㎡ (34평)" }
+    ];
+
+    const REGION_PRESETS = [
+      { name: "진주 관내 (가좌➔평거)", from: "진주시 가좌동", to: "진주시 평거동" },
+      { name: "진주→사천", from: "진주시 가좌동", to: "사천시 사남면" },
+      { name: "진주→창원", from: "진주시 충무공동", to: "창원시 성산구" },
+      { name: "진주→김해", from: "진주시 초전동", to: "김해시 율하동" },
+      { name: "진주→순천", from: "진주시 평거동", to: "순천시 신대지구" },
+      { name: "진주→부산", from: "진주시 충무공동", to: "부산시 해운대구" },
+      { name: "진주→대구", from: "진주시 하대동", to: "대구시 수성구" },
+      { name: "진주→수도권", from: "진주시 가좌동", to: "서울시 강남구" }
     ];
 
     function App() {
@@ -419,11 +375,9 @@
         safeStorage.set("ai_kakao", kakao);
       }, [companyName, phone, localTel, kakao]);
 
-      // Global window drag & drop prevention
+      // 브라우저 드래그앤드롭 화면이동 전역 방지
       useEffect(() => {
-        const preventGlobalDrop = (e) => {
-          e.preventDefault();
-        };
+        const preventGlobalDrop = (e) => e.preventDefault();
         window.addEventListener("dragover", preventGlobalDrop, false);
         window.addEventListener("drop", preventGlobalDrop, false);
         return () => {
@@ -456,7 +410,7 @@
         setTimeout(() => setCopyStatus(""), 3000);
       };
 
-      // API Key Connectivity Test (구글 권장 gemini-3.8-flash 1순위 다이렉트 호출)
+      // API Key 연결 테스트 (gemini-3.8-flash 1순위 다이렉트 호출)
       const testApiKey = async () => {
         const targetKey = cleanKey(apiKey);
         if (!targetKey) {
@@ -470,7 +424,6 @@
         setKeyTestStatus("testing");
         setKeyTestMessage("Google AI 최신 서버(gemini-3.8-flash)에 연결 테스트 중...");
 
-        // 구글 서버가 명시적으로 요구한 gemini-3.8-flash 및 호환 최신 모델 목록
         const candidateModels = [
           "gemini-3.8-flash",
           "gemini-3.8-flash-latest",
@@ -518,7 +471,7 @@
         const isHighDemand = capturedErrors.some(e => e.includes("high demand") || e.includes("RESOURCE_EXHAUSTED") || e.includes("503"));
         setKeyTestStatus("error");
         if (isHighDemand) {
-          setKeyTestMessage(`구글 서버 일시 혼잡(High Demand): 구글 AI 서버에 전세계 트래픽이 몰리고 있습니다. 아래 [⚡ 1초 즉시 생성] 버튼을 누르시면 기다림 없이 바로 글이 작성됩니다.`);
+          setKeyTestMessage(`구글 서버 일시 혼잡(High Demand): 트래픽이 몰리고 있습니다. 아래 [⚡ 1초 즉시 생성] 버튼을 누르시면 기다림 없이 바로 글이 작성됩니다.`);
         } else {
           setKeyTestMessage(`구글 서버 응답: ${capturedErrors[0] || "API 키 및 네트워크를 확인해 주세요."}`);
         }
@@ -526,13 +479,28 @@
 
       const handleHousingChange = (newType) => {
         setHousingType(newType);
-        const cfg = HOUSING_CONFIGS[newType] || HOUSING_CONFIGS.apt;
-        setMoveType(cfg.defaultMoveType);
-        setRoomSize(cfg.defaultSize);
-        setTruckSize(cfg.defaultCar);
-        setBuildingName(cfg.defaultBuilding);
-        setFromLocation(cfg.defaultFrom);
-        setToLocation(cfg.defaultTo);
+        if (newType === 'apt') {
+          setMoveType("포장이사");
+          setRoomSize("84㎡ (34평)");
+          setTruckSize("5톤 탑차 / 사다리차");
+          setBuildingName("신진주역세권 센트럴자이");
+          setFromLocation("진주시 가좌동 신진주역세권 센트럴자이");
+          setToLocation("진주시 충무공동 중흥S-클래스");
+        } else if (newType === 'oneroom') {
+          setMoveType("반포장이사");
+          setRoomSize("원룸 (약 7~9평)");
+          setTruckSize("1톤 트럭 1대");
+          setBuildingName("가좌동 대학가 신축 원룸");
+          setFromLocation("진주시 가좌동 (원룸촌)");
+          setToLocation("사천시 사남면 (원룸)");
+        } else {
+          setMoveType("반포장이사");
+          setRoomSize("투룸 (약 15~18평)");
+          setTruckSize("1톤~1.2톤 트럭 1~2대");
+          setBuildingName("평거동 신축 빌라 투룸");
+          setFromLocation("진주시 평거동 (빌라 투룸)");
+          setToLocation("진주시 초전동 (신축 투룸)");
+        }
       };
 
       const handleAptSelect = (apt) => {
@@ -565,27 +533,24 @@
             return;
           }
 
-          const cfg = HOUSING_CONFIGS[housingType] || HOUSING_CONFIGS.apt;
-          const fallbackTitles = cfg?.fallbackTitles || [];
-          const fallbackContents = cfg?.fallbackContents || [];
-
+          const templates = HUMAN_STORY_VARIATIONS.photoTemplates;
           const newImages = imageFiles.map((file, idx) => {
             let previewUrl = "";
             try {
               previewUrl = URL.createObjectURL(file);
             } catch (urlErr) {
-              console.warn("createObjectURL failed for file:", file.name, urlErr);
+              console.warn("createObjectURL failed:", urlErr);
             }
 
-            const pIdx = fallbackTitles.length > 0 ? (images.length + idx) % fallbackTitles.length : 0;
+            const pIdx = (images.length + idx) % templates.length;
             return {
               id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
               file: file,
               url: previewUrl,
               name: file.name || `현장사진_${idx + 1}.jpg`,
               spaceHint: "auto",
-              aiTitle: fallbackTitles[pIdx] || `현장 작업 사진 #${idx + 1}`,
-              aiAnalysis: fallbackContents[pIdx] || "소중한 고객님의 가구와 짐을 전문 자재로 꼼꼼하게 보양하여 안전하게 운송 작업을 진행했습니다.",
+              aiTitle: templates[pIdx][0],
+              aiAnalysis: templates[pIdx][1],
               isAnalyzed: false
             };
           });
@@ -637,14 +602,14 @@
         setImages(prev => prev.map(img => img.id === id ? { ...img, aiTitle: newTitle, aiAnalysis: newAnalysis } : img));
       };
 
-      // 1초 즉시 생성 (대기시간 0초)
+      // 1초 즉시 스마트 다이나믹 엔진 (SEO 최적화 & 인간 일기체 다채로운 변주)
       const runInstantSmartGeneration = () => {
-        runDynamicFallbackGeneration();
-        setCopyStatus(`⚡ [${moveType}] 특장점이 완벽 반영된 글이 1초 만에 완성되었습니다!`);
+        runDynamicHumanGeneration();
+        setCopyStatus(`⚡ [${moveType}] 네이버 SEO & 인간 일기체 글이 즉시 완성되었습니다!`);
         setTimeout(() => setCopyStatus(""), 4000);
       };
 
-      // AI Vision Analysis (gemini-3.8-flash 1순위 최적화)
+      // AI 비전 분석 (네이버 SEO + Anti-AI Detection + 사실 묘사 엄격 주입)
       const runAiAnalysisAndGeneration = async () => {
         if (images.length === 0) {
           alert("먼저 현장 사진을 1장 이상 등록해 주세요!");
@@ -655,10 +620,9 @@
         setApiErrorMessage("");
         setAnalysisProgress("사진 준비 중...");
 
-        const cfg = HOUSING_CONFIGS[housingType] || HOUSING_CONFIGS.apt;
-        const moveCfg = MOVE_CONFIGS[moveType] || MOVE_CONFIGS["반포장이사"];
-        const housingName = cfg?.name || "아파트";
+        const housingName = housingType === 'apt' ? '아파트' : housingType === 'oneroom' ? '원룸' : '투룸/빌라';
         const fromCity = (fromLocation || "").split(" ")[0] || "진주";
+        const fromDong = (fromLocation || "").split(" ")[1] || "가좌동";
         const toCity = (toLocation || "").split(" ")[0] || "타지역";
         const activeKey = cleanKey(apiKey);
 
@@ -666,8 +630,8 @@
           if (abortControllerRef.current) abortControllerRef.current.abort();
           setIsAnalyzing(false);
           setAnalysisProgress("");
-          setApiErrorMessage("구글 AI 응답 대기 시간이 초과되어 안전 템플릿으로 복구했습니다.");
-          runDynamicFallbackGeneration();
+          setApiErrorMessage("구글 AI 응답 대기 시간이 초과되어 안전하게 자동 생성으로 복구했습니다.");
+          runDynamicHumanGeneration();
         }, 120000);
 
         try {
@@ -680,21 +644,31 @@
 
             const partsList = [];
 
-            const promptIntro = `당신은 20년 경력의 베테랑 [${housingName} ${moveType}] 전문 이사 전문가이자 최고 수준의 마케터입니다.
-오늘 수행한 실제 작업은 [${moveType}] 방식입니다!
-★ ${moveType === "반포장이사" 
-  ? "반포장이사 핵심 강조: 큰 가구/가전(침대, 서랍장, 냉장고 등)은 기사님이 100% 분해/전용패킹/재조립 수평 세팅! 옷/책/소품 등 잔짐은 고객님이 프라이빗하게 직접 정리하여 이사 비용을 20~30% 절약하는 가성비 최고의 실속 플랜임을 본문과 제목에서 강력히 어필하세요!" 
-  : "포장이사 핵심 강조: 주방 식기 낱개 완충부터 의류 행거 수납, 바닥 스팀 청소, 피톤치드 살균 소독까지 손 하나 댈 필요 없는 100% 올인원 VIP 풀케어 명품 서비스임을 본문과 제목에서 강력히 어필하세요!"}
+            // ★★★ 핵심: 네이버 SEO + Anti-AI 인간 르포톤 엄격 프롬프트 ★★★
+            const promptIntro = `당신은 20년 현장 경력의 베테랑 진주 이사 소장님(업체명: ${companyName})입니다.
+직접 땀 흘려 작업한 현장 사진 총 ${images.length}장을 보며, 네이버 블로그에 올릴 솔직하고 신뢰감 넘치는 '현장 작업 일기'를 작성합니다.
 
-★ [절대 준수: 공간 분류 5대 원칙 - 거실 오인식 엄금]:
+★ [절대 금지: AI 번역투 및 상투적 표현 100% 배제 - AI 적발 차단]:
+- "~에 대해 알아보겠습니다", "~는 매우 중요한 단계입니다", "~완벽한 조화를 이룹니다", "~살펴보도록 하겠습니다" 같은 기계적인 설명 말투는 절대 쓰지 마세요.
+- 대신 20년 경력의 베테랑 소장님이 사모님, 고객님과 대화하듯 구수하고 다정하며 세심한 말투(~했지요, ~해 드렸답니다, ~하더라고요, ~체크했습니다)로 쓰세요.
+- 실제 작업자의 땀방울과 손길이 느껴지는 구체적인 작업 묘사를 넣으세요.
+
+★ [네이버 블로그 검색 최적화(SEO) 키워드 자연 분산]:
+- 주요 타겟 키워드: [${fromCity}이사], [${fromCity}${moveType}], [${fromDong} ${moveType}], [${buildingName}]
+- 키워드를 억지로 끼워 넣지 말고, 자연스러운 문장 속에 각각 3~5회 분산 배치하세요.
+
+★ [이사 방식 차별화 포인트 (${moveType})]:
+${moveType === "반포장이사" 
+  ? "- 반포장이사: 무거운 침대 프레임 분해/재조립, 매트리스 2중 방수 패킹, 대형 서랍장/가전 패킹은 기사님이 100% 전담하고, 잔짐은 고객님이 프라이빗하게 직접 정리해 이사 비용을 20~30% 아끼는 가성비 실속형임을 본문에서 자연스럽게 어필하세요." 
+  : "- 포장이사: 주방 이모님의 찬장 그릇 낱개 에어캡 완충, 구김 없는 의류 행거 박스 칼각 수납, 도착지 가구 레이저 수평 세팅, 고온 바닥 스팀 청소와 피톤치드 살균까지 손 하나 안 대는 100% 올인원 VIP 명품 케어임을 어필하세요."}
+
+★ [공간 및 사진 100% 팩트 묘사 규칙]:
 1. 싱글 침대, 벽면 책장과 많은 책, 컴퓨터 책상, 모니터 -> ⚠️ 무조건 '작은방/서재' (절대 거실 아님!)
 2. 퀸/킹/더블 침대, 원목 살대형 헤드보드, 화장대, 협탁 -> ⚠️ 무조건 '안방 침실' (절대 거실 아님!)
-3. 화이트 침대 프레임, 5단 와이드 원목 서랍장, 옷장, 이동식 행거 -> ⚠️ '침실 2 / 수납방'
-4. 소파, 대형 베란다 통창, 스탠드 에어컨, 거실 테이블이 있는 넓은 공용 공간만 '거실'
+3. 화이트 침대 프레임, 5단 서랍장, 옷장, 이동식 행거 -> ⚠️ '침실 2 / 수납방'
+4. 소파, 베란다 대형 통창, 거실 테이블이 있는 넓은 공용 공간만 '거실'
 5. 싱크대, 식탁, 밥솥, 식기류가 보이는 공간은 '주방 / 다이닝'
-
-★ [사물 묘사 지침]:
-각 사진 속에서 실제로 보이는 구체적 사물(가구 재질, 색상, 배치)과 전문가의 안심 포장 노하우를 블로그 독자가 한눈에 읽기 좋은 생생한 2~3문장으로 간결하고 전문성 있게 작성하세요.`;
+- 각 사진 속에서 실제로 보이는 가구의 색상, 재질, 소품들을 정확히 언급하며 2~3문장으로 사람 냄새 나게 서술하세요.`;
 
             partsList.push({ text: promptIntro });
 
@@ -702,7 +676,7 @@
               const comp = compressedResults[i];
               if (!comp || !comp.base64Data) continue;
               const selectedHint = SPACE_OPTIONS.find(s => s.id === images[i].spaceHint);
-              const hintStr = (images[i].spaceHint && images[i].spaceHint !== "auto") ? ` (지정: ${selectedHint?.label})` : "";
+              const hintStr = (images[i].spaceHint && images[i].spaceHint !== "auto") ? ` (공간 힌트: ${selectedHint?.label})` : "";
 
               partsList.push({
                 text: `\n[현장 사진 #${i + 1}번 실물]${hintStr}:`
@@ -717,21 +691,20 @@
 
             const promptJsonReq = `\n반드시 아래 JSON 형식으로만 응답하세요:
 {
-  "blogTitle": "[${fromCity} ${housingName} ${moveType}] ${fromLocation} ➔ ${toLocation} ${moveCfg.titleSuffix} (${truckSize})",
-  "blogIntro": "현장 도착 첫인상과 ${moveType} 방식을 선택해 주신 고객님 맞춤 작업 계획을 담은 3~4문장의 서론",
+  "blogTitle": "[${fromCity} ${moveType}] ${fromLocation} ➔ ${toLocation} ${housingName} 솔직 현장 후기 (${truckSize})",
+  "blogIntro": "현장 도착 첫인상과 고객님과의 따뜻한 소통, 오늘 ${moveType} 작업 방향을 담은 3~4문장의 사람 냄새 나는 서론",
   "photoAnalyses": [
     {
       "index": 1,
-      "title": "사진 1번의 정확한 공간명과 실제 사물을 포함한 제목",
-      "content": "사진 1번에서 실제로 보이는 공간과 사물을 묘사하고 ${moveType} 전용 포장 노하우를 담은 2~3문장의 상세 설명"
+      "title": "사진 1번의 공간명과 실제 물건을 명시한 현장감 넘치는 소제목",
+      "content": "사진 1번에서 실제로 보이는 공간과 사물을 바탕으로 베테랑의 포장 손길을 담은 2~3문장의 생생한 설명"
     }
   ],
-  "blogOutro": "도착지 가구 레이저 수평 세팅, 짐 정리, 바닥 스팀 청소 및 피톤치드 살균 소독 등 만족스러운 ${moveType} 마무리 후기",
-  "instaCaption": "인스타그램 감성의 이모지 가득한 ${moveType} 피드 본문 + ${housingName} 및 ${fromCity} 타깃 해시태그 15개 이상"
+  "blogOutro": "도착지 가구 레이저 수평 세팅, 짐 정리, 바닥 스팀 청소 및 피톤치드 살균 소독을 마친 뒤 고객님의 만족스러운 반응을 담은 3~4문장의 마무리",
+  "instaCaption": "인스타그램 감성의 생생한 피드 본문 + ${fromCity} 및 ${moveType} 타깃 해시태그 15개 이상"
 }`;
             partsList.push({ text: promptJsonReq });
 
-            // 구글 서버가 요구한 최신 gemini-3.8-flash 모델을 1순위로 배치
             const savedModel = safeStorage.get("gemini_active_model", "");
             const candidateModels = Array.from(new Set([
               savedModel,
@@ -748,7 +721,7 @@
             let elapsedSec = 0;
             const progressTimer = setInterval(() => {
               elapsedSec++;
-              setAnalysisProgress(`Google AI 최신 서버 정밀 판독 중... (${elapsedSec}초 경과)`);
+              setAnalysisProgress(`Google AI 정밀 판독 중... (${elapsedSec}초 경과)`);
             }, 1000);
 
             for (const modelName of candidateModels) {
@@ -768,7 +741,7 @@
                     contents: [{ parts: partsList }],
                     generationConfig: {
                       responseMimeType: "application/json",
-                      temperature: 0.2
+                      temperature: 0.35
                     }
                   })
                 });
@@ -783,7 +756,7 @@
                     signal: controller.signal,
                     body: JSON.stringify({
                       contents: [{ parts: partsList }],
-                      generationConfig: { temperature: 0.2 }
+                      generationConfig: { temperature: 0.35 }
                     })
                   });
                 }
@@ -812,9 +785,9 @@
 
             if (!res || !res.ok) {
               if (lastServerErr.includes("high demand") || lastServerErr.includes("RESOURCE_EXHAUSTED") || lastServerErr.includes("503")) {
-                setApiErrorMessage(`구글 본사 서버 일시 혼잡(High Demand) 감지: 구글 서버에 트래픽이 몰려 대기 시간을 방지하고자 [${moveType}] 완성본으로 즉시 자동 생성되었습니다.`);
-                runDynamicFallbackGeneration();
-                setCopyStatus(`⚡ [${moveType}] 맞춤 완성본이 즉시 생성되었습니다!`);
+                setApiErrorMessage(`구글 본사 서버 일시 혼잡 감지: 대기 시간 없이 즉시 발행하실 수 있도록 [${moveType}] SEO 최적화 맞춤 글로 자동 전환했습니다.`);
+                runDynamicHumanGeneration();
+                setCopyStatus(`⚡ [${moveType}] SEO 맞춤 글이 완성되었습니다!`);
                 setTimeout(() => setCopyStatus(""), 5000);
                 return;
               }
@@ -831,7 +804,7 @@
             }
             const parsed = JSON.parse(rawJson);
 
-            setBlogTitle(parsed.blogTitle || `[${fromCity} ${housingName} ${moveType}] ${fromLocation} ➔ ${toLocation} ${moveCfg.titleSuffix}`);
+            setBlogTitle(parsed.blogTitle || `[${fromCity} ${moveType}] ${fromLocation} ➔ ${toLocation} 솔직 후기`);
             setBlogIntro(parsed.blogIntro || "");
             setBlogOutro(parsed.blogOutro || "");
             setInstaCaption(parsed.instaCaption || "");
@@ -849,10 +822,10 @@
               return img;
             }));
 
-            setCopyStatus(`Google AI(${usedModel})가 [${moveType}] 맞춤 판독을 ${elapsedSec}초 만에 완료했습니다!`);
+            setCopyStatus(`Google AI(${usedModel})가 [${moveType}] SEO 맞춤 분석을 ${elapsedSec}초 만에 완료했습니다!`);
             setTimeout(() => setCopyStatus(""), 5000);
           } else {
-            runDynamicFallbackGeneration();
+            runDynamicHumanGeneration();
             setCopyStatus(`[${moveType}] 전용 스마트 마케팅 글이 즉시 생성되었습니다!`);
             setTimeout(() => setCopyStatus(""), 5000);
           }
@@ -863,7 +836,7 @@
             userErrMsg = "사용자가 취소했거나 구글 AI 응답 대기 시간이 초과되었습니다.";
           }
           setApiErrorMessage(`구글 서버 안내: ${userErrMsg}`);
-          runDynamicFallbackGeneration();
+          runDynamicHumanGeneration();
         } finally {
           clearTimeout(safetyTimer);
           setIsAnalyzing(false);
@@ -871,53 +844,50 @@
         }
       };
 
-      // Fallback Engine
-      const runDynamicFallbackGeneration = () => {
-        const cfg = HOUSING_CONFIGS[housingType] || HOUSING_CONFIGS.apt;
-        const moveCfg = MOVE_CONFIGS[moveType] || MOVE_CONFIGS["반포장이사"];
-        const housingName = cfg?.name || "아파트";
+      // 매번 달라지는 인간 일기체 & 네이버 SEO 맞춤 생성 엔진
+      const runDynamicHumanGeneration = () => {
+        const housingName = housingType === 'apt' ? '아파트' : housingType === 'oneroom' ? '원룸' : '투룸/빌라';
         const fromCity = (fromLocation || "").split(" ")[0] || "진주";
+        const fromDong = (fromLocation || "").split(" ")[1] || "가좌동";
         const toCity = (toLocation || "").split(" ")[0] || "타지역";
 
-        const generatedTitle = `[${fromCity} ${housingName} ${moveType}] ${fromLocation} ➔ ${toLocation} ${moveCfg.titleSuffix} (${truckSize})`;
+        // SEO 최적화 제목: [지역 + 동 + 이사종류] 클릭을 부르는 후킹 구조
+        const titleTemplates = [
+          `[${fromCity} ${moveType}] ${fromDong} ${buildingName} ➔ ${toCity} 솔직 현장 후기 (${truckSize})`,
+          `[${fromCity}${moveType}] ${buildingName}에서 시작된 ${housingName} 이삿날! 꼼꼼한 포장부터 피톤치드까지`,
+          `[${fromCity} ${fromDong} 이사] ${buildingName} ${moveType} 현장 실황! 큰 짐 케어부터 수평 세팅까지`
+        ];
+        const selectedTitle = titleTemplates[Math.floor(Math.random() * titleTemplates.length)];
 
-        let generatedIntro = "";
-        if (moveType === "반포장이사") {
-          generatedIntro = `안녕하세요! 소중한 고객님의 새로운 시작을 내 가족의 일처럼 꼼꼼하고 알뜰하게 옮겨드리는 ${companyName}입니다.\n오늘은 ${fromLocation}에서 ${toLocation}으로 향하는 ${housingName} 고객님의 [알뜰 실속 반포장이사] 현장 실황을 전해드립니다.\n고객님께서는 이사 비용을 합리적으로 절감하면서도, 혼자서는 옮기기 힘든 무거운 침대 프레임과 대형 가전가구의 안전한 운송을 원하셔서 가성비 최고의 반포장 플랜을 선택해 주셨습니다. 큰 짐은 저희 베테랑 팀이 100% 전담하여 분해·포장·조립해 드리고, 소소한 잔짐은 고객님이 원하시는 위치에 프라이빗하게 정리하실 수 있도록 깔끔하게 마친 생생한 현장을 공개합니다!`;
-        } else if (moveType === "포장이사") {
-          generatedIntro = `안녕하세요! 소중한 고객님의 보금자리를 처음부터 끝까지 손 하나 까딱할 필요 없이 완벽하게 옮겨드리는 ${companyName}입니다.\n오늘은 ${fromLocation}에서 ${toLocation}으로 향하는 ${housingName} 세대의 [100% 올인원 프리미엄 포장이사] 현장 후기를 소개해 드립니다.\n대형 아파트 및 가족 이사는 가구와 가전의 부피가 크고 주방 식기류의 양이 방대하기 때문에 전문 포장 기술과 정리 수납 노하우가 필수입니다. 고객님께서 이사 당일 편안하게 휴식을 취하실 수 있도록 바닥 안심 보양부터 주방 식기 낱개 완충, 의류 행거 수납, 가구 레이저 수평 세팅, 바닥 고온 스팀 청소와 피톤치드 살균 소독까지 VIP 풀케어로 책임져 드렸습니다!`;
-        } else {
-          generatedIntro = `안녕하세요! 믿고 맡길 수 있는 정직한 이사 파트너 ${companyName}입니다.\n오늘은 ${fromLocation}에서 ${toLocation}으로 향하는 ${housingName} 고객님의 [${moveType}] 현장을 전해드립니다. 안전한 차량 적재와 단단한 결속 운행으로 소중한 짐을 흠집 없이 안전하게 운송해 드렸습니다.`;
-        }
+        // 무작위 인트로 선택 (매번 다른 스토리텔링)
+        const introFn = HUMAN_STORY_VARIATIONS.intros[Math.floor(Math.random() * HUMAN_STORY_VARIATIONS.intros.length)];
+        const generatedIntro = introFn(companyName, fromLocation, toLocation, moveType, roomSize);
 
-        let generatedOutro = "";
-        if (moveType === "반포장이사") {
-          generatedOutro = `새 보금자리에 도착하여 고객님이 지정하신 방 위치에 침대 프레임을 튼튼하게 재조립하고, 정밀 레이저 수평계로 서랍장과 대형 가구의 균형을 완벽히 맞췄습니다.\n잔짐 박스들은 고객님께서 편리하게 정리하실 수 있도록 각 방으로 안전하게 하차 인계해 드렸으며, 바닥 스팀 청소와 피톤치드 살균 소독으로 쾌적하게 마무리했습니다.\n\n"무거운 가구는 기사님이 척척 조립해 주시고, 잔짐은 제 취향대로 여유롭게 정리할 수 있어서 이사 비용도 아끼고 너무 만족스러워요!"라며 웃어주신 고객님의 따뜻한 말씀 덕분에 보람찬 하루였습니다.\n${companyName}은 알뜰한 비용과 확실한 안전을 약속드립니다.`;
-        } else {
-          generatedOutro = `도착지에서도 가장 먼저 바닥 보양판을 깐 뒤 가구를 안전하게 올렸습니다. 정밀 레이저 수평계로 침대와 서랍장 수평을 완벽하게 맞추고, 주방 상·하부장 그릇들은 고객님의 주방 동선에 맞춰 꺼내 쓰기 쉽게 칼각 정리해 드렸습니다.\n작업이 끝난 뒤에는 바닥 고온 스팀 청소기로 먼지를 말끔히 제거하고, 집안 전체에 피톤치드 항균 연무 소독을 진행하여 새집증후군 걱정 없는 쾌적한 첫날밤을 선물해 드렸습니다.\n\n처음부터 끝까지 손 하나 대지 않고 편안하게 입주하실 수 있는 명품 포장이사, ${companyName}이 확실하게 책임지겠습니다.`;
-        }
+        // 아웃트로 선택
+        const outroFn = HUMAN_STORY_VARIATIONS.outros[Math.floor(Math.random() * HUMAN_STORY_VARIATIONS.outros.length)];
+        const generatedOutro = outroFn(companyName, moveType);
 
-        setBlogTitle(generatedTitle);
+        setBlogTitle(selectedTitle);
         setBlogIntro(generatedIntro);
         setBlogOutro(generatedOutro);
 
-        const fallbackTitles = cfg?.fallbackTitles || [];
-        const fallbackContents = cfg?.fallbackContents || [];
-
+        const templates = HUMAN_STORY_VARIATIONS.photoTemplates;
         setImages(prev => prev.map((img, idx) => {
-          const tIdx = fallbackTitles.length > 0 ? idx % fallbackTitles.length : 0;
+          const tIdx = idx % templates.length;
           return {
             ...img,
-            aiTitle: fallbackTitles[tIdx] || `현장 작업 사진 #${idx + 1}`,
-            aiAnalysis: fallbackContents[tIdx] || "전문 이사팀이 정성스럽게 포장하여 안전하게 운송 작업을 진행했습니다.",
+            aiTitle: templates[tIdx][0],
+            aiAnalysis: templates[tIdx][1],
             isAnalyzed: true
           };
         }));
 
+        // 인스타그램 캡션
+        const moveCfg = MOVE_CONFIGS[moveType] || MOVE_CONFIGS["반포장이사"];
         if (moveType === "반포장이사") {
-          setInstaCaption(`🚚 [${fromCity} 반포장이사] ${fromLocation} ➔ ${toLocation} 알뜰 실속 후기! 💰\n\n"이사 비용은 20~30% 알뜰하게 아끼고, 무거운 침대와 가구는 전문가가 100% 안심 케어!" 🙌\n\n포장이사 견적이 부담스러우셨던 스마트 실속파 고객님을 위해\n가성비와 안전을 모두 잡은 [반포장이사]로 완벽하게 마쳤습니다! ✨\n\n📍 작업지: ${fromLocation} ➔ ${toLocation}\n📦 주거형태: ${roomSize}\n🚛 이사유형: 알뜰 실속 반포장이사 (${truckSize})\n\n🛠 [오늘의 반포장이사 안심 포인트]\n• 무거운 침대 프레임 분해/재조립 기사님 100% 전담 🛏\n• 매트리스 위생 비닐 + 방수 전용 커버 2중 안심 패킹 🛡\n• 대형 서랍장·가전제품 전용 퀼팅 보호 패드 밀착 결속 🛋\n• 옷걸이 채로 담는 전용 행거 박스 및 튼튼한 단프라 박스 지원 👔\n• 도착지 가구 정밀 수평 세팅 및 잔짐 각 방 안전 하차 📐\n• 피톤치드 항균 탈취 분사로 쾌적한 첫날 마무리 🌿\n\n💡 무거운 가구는 전문가에게 맡기고, 잔짐은 내 손으로 프라이빗하게 정리하여 이사 비용 대폭 절약!\n\n📞 친절 견적 상담: ${phone} / ${localTel}\n💬 카카오톡 문의: ${kakao}\n📍 ${fromCity} 전 지역 및 ${toCity} 등 전국 시외 장거리 무료 방문 견적!\n\n.\n.\n${moveCfg.hashtags.join(" ")} #${fromCity}이사잘하는곳 #내집처럼안전하게`);
+          setInstaCaption(`🚚 [${fromCity} 반포장이사] ${fromDong} ${buildingName} ➔ ${toCity} 솔직 현장 일기! 💰\n\n"비용은 20~30% 알뜰하게 절약하고, 무거운 침대와 가전은 20년 베테랑 기사님이 100% 안심 케어!" 🙌\n\n이사 비용 부담을 덜고 싶으셨던 고객님을 위해\n안전과 가성비를 모두 잡은 [반포장이사]로 완벽하게 마쳤습니다! ✨\n\n📍 현장 코스: ${fromLocation} ➔ ${toLocation}\n📦 주거 평형: ${roomSize}\n🚛 투입 차량: ${truckSize}\n\n🛠 [오늘의 안심 작업 포인트]\n• 침대 프레임 분해/재조립 기사님 100% 전담 🛏\n• 매트리스 위생 비닐 + 방수 누빔 커버 2중 안심 패킹 🛡\n• 대형 서랍장 특수 밴딩 & 퀼팅 보호 패드 결속 🛋\n• 옷걸이 채로 담는 전용 행거 박스 & 단프라 박스 지원 👔\n• 새집 가구 레이저 수평 세팅 & 잔짐 각 방 안전 하차 📐\n• 피톤치드 살균 연무 소독으로 상쾌한 마무리 🌿\n\n💡 무거운 큰 짐은 전문가가 척척! 잔짐은 내 손으로 여유롭게 정리하는 알뜰 플랜!\n\n📞 친절 무료 견적: ${phone} / ${localTel}\n💬 카카오톡 상담: ${kakao}\n📍 ${fromCity} 전 지역 및 ${toCity} 등 전국 장거리 이사 무료 출장 상담!\n\n.\n.\n${moveCfg.hashtags.join(" ")} #${fromCity}이사 #${fromCity}이사잘하는곳 #내집처럼안전하게`);
         } else {
-          setInstaCaption(`🚚 [${fromCity} 포장이사] ${fromLocation} ➔ ${toLocation} VIP 프리미엄 풀케어 후기! ✨\n\n"처음부터 끝까지 손 하나 까딱할 필요 없는 100% 명품 올인원 포장이사!" 🙌\n\n소중한 우리 가족의 보금자리,\n바닥 안심 보양부터 주방 식기 낱개 포장,\n도착지 레이저 수평 세팅과 피톤치드 살균 소독까지\n[${companyName}]이 완벽하게 책임졌습니다! 🛡️\n\n📍 작업지: ${fromLocation} ➔ ${toLocation}\n📦 주거형태: ${roomSize}\n🚛 이사유형: 100% 올인원 프리미엄 포장이사 (${truckSize})\n\n🛠 [오늘의 VIP 프리미엄 케어 포인트]\n• 엘리베이터 및 실내 복도 바닥 안심 PP 보양판 시공 🛡\n• 주방 이모님의 도자기·유리 식기류 에어캡 낱개 완충 포장 🍽\n• 냉장고 신선 식품 전용 아이스박스 냉매 포장 ❄️\n• 침대 매트리스 항균 비닐 밀봉 + 퀼팅 방수 커버 2중 패킹 🛏\n• 정장·원피스 구김 방지 전용 행거 박스 칼각 수납 👔\n• 도착지 가구 정밀 레이저 수평 세팅 & 옷장/주방 완벽 정리 📐\n• 고온 바닥 스팀 살균 청소 & 집안 전체 피톤치드 연무 시공 🌿\n\n💡 이사 당일 바로 식사하시고 편히 쉬실 수 있도록 완벽하게 마감해 드립니다!\n\n📞 친절 견적 상담: ${phone} / ${localTel}\n💬 카카오톡 문의: ${kakao}\n📍 ${fromCity} 전 지역 및 ${toCity} 등 전국 타지역 아파트 무료 방문 견적!\n\n.\n.\n${moveCfg.hashtags.join(" ")} #${fromCity}이사잘하는곳 #사다리차이사 #내집처럼안전하게`);
+          setInstaCaption(`🚚 [${fromCity} 포장이사] ${fromDong} ${buildingName} ➔ ${toCity} 100% VIP 올인원 후기! ✨\n\n"처음부터 끝까지 손 하나 까딱할 필요 없는 명품 풀케어 포장이사!" 🙌\n\n소중한 우리 가족의 보금자리,\n바닥 안심 보양부터 주방 식기 낱개 완충,\n도착지 레이저 수평 세팅과 피톤치드 살균 소독까지\n[${companyName}]이 완벽하게 책임졌습니다! 🛡️\n\n📍 작업 코스: ${fromLocation} ➔ ${toLocation}\n📦 주거 평형: ${roomSize}\n🚛 투입 차량: ${truckSize}\n\n🛠 [오늘의 VIP 프리미엄 케어 포인트]\n• 복도 및 실내 바닥 PP 안심 보양판 시공 🛡\n• 주방 이모님의 도자기·유리 식기류 낱개 에어캡 완충 포장 🍽\n• 냉장고 신선 식품 전용 아이스박스 냉매 포장 ❄️\n• 침대 매트리스 항균 비닐 + 방수 퀼팅 커버 2중 패킹 🛏\n• 정장·원피스 구김 방지 전용 행거 박스 칼각 수납 👔\n• 도착지 가구 정밀 레이저 수평 세팅 & 옷장/주방 완벽 정리 📐\n• 고온 바닥 스팀 청소 & 집안 전체 피톤치드 살균 소독 🌿\n\n💡 이사 당일 저녁 곧바로 편안하게 일상생활을 시작하세요!\n\n📞 친절 무료 견적: ${phone} / ${localTel}\n💬 카카오톡 상담: ${kakao}\n📍 ${fromCity} 전 지역 및 전국 시외 장거리 아파트 이사 무료 방문 견적!\n\n.\n.\n${moveCfg.hashtags.join(" ")} #${fromCity}이사 #${fromCity}포장이사추천 #사다리차이사 #내집처럼안전하게`);
         }
       };
 
@@ -947,7 +917,6 @@
         setTimeout(() => setCopyStatus(""), 4000);
       };
 
-      const cfg = HOUSING_CONFIGS[housingType] || HOUSING_CONFIGS.apt;
       const moveCfg = MOVE_CONFIGS[moveType] || MOVE_CONFIGS["반포장이사"];
       const isKeySaved = Boolean(cleanKey(apiKey).length > 20);
 
@@ -963,15 +932,15 @@
             <div>
               <div className="flex items-center gap-2">
                 <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white text-xs font-black px-3 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                  AI VISION V4.5 OFFICIAL
+                  NAVER SEO & ANTI-AI V5.0
                 </span>
-                <span className="text-slate-500 text-xs font-bold">gemini-3.8-flash 지원 & 반포장·포장 특장점 자동 반영</span>
+                <span className="text-slate-500 text-xs font-bold">인간 일기체 르포톤 • 네이버 스마트에디터 ONE 서식 최적화</span>
               </div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-900 mt-1 tracking-tight">
                 🚚 갑봉이 AI 이사 마케팅 자동 생성기
               </h1>
               <p className="text-slate-600 text-xs md:text-sm mt-0.5">
-                반포장이사와 포장이사의 차별화된 매력을 강조하고, 공간 오인식 없이 실물 사진을 초고속 판독합니다.
+                기계적인 AI 티를 100% 걷어내고, 20년 베테랑 소장님의 손길과 사진 속 상황을 네이버 검색 상위에 맞게 풀어냅니다.
               </p>
             </div>
 
@@ -997,7 +966,7 @@
                     {isKeySaved ? (
                       <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
                         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        키 저장됨 (gemini-3.8-flash 준비)
+                        키 저장됨 (gemini-3.8-flash 활성)
                       </span>
                     ) : (
                       <span className="bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
@@ -1007,7 +976,7 @@
                     )}
                   </div>
                   <p className="text-xs text-indigo-200 mt-0.5">
-                    키를 입력하고 <strong>[💾 즉시 저장]</strong>을 누르시면 브라우저에 안전하게 보존됩니다. (키 없이도 1초 즉시 생성 가능)
+                    키를 입력하고 <strong>[💾 즉시 저장]</strong>을 누르시면 브라우저에 안전하게 보존됩니다. (키 없이도 1초 즉시 생성 작동)
                   </p>
                 </div>
               </div>
@@ -1119,7 +1088,7 @@
                       1단계: 주거 형태 선택
                     </h2>
                     <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
-                      현재: {cfg?.name || "아파트"}
+                      현재: {housingType === 'apt' ? '아파트' : housingType === 'oneroom' ? '원룸' : '투룸/빌라'}
                     </span>
                   </div>
 
@@ -1348,7 +1317,7 @@
                 >
                   <div className="text-3xl mb-1 group-hover:scale-110 transition-transform">📸</div>
                   <p className="text-xs font-bold text-slate-700">
-                    {isDragging ? "여기에 사진을 놓으세요!" : `[${cfg?.name || "아파트"}] 현장 사진들을 클릭하거나 끌어다 넣으세요`}
+                    {isDragging ? "여기에 사진을 놓으세요!" : `현장 사진들을 클릭하거나 끌어다 넣으세요`}
                   </p>
                   <p className="text-[11px] text-slate-400 mt-0.5">스마트폰 촬영 원본(거실, 침실, 주방 등)을 자유롭게 여러 장 올릴 수 있습니다.</p>
                 </div>
@@ -1362,7 +1331,7 @@
                         className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-black text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2"
                       >
                         <span>⚡</span>
-                        <span>[대기시간 0초] {moveType} 맞춤 글 즉시 생성하기</span>
+                        <span>[대기시간 0초] {moveType} 인간 일기체 글 즉시 생성</span>
                       </button>
 
                       <div className="flex gap-2">
@@ -1509,7 +1478,7 @@
                       activeTab === 'blog' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <span>📝</span> 네이버 블로그 글
+                    <span>📝</span> 네이버 블로그 글 (SEO)
                   </button>
                   <button
                     type="button"
@@ -1543,12 +1512,13 @@
                 </div>
               </div>
 
-              {/* TAB 1: BLOG PREVIEW */}
+              {/* TAB 1: BLOG PREVIEW (네이버 스마트에디터 ONE 서식 & SEO 최적화) */}
               {activeTab === 'blog' && (
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                   <div className="p-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs">
-                    <span className="font-bold text-slate-700">
-                      [{cfg?.name || "아파트"} • {moveType}] 네이버 블로그 복사용 레이아웃
+                    <span className="font-bold text-slate-700 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      [{cityPrefix} • {moveType}] 네이버 블로그 스마트에디터 ONE 복사용 양식
                     </span>
                     <span className="text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded-full">
                       사진 {images.length}장 포함
@@ -1556,14 +1526,16 @@
                   </div>
 
                   <div id="blog-copy-area" className="p-6 md:p-8 space-y-6 text-slate-800 leading-relaxed text-sm">
+                    
+                    {/* 네이버 SEO 최적화 메인 타이틀 */}
                     <div className="border-b-2 border-blue-600 pb-4">
                       <h1 className="text-lg md:text-2xl font-extrabold text-slate-900 leading-snug">
-                        {blogTitle || `[${cityPrefix} ${cfg?.name || "아파트"} ${moveType}] ${fromLocation} ➔ ${toLocation} ${moveCfg?.titleSuffix || "완벽 후기"}`}
+                        {blogTitle || `[${cityPrefix} ${moveType}] ${fromLocation} ➔ ${toLocation} 솔직 현장 후기 (${truckSize})`}
                       </h1>
                       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 mt-2 font-medium">
                         <span>작성: {companyName}</span>
                         <span>•</span>
-                        <span>유형: {cfg?.name || "아파트"} {moveType}</span>
+                        <span>유형: {moveType}</span>
                         <span>•</span>
                         <span>출발: {fromLocation}</span>
                         <span>•</span>
@@ -1571,19 +1543,21 @@
                       </div>
                     </div>
 
-                    <div className="space-y-3 text-slate-700 text-sm md:text-base leading-relaxed whitespace-pre-line">
-                      {blogIntro || `안녕하세요! 소중한 고객님의 보금자리를 내 집처럼 안전하고 깔끔하게 옮겨드리는 ${companyName}입니다.\n오늘은 ${fromLocation}에서 ${toLocation}으로 향하는 ${cfg?.name || "아파트"} 고객님의 [${moveType}] 현장을 전해드립니다.`}
+                    {/* 네이버 인용구 스타일 인트로 */}
+                    <div className="p-4 md:p-5 rounded-xl bg-slate-50 border-l-4 border-blue-600 text-slate-700 text-sm md:text-base leading-relaxed whitespace-pre-line italic">
+                      {blogIntro || `안녕하세요! 20년 현장 경력으로 고객님의 살림살이를 내 가족의 물건처럼 정성껏 옮겨드리는 ${companyName}입니다.\n오늘은 ${fromLocation}에서 ${toLocation}으로 향하는 ${moveType} 현장 실황을 전해드립니다.`}
                     </div>
 
+                    {/* 이사 작업 개요 박스 */}
                     <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs md:text-sm space-y-1.5">
-                      <div className="font-bold text-slate-900 mb-1">📋 오늘의 이사 작업 개요</div>
-                      <div>• <strong>주거 형태:</strong> {cfg?.name || "아파트"} ({roomSize})</div>
+                      <div className="font-bold text-slate-900 mb-1">📋 오늘의 현장 작업 개요</div>
+                      <div>• <strong>주거 형태:</strong> {housingType === 'apt' ? '아파트' : housingType === 'oneroom' ? '원룸' : '투룸/빌라'} ({roomSize})</div>
                       <div>• <strong>출발지:</strong> {fromLocation} ({buildingName})</div>
                       <div>• <strong>도착지:</strong> {toLocation}</div>
                       <div>• <strong>작업 플랜:</strong> <span className="font-bold text-indigo-700">{moveType}</span> ({truckSize})</div>
                     </div>
 
-                    {/* ENRICHED SERVICE GUIDE & FEATURE HIGHLIGHT */}
+                    {/* 반포장 vs 포장 이사 특장점 안내 섹션 */}
                     <div className={`p-5 rounded-xl border space-y-3 ${
                       moveType === '반포장이사'
                         ? 'bg-amber-50/70 border-amber-200 text-amber-950'
@@ -1599,7 +1573,7 @@
                         {moveCfg?.guideContent}
                       </p>
                       <div className="pt-2 border-t border-black/10 space-y-1.5 text-xs md:text-sm">
-                        <div className="font-bold mb-1">🔍 {companyName}만의 [{moveType}] 4대 핵심 서비스:</div>
+                        <div className="font-bold mb-1">🔍 {companyName}만의 [{moveType}] 안심 서비스 체크포인트:</div>
                         {(moveCfg?.pros || []).map((pro, pIdx) => (
                           <div key={pIdx} className="flex items-start gap-1.5">
                             <span className="text-indigo-600 font-bold">✔</span>
@@ -1609,7 +1583,7 @@
                       </div>
                     </div>
 
-                    {/* Dynamic Image Sections */}
+                    {/* 사진별 1:1 현장 일기 섹션 */}
                     {images.length === 0 ? (
                       <div className="p-6 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs md:text-sm">
                         💡 <strong>안내:</strong> 왼쪽에서 현장 사진을 올린 뒤 <strong>[1초 즉시 생성]</strong> 또는 <strong>[AI 정밀 판독]</strong>을 누르시면 사진과 캡션이 자동으로 멋지게 배치됩니다!
@@ -1641,20 +1615,21 @@
                       </div>
                     )}
 
-                    {/* Blog Outro */}
+                    {/* 블로그 아웃트로 */}
                     <div className="bg-slate-50 border border-slate-200 p-4 md:p-5 rounded-xl space-y-2 text-xs md:text-sm">
-                      <h4 className="font-bold text-slate-900">
-                        ✨ 도착지 가구 세팅 및 피톤치드 살균 소독 마무리
+                      <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                        <span>✨</span>
+                        <span>새 보금자리 도착 및 피톤치드 살균 마무리</span>
                       </h4>
-                      <p className="text-slate-700 whitespace-pre-line">
+                      <p className="text-slate-700 whitespace-pre-line leading-relaxed">
                         {blogOutro || `새 보금자리에 도착하여 고객님이 지정하신 위치에 가구를 반듯하게 수평 세팅하고 짐을 정돈해 드렸습니다. 바닥 고온 스팀 청소와 집안 전체 피톤치드 살균 소독으로 쾌적하게 마무리했습니다.`}
                       </p>
                     </div>
 
-                    {/* Contact Box */}
+                    {/* 신뢰도 높은 네이버 블로그 견적 문의 박스 */}
                     <div className="p-5 rounded-xl bg-blue-50 border border-blue-200 text-slate-800 space-y-2">
                       <h4 className="font-black text-blue-900 text-sm md:text-base">
-                        📞 {cityPrefix} {moveType} 무료 방문 견적 문의
+                        📞 {cityPrefix} {moveType} 친절 방문 견적 문의
                       </h4>
                       <div className="text-xs md:text-sm text-blue-800 space-y-1">
                         <div>• <strong>업체명:</strong> {companyName}</div>
@@ -1664,8 +1639,9 @@
                       </div>
                     </div>
 
+                    {/* 네이버 SEO 태그 */}
                     <div className="text-[11px] text-slate-400 font-medium pt-2">
-                      {(moveCfg?.hashtags || []).join(" ")} #{cityPrefix}이사 #{String(buildingName || "").replace(/\s+/g, '')} #{cfg?.name || "아파트"}이사 #이사잘하는곳
+                      {(moveCfg?.hashtags || []).join(" ")} #{cityPrefix}이사 #{String(buildingName || "").replace(/\s+/g, '')} #이사잘하는곳 #내집처럼안전하게
                     </div>
                   </div>
                 </div>
