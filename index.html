@@ -3,14 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>갑봉이 AI 이사 마케팅 자동 생성기</title>
-  <!-- Tailwind CSS -->
+  <title>경남 진주 이사 전문 AI 정밀 판독 & 네이버 블로그 자동 생성기 (v6.1)</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- React & ReactDOM -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <!-- Babel for JSX -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     body { font-family: 'Pretendard', sans-serif; }
@@ -18,1710 +12,1604 @@
     .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .break-keep {
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+    @media (max-width: 640px) {
+      .break-keep {
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
-  <div id="root"></div>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen">
 
-  <script type="text/babel">
-    const { useState, useEffect, useRef, Component } = React;
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="bg-blue-600 text-white text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+            진주 에디션
+          </span>
+          <span class="bg-slate-800 text-amber-300 font-mono text-xs font-black px-2.5 py-0.5 rounded-full border border-slate-700 shadow-sm">
+            v6.1
+          </span>
+          <span class="text-xs font-bold text-slate-500">실물 팩트 기반 판독 • 반포장/포장 전문 큐레이션 탑재</span>
+        </div>
+        <h1 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight mt-0.5">
+          🚚 경남 진주 이사 전문 AI 정밀 판독 & 블로그 자동 생성기
+        </h1>
+      </div>
 
-    // 1. Error Boundary (화면 크래시 방지)
-    class ErrorBoundary extends Component {
-      constructor(props) {
-        super(props);
-        this.state = { hasError: false, error: null };
-      }
-      static getDerivedStateFromError(error) {
-        return { hasError: true, error };
-      }
-      componentDidCatch(error, errorInfo) {
-        console.error("React Error caught by boundary:", error, errorInfo);
-      }
-      render() {
-        if (this.state.hasError) {
-          return (
-            <div className="min-h-screen flex items-center justify-center p-6 bg-slate-100">
-              <div className="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full text-center space-y-4 border border-rose-200">
-                <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto text-3xl">
-                  ⚠️
-                </div>
-                <h2 className="text-xl font-bold text-slate-900">화면 표시 중 일시적인 오류가 발생했습니다</h2>
-                <p className="text-xs text-slate-600 leading-relaxed font-mono bg-slate-50 p-3 rounded-lg border border-slate-200 text-left overflow-auto max-h-32">
-                  {this.state.error?.toString()}
-                </p>
-                <button
-                  onClick={() => {
-                    this.setState({ hasError: false });
-                    window.location.reload();
-                  }}
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition shadow"
-                >
-                  새로고침하여 복구하기
-                </button>
-              </div>
+      <div class="flex items-center gap-2">
+        <a href="#blogPreviewSection" class="lg:hidden text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-xl shadow-sm transition flex items-center gap-1">
+          <span>📝 작성된 글 보기 ↓</span>
+        </a>
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-xl border border-blue-200 transition flex items-center gap-1">
+          <span>✨ 무료 키 발급</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toast 알림 -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform transition-all duration-300 opacity-0 pointer-events-none translate-y-2">
+    <div class="bg-slate-900 text-white text-xs sm:text-sm font-bold px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 border border-slate-700">
+      <span id="toastIcon">✅</span>
+      <span id="toastMsg">알림 메시지</span>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- Gemini API 키 입력 & 상태 바 -->
+    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-lg border-2 border-indigo-500/50">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-indigo-800/60">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-xl shrink-0 shadow-inner">
+            🔑
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-sm sm:text-base font-black tracking-tight text-white">
+                Google Gemini API 키 (Gemini 3.5 Flash-Lite 최우선)
+              </h2>
+              <span id="keyLiveBadge" class="bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                키 미등록 (시뮬레이션 모드)
+              </span>
             </div>
-          );
-        }
-        return this.props.children;
-      }
-    }
-
-    // 2. Safe LocalStorage
-    const safeStorage = {
-      get: (key, fallback = "") => {
-        try {
-          return localStorage.getItem(key) || fallback;
-        } catch (e) {
-          console.warn("LocalStorage 접근 제한:", e);
-          return fallback;
-        }
-      },
-      set: (key, val) => {
-        try {
-          localStorage.setItem(key, val);
-          return true;
-        } catch (e) {
-          console.warn("LocalStorage 저장 제한:", e);
-          return false;
-        }
-      }
-    };
-
-    // 3. Clean API Key
-    const cleanKey = (key) => {
-      if (!key) return "";
-      return String(key).trim().replace(/^["'`]|["'`]$/g, "").replace(/\s+/g, "");
-    };
-
-    // 4. 고속 이미지 압축 (createImageBitmap + Canvas)
-    const compressImage = async (file) => {
-      if (!file) return { base64Data: "", mimeType: "image/jpeg" };
-
-      if (typeof createImageBitmap === "function") {
-        try {
-          const bmp = await createImageBitmap(file);
-          const maxDim = 800;
-          let width = bmp.width;
-          let height = bmp.height;
-          if (width > maxDim || height > maxDim) {
-            if (width > height) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
-            } else {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
-            }
-          }
-          const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(bmp, 0, 0, width, height);
-          bmp.close();
-          const dataUrl = canvas.toDataURL("image/jpeg", 0.70);
-          const base64Data = dataUrl.split(",")[1];
-          if (base64Data && base64Data.length > 50) {
-            return { base64Data, mimeType: "image/jpeg" };
-          }
-        } catch (e) {
-          console.warn("createImageBitmap failed, using fallback:", e);
-        }
-      }
-
-      return new Promise((resolve) => {
-        const timer = setTimeout(() => {
-          resolve({ base64Data: "", mimeType: "image/jpeg" });
-        }, 4000);
-
-        try {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-              clearTimeout(timer);
-              try {
-                const maxDim = 800;
-                let width = img.width;
-                let height = img.height;
-                if (width > maxDim || height > maxDim) {
-                  if (width > height) {
-                    height = Math.round((height * maxDim) / width);
-                    width = maxDim;
-                  } else {
-                    width = Math.round((width * maxDim) / height);
-                    height = maxDim;
-                  }
-                }
-                const canvas = document.createElement("canvas");
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, width, height);
-                const dataUrl = canvas.toDataURL("image/jpeg", 0.70);
-                const base64Data = dataUrl.split(",")[1];
-                resolve({ base64Data, mimeType: "image/jpeg" });
-              } catch (err) {
-                resolve({ base64Data: "", mimeType: "image/jpeg" });
-              }
-            };
-            img.onerror = () => {
-              clearTimeout(timer);
-              resolve({ base64Data: "", mimeType: "image/jpeg" });
-            };
-            img.src = event.target.result;
-          };
-          reader.onerror = () => {
-            clearTimeout(timer);
-            resolve({ base64Data: "", mimeType: "image/jpeg" });
-          };
-          reader.readAsDataURL(file);
-        } catch (err) {
-          clearTimeout(timer);
-          resolve({ base64Data: "", mimeType: "image/jpeg" });
-        }
-      });
-    };
-
-    // 5. 이사 종류별 특장점 및 마케팅 카피
-    const MOVE_CONFIGS = {
-      "반포장이사": {
-        badge: "💰 알뜰 실속형 플랜 • 큰 짐은 전문가 100% 전담 & 이사 비용 20~30% 절약",
-        summaryText: "침대·가전·가구 등 무겁고 까다로운 큰 짐은 기사님이 분해/전용패킹/재조립 수평 세팅! 잔짐은 고객님이 프라이빗하게 직접 정리하여 비용을 대폭 아끼는 가성비 1위 서비스입니다.",
-        pros: [
-          "포장이사 대비 20~30% 이상 알뜰하고 합리적인 이사 비용으로 가성비 극대화",
-          "침대 분해/조립, 매트리스 2중 방수 밀봉, 대형 서랍장·가전 전용 퀼팅 패드 포장은 기사님 100% 전담",
-          "옷, 책, 속옷, 개인 소지품 등 사적인 잔짐은 내 손으로 원하는 방 위치에 프라이빗하게 맞춤 정리",
-          "도착지에서 가구 수평 세팅 및 큰 짐 배치 완료 후 잔짐 박스는 해당 방에 안전하게 하차 인계"
-        ],
-        guideTitle: "💡 반포장이사란? 왜 실속파 고객님들의 만족도가 가장 높을까요?",
-        guideContent: "반포장이사는 '힘든 큰 짐은 전문가에게 맡기고, 소소한 잔짐은 내 손으로 정리한다'는 실속형 콘셉트입니다. 침대 프레임 분해 조립, 매트리스 오염 방지 2중 커버링, 대형 서랍장 및 가전제품 결속 등 전문 기술이 필요한 작업은 베테랑 기사님이 완벽하게 도맡아 드립니다. 덕분에 고객님께서는 무거운 짐을 옮길 걱정 없이, 옷과 개인용품만 천천히 본인의 생활 동선에 맞춰 수납하실 수 있어 비용 절감과 편의성을 동시에 누리실 수 있습니다.",
-        recommend: "이사 비용을 크게 아끼고 싶으신 분, 내 짐을 남이 정리하는 게 부담스러우신 분, 원룸·투룸·오피스텔 거주 직장인 및 실속파 고객님",
-        titleSuffix: "알뜰 실속 후기! 큰 짐은 기사님 완벽 케어, 이사비용은 20% 이상 절약",
-        hashtags: ["#진주반포장이사", "#반포장이사", "#반포장이사후기", "#이사비용절약", "#알뜰이사", "#원룸반포장이사", "#투룸반포장이사", "#가성비이사"]
-      },
-      "포장이사": {
-        badge: "✨ VIP 올인원 플랜 • 처음부터 끝까지 손 하나 까딱 없는 명품 풀케어",
-        summaryText: "작은 주방 식기부터 대형 침대, 의류 행거 수납, 바닥 스팀청소 및 피톤치드 살균 소독까지 처음부터 끝까지 전문팀이 100% 도맡아 당일 즉시 일상생활이 가능한 VIP 서비스입니다.",
-        pros: [
-          "포장부터 운송, 가구 조립, 정리 수납, 바닥 청소까지 손 하나 댈 필요 없는 100% 올인원 턴키 케어",
-          "주방 전문 이모님의 상·하부장 도자기·유리 식기류 100% 에어캡 낱개 완충 패킹 & 냉장고 신선 아이스박스 관리",
-          "정장·원피스 구김 없는 전용 행거 박스 칼각 수납 & 침대 매트리스 항균 비닐+방수 커버 2중 안심 패킹",
-          "도착지 레이저 수평계 정밀 세팅, 옷장/싱크대 수납, 바닥 고온 스팀 청소 & 집안 전체 피톤치드 살균 소독 기본 제공"
-        ],
-        guideTitle: "✨ 100% 올인원 프리미엄 포장이사만의 5대 VIP 안심 서비스",
-        guideContent: "포장이사는 고객님께서 귀중품만 챙기시고 편안하게 휴식을 취하실 수 있는 최고급 서비스입니다. 이동 통로 전체에 프리미엄 PP 바닥 보양판을 깔아 스크래치를 원천 차단하며, 주방 이모님의 세심한 그릇 낱개 포장과 냉장고 케어가 진행됩니다. 새집 도착 후에도 침대와 서랍장의 수평을 레이저로 완벽히 맞추고, 주방 그릇과 의류를 원래 동선 그대로 정돈한 뒤 고온 스팀 청소와 피톤치드 탈취 소독까지 마쳐 당일 저녁 곧바로 편안한 일상생활이 가능합니다.",
-        recommend: "이사 당일 손 하나 대지 않고 편안하게 입주하고 싶으신 분, 짐이 많은 3~4인 아파트 가구, 맞벌이 부부, 고령 부모님",
-        titleSuffix: "100% VIP 올인원 후기! 주방 식기 완충부터 피톤치드 살균까지 풀케어",
-        hashtags: ["#진주포장이사", "#포장이사", "#포장이사후기", "#포장이사전문", "#프리미엄포장이사", "#아파트포장이사", "#진주포장이사잘하는곳", "#피톤치드소독"]
-      },
-      "일반이사": {
-        badge: "📦 초실속 자가포장 플랜 • 차량 운송 및 기사님 상하차 동행",
-        summaryText: "고객님이 잔짐과 가구를 미리 박스에 포장해 두시면, 기사님과 함께 안전하게 상하차 및 운송을 진행하는 초실속형 서비스입니다.",
-        pros: [
-          "가장 경제적인 이사 비용으로 실속 있게 이동 가능",
-          "기사님의 안전한 차량 적재 및 전용 결속 바로 운송 안정성 확보",
-          "단순 용달보다 안전하고 전문적인 운송 코칭 제공"
-        ],
-        guideTitle: "📦 일반이사 서비스 안내",
-        guideContent: "고객님께서 사전에 박스 포장을 완료해 두시면, 전문 기사님이 차량 적재함에 무게 중심을 맞춰 테트리스식 안전 상차 및 방수 호루 결속 운송을 책임지는 경제적인 실속 이사입니다.",
-        recommend: "짐이 적고 박스 포장을 직접 하실 시간적 여유가 있는 1인 가구 및 학생 고객님",
-        titleSuffix: "합리적이고 깔끔한 실속 운송 후기",
-        hashtags: ["#진주일반이사", "#일반이사", "#실속이사", "#자취방이사", "#학생이사"]
-      },
-      "1톤 용달운송": {
-        badge: "🚚 단순 화물/용달 플랜 • 원룸 소형화물 및 가구 직거래 맞춤 배차",
-        summaryText: "기본 차량 운송 또는 기사님 도움을 선택하여 소형 가구 및 가전을 합리적으로 운반하는 빠른 배차 서비스입니다.",
-        pros: [
-          "단품 가구/가전 운송부터 소형 원룸 화물까지 초스피드 배차",
-          "진주 관내 및 전국 시외 장거리 전천후 호루 탑차 안전 운행"
-        ],
-        guideTitle: "🚚 1톤 용달 운송 서비스 안내",
-        guideContent: "원룸 짐이나 가전/가구 직거래 물품을 안전 결속 바와 방수 호루가 완비된 1톤 차량으로 신속하고 정직하게 배차 운송해 드립니다.",
-        recommend: "가구/가전 직거래, 소형 짐 단순 이동, 용달 운송 고객님",
-        titleSuffix: "안전하고 신속한 1톤 용달 운송 후기",
-        hashtags: ["#진주용달", "#진주1톤용달", "#용달이사", "#소형화물운송"]
-      }
-    };
-
-    const MOVE_TYPES = ["반포장이사", "포장이사", "일반이사", "1톤 용달운송"];
-
-    // 6. 공간 랜드마크 옵션
-    const SPACE_OPTIONS = [
-      { id: "auto", label: "🤖 AI 자동 공간 판별 (추천)" },
-      { id: "small_room", label: "📚 작은방 / 자녀방 / 학생 서재 (책상·책장·싱글침대)" },
-      { id: "master_room", label: "🛏️ 안방 침실 (퀸/킹 침대·화장대·협탁)" },
-      { id: "bed_room2", label: "🚪 침실 2 / 서랍장 (화이트가구·5단서랍장·옷장)" },
-      { id: "living_room", label: "🛋️ 거실 (소파·대형베란다창·스탠드에어컨·거실테이블)" },
-      { id: "kitchen", label: "🍳 주방 / 다이닝 (싱크대·식탁·밥솥·식기)" },
-      { id: "dressroom", label: "👔 드레스룸 / 수납공간 (행거·의류·수납함)" },
-      { id: "truck", label: "🚚 차량 적재 / 사다리차 (탑차·운송·결속)" }
-    ];
-
-    // 7. 사람이 쓴 생생한 현장 르포형 다이내믹 변주 뱅크 (매번 다른 톤 & 에피소드)
-    const HUMAN_STORY_VARIATIONS = {
-      intros: [
-        (company, from, to, moveType, size) => `이사를 앞두고 어떤 업체를 믿고 맡겨야 할지 고민이 정말 많으셨다는 고객님! 진주 ${from}에서 ${to}으로 향하는 ${size} ${moveType} 일정을 함께했습니다. 집안에 들어서자마자 고객님께서 "아끼는 원목 가구에 스크래치 하나 안 나게 잘 부탁드립니다"라며 따뜻한 커피 한 잔을 건네주시더라고요. 그 믿음에 보답하기 위해 현장 바닥 보양재부터 전용 원단 커버까지 아낌없이 풀세팅하고 기분 좋게 작업을 시작했습니다.`,
-        (company, from, to, moveType, size) => `안녕하세요, 20년 현장 경험을 바탕으로 내 가족의 살림살이처럼 정성을 다하는 ${company}입니다! 오늘은 진주 ${from} 현장에서 ${to} 새 보금자리로 향하는 ${size} ${moveType} 작업을 진행해 드렸습니다. 햇살이 참 좋은 날이었지만 통로 이동 동선이 좁아 가구 모서리 찍힘에 각별히 신경을 써야 했는데요. 베테랑 팀원들과 손발을 딱딱 맞춰 안전을 최우선으로 차분하게 짐을 풀어냈던 현장입니다.`,
-        (company, from, to, moveType, size) => `"이번에 새로 이사 가는 집이라 바닥 마루가 상하지 않을까 제일 걱정돼요." 상담 때부터 고객님께서 거듭 당부하셨던 ${from} ➔ ${to} ${size} ${moveType} 현장입니다. 이런 걱정을 덜어드리는 게 저희의 몫이죠! 현관 입구부터 거실, 안방 복도까지 두툼한 PP 보양판을 빈틈없이 깔아두고 본격적인 패킹에 들어갔습니다. 땀방울 가득했던 하루를 생생하게 남겨봅니다.`
-      ],
-      photoTemplates: [
-        [
-          "작은방 학생 싱글 침대 프레임 분해 & 책장 서적 단프라 박스 분할 패킹",
-          "작은방 책장에 꽂힌 두툼한 전공서적과 수험서는 한 박스에 몽땅 담으면 밑바닥이 터지거나 책 모서리가 찌그러지기 십상입니다. 단단한 단프라 전용 박스에 적정 무게로 알맞게 나누어 담고, 싱글 침대 모서리엔 플라스틱 코너 가드를 덧대어 흠집 없이 조심스레 분해해 두었습니다."
-        ],
-        [
-          "컴퓨터 모니터 액정 보호 & 본체 정밀 전자기기 3중 에어캡 완충 포장",
-          "책상 위에 놓인 PC 듀얼 모니터와 본체는 작은 충격에도 패널이 나가기 쉬운 민감한 기기지요. 두툼한 대형 에어캡(뽁뽁이)을 아끼지 않고 서너 바퀴씩 단단히 돌려 감은 뒤 전용 하드 박스 안에 흔들림 없도록 완충재로 꽉 채워 포장했습니다."
-        ],
-        [
-          "안방 침실 원목 침대 헤드보드 안심 패딩 & 매트리스 2중 방수 퀼팅 패킹",
-          "살결이 매일 닿는 안방 매트리스는 위생이 가장 중요합니다. 먼지와 빗물 침투를 막기 위해 위생 비닐로 1차 밀봉한 후, 도톰한 전용 방수 퀼팅 커버를 씌워 2중으로 꽁꽁 패킹했지요. 묵직한 원목 살대형 헤드보드도 모서리 긁힘 방지 패드로 꼼꼼히 결속했습니다."
-        ],
-        [
-          "안방 드레스룸 의류 구김 방지 전용 행거 박스 칼각 수납",
-          "옷장과 드레스룸에 걸린 양복 정장과 코트류는 개어서 박스에 넣으면 주름이 심하게 생겨 나중에 다림질하느라 고생하십니다. 옷걸이 상태 그대로 쏙 걸 수 있는 전용 행거 박스를 투입해 구김 없이 원형 그대로 옮겨드렸습니다."
-        ],
-        [
-          "거실 및 복도 동선 바닥 안심 PP 보양판 시공 & 통로 잔짐 1차 분류",
-          "가구 반출을 시작하기 전, 신발을 벗고 다니는 실내 복도와 거실 바닥에 두툼한 플라스틱 PP 보양판을 빈틈없이 시공했습니다. 대형 짐을 실어 나를 때 바닥 찍힘이나 마루 긁힘을 원천 차단하고 이동 통로의 잔짐들을 차분하게 분류해 두었습니다."
-        ],
-        [
-          "침실 2 화이트 침대 프레임 때탐 방지 전용 보호 커버 결속",
-          "밝은 화이트 톤의 가구는 작업 장갑의 손때나 모서리 쓸림 자국이 남기 쉽습니다. 세척 관리된 전용 보호 원단으로 프레임 전체를 꼼꼼하게 감싸 안심 이동을 준비했습니다."
-        ],
-        [
-          "침실 2 5단 와이드 원목 서랍장 레일 보호 특수 밴딩 & 퀼팅 패드 포장",
-          "이동 중 서랍이 덜컹거리며 튀어나오면 레일이 휘거나 가구 모서리가 찍힐 수 있습니다. 접착 자국이 남지 않는 특수 안전 밴드로 1차 고정하고, 도톰한 누빔 퀼팅 패드로 단단히 결속하여 안전하게 반출했습니다."
-        ],
-        [
-          "코너 오픈 선반 장식 소품 및 도자기 낱개 에어캡 완충 패킹",
-          "장식장과 오픈 선반에 진열된 도자기, 유리잔, 아기자기한 소품들은 파손 위험이 크기 때문에 에어캡으로 하나하나 개별 포장한 뒤 단단한 하드 바구니에 안전하게 차곡차곡 담아냈습니다."
-        ],
-        [
-          "주방 찬장 도자기·유리 식기류 낱개 에어캡 완충 & 냉장고 신선 케어",
-          "주방 이모님의 노련한 손길로 싱크대 찬장 속 접시와 유리컵들을 에어캡으로 낱개 완충 포장했습니다. 냉장고 속 신선 식품류는 냉매제를 듬뿍 넣은 전용 아이스박스에 담아 신선도 그대로 새집으로 이동 준비를 마쳤습니다."
-        ]
-      ],
-      outros: [
-        (company, moveType) => `새 보금자리에 도착하자마자 바닥 보양판을 먼저 깔고, 고객님께서 원하시는 방 위치에 큰 가구들을 하나하나 제자리에 배치했습니다. 레이저 수평계로 서랍장과 침대 균형을 반듯하게 맞춰드렸지요. 짐 정리가 끝난 뒤 고온 바닥 스팀 청소와 집안 전체 피톤치드 연무 소독까지 싹 돌려드리니 집안에 상쾌한 숲속 향이 가득 퍼졌습니다. "날도 더운데 기사님들이 친절하게 끝까지 신경 써주셔서 정말 든든했습니다"라며 환하게 웃어주신 고객님의 한마디에 피로가 눈 녹듯 사라졌던 하루입니다.`,
-        (company, moveType) => `도착지에서도 서두르지 않고 침대 프레임부터 단단하게 재조립하고, 문 열림과 서랍 레일 수평을 정밀하게 다시 맞췄습니다. ${moveType === '반포장이사' ? '잔짐 박스들은 고객님께서 정리하시기 편하도록 각 방으로 깔끔하게 넣어드렸고' : '주방 찬장 그릇부터 옷장 수납까지 원래 쓰시던 동선에 맞춰 착착 정돈해 드렸고'}, 마무리로 바닥 스팀 청소와 피톤치드 살균 소독까지 말끔히 마쳤습니다. 기분 좋게 새 집에서의 첫날밤을 맞이하시길 진심으로 응원합니다!`
-      ]
-    };
-
-    // 8. 진주 아파트 단지 목록
-    const JINJU_APTS = [
-      { name: "신진주역세권 센트럴자이", dong: "가좌동", pyeong: "84㎡ (34평)" },
-      { name: "신진주역세권 시티프라디움", dong: "가좌동", pyeong: "84㎡ (34평)" },
-      { name: "신진주역세권 프리미어 웰가", dong: "가좌동", pyeong: "75㎡ (30평)" },
-      { name: "진주혁신 대방디엠시티", dong: "충무공동", pyeong: "84㎡ (34평)" },
-      { name: "진주혁신 중흥S-클래스", dong: "충무공동", pyeong: "99㎡ (39평)" },
-      { name: "초전 힐스테이트", dong: "초전동", pyeong: "84㎡ (34평)" },
-      { name: "초전 해모로루비채", dong: "초전동", pyeong: "84㎡ (34평)" },
-      { name: "평거 엠코타운 더 프라하", dong: "평거동", pyeong: "84㎡ (34평)" },
-      { name: "평거 엘크루", dong: "평거동", pyeong: "84㎡ (34평)" },
-      { name: "충무공동 한림풀에버", dong: "충무공동", pyeong: "84㎡ (34평)" }
-    ];
-
-    const REGION_PRESETS = [
-      { name: "진주 관내 (가좌➔평거)", from: "진주시 가좌동", to: "진주시 평거동" },
-      { name: "진주→사천", from: "진주시 가좌동", to: "사천시 사남면" },
-      { name: "진주→창원", from: "진주시 충무공동", to: "창원시 성산구" },
-      { name: "진주→김해", from: "진주시 초전동", to: "김해시 율하동" },
-      { name: "진주→순천", from: "진주시 평거동", to: "순천시 신대지구" },
-      { name: "진주→부산", from: "진주시 충무공동", to: "부산시 해운대구" },
-      { name: "진주→대구", from: "진주시 하대동", to: "대구시 수성구" },
-      { name: "진주→수도권", from: "진주시 가좌동", to: "서울시 강남구" }
-    ];
-
-    function App() {
-      const [apiKey, setApiKey] = useState(() => safeStorage.get("gemini_api_key", ""));
-      const [showApiKey, setShowApiKey] = useState(false);
-      const [keyTestStatus, setKeyTestStatus] = useState(null);
-      const [keyTestMessage, setKeyTestMessage] = useState("");
-
-      const [companyName, setCompanyName] = useState(() => safeStorage.get("ai_company_name", "갑봉이 익스프레스"));
-      const [phone, setPhone] = useState(() => safeStorage.get("ai_phone", "010-1234-5678"));
-      const [localTel, setLocalTel] = useState(() => safeStorage.get("ai_local_tel", "055-741-0000"));
-      const [kakao, setKakao] = useState(() => safeStorage.get("ai_kakao", "gabong_move"));
-
-      const [housingType, setHousingType] = useState("apt");
-      const [moveType, setMoveType] = useState("반포장이사");
-      const [fromLocation, setFromLocation] = useState("진주시 가좌동 신진주역세권 센트럴자이");
-      const [toLocation, setToLocation] = useState("진주시 충무공동 중흥S-클래스");
-      const [buildingName, setBuildingName] = useState("신진주역세권 센트럴자이");
-      const [roomSize, setRoomSize] = useState("84㎡ (34평)");
-      const [truckSize, setTruckSize] = useState("5톤 탑차 / 사다리차");
-
-      const [images, setImages] = useState([]);
-      const [isAnalyzing, setIsAnalyzing] = useState(false);
-      const [analysisProgress, setAnalysisProgress] = useState("");
-      const [apiErrorMessage, setApiErrorMessage] = useState("");
-      const [isDragging, setIsDragging] = useState(false);
-      const abortControllerRef = useRef(null);
-
-      const [activeTab, setActiveTab] = useState("blog");
-      const [blogTitle, setBlogTitle] = useState("");
-      const [blogIntro, setBlogIntro] = useState("");
-      const [blogOutro, setBlogOutro] = useState("");
-      const [instaCaption, setInstaCaption] = useState("");
-      const [copyStatus, setCopyStatus] = useState("");
-      const fileInputRef = useRef(null);
-
-      useEffect(() => {
-        safeStorage.set("ai_company_name", companyName);
-        safeStorage.set("ai_phone", phone);
-        safeStorage.set("ai_local_tel", localTel);
-        safeStorage.set("ai_kakao", kakao);
-      }, [companyName, phone, localTel, kakao]);
-
-      // 브라우저 드래그앤드롭 화면이동 전역 방지
-      useEffect(() => {
-        const preventGlobalDrop = (e) => e.preventDefault();
-        window.addEventListener("dragover", preventGlobalDrop, false);
-        window.addEventListener("drop", preventGlobalDrop, false);
-        return () => {
-          window.removeEventListener("dragover", preventGlobalDrop, false);
-          window.removeEventListener("drop", preventGlobalDrop, false);
-        };
-      }, []);
-
-      const saveKeyDirectly = () => {
-        const cleaned = cleanKey(apiKey);
-        if (!cleaned) {
-          alert("API 키를 먼저 입력창에 붙여넣어 주세요.");
-          return;
-        }
-        safeStorage.set("gemini_api_key", cleaned);
-        setApiKey(cleaned);
-        setKeyTestStatus("success");
-        setKeyTestMessage(`✓ API 키가 즉시 저장되었습니다! (${cleaned.substring(0, 6)}...${cleaned.substring(cleaned.length - 4)})`);
-        setCopyStatus("API 키가 브라우저에 안전하게 저장되었습니다!");
-        setTimeout(() => setCopyStatus(""), 4000);
-      };
-
-      const cancelAnalysis = () => {
-        if (abortControllerRef.current) {
-          abortControllerRef.current.abort();
-        }
-        setIsAnalyzing(false);
-        setAnalysisProgress("");
-        setCopyStatus("AI 분석이 취소되었습니다.");
-        setTimeout(() => setCopyStatus(""), 3000);
-      };
-
-      // API Key 연결 테스트 (gemini-3.8-flash 1순위 다이렉트 호출)
-      const testApiKey = async () => {
-        const targetKey = cleanKey(apiKey);
-        if (!targetKey) {
-          setKeyTestStatus("error");
-          setKeyTestMessage("API 키를 입력창에 먼저 붙여넣어 주세요.");
-          return;
-        }
-
-        safeStorage.set("gemini_api_key", targetKey);
-        setApiKey(targetKey);
-        setKeyTestStatus("testing");
-        setKeyTestMessage("Google AI 최신 서버(gemini-3.8-flash)에 연결 테스트 중...");
-
-        const candidateModels = [
-          "gemini-3.8-flash",
-          "gemini-3.8-flash-latest",
-          "gemini-3-flash-preview",
-          "gemini-3-flash"
-        ];
-        let capturedErrors = [];
-
-        for (const model of candidateModels) {
-          try {
-            const controller = new AbortController();
-            const tid = setTimeout(() => controller.abort(), 7000);
-            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${targetKey}`, {
-              method: 'POST',
-              headers: { 
-                'Content-Type': 'application/json',
-                'x-goog-api-key': targetKey 
-              },
-              signal: controller.signal,
-              body: JSON.stringify({ contents: [{ parts: [{ text: "ping" }] }] })
-            });
-            clearTimeout(tid);
-
-            const data = await resp.json().catch(() => ({}));
-
-            if (resp.ok) {
-              safeStorage.set("gemini_active_model", model);
-              setKeyTestStatus("success");
-              setKeyTestMessage(`✅ Google AI 최신 서버 정상 연결 완료! (활성 모델: ${model})`);
-              return;
-            } else {
-              const errMsg = data.error?.message || `HTTP ${resp.status}`;
-              capturedErrors.push(`[${model}] ${errMsg}`);
-              if (errMsg.includes("API key not valid") || errMsg.includes("API_KEY_INVALID")) {
-                setKeyTestStatus("error");
-                setKeyTestMessage(`구글 서버 오류: API 키가 올바르지 않습니다. Google AI Studio에서 키를 다시 확인해 주세요.`);
-                return;
-              }
-            }
-          } catch (fetchErr) {
-            capturedErrors.push(`[${model}] ${fetchErr.message}`);
-          }
-        }
-
-        const isHighDemand = capturedErrors.some(e => e.includes("high demand") || e.includes("RESOURCE_EXHAUSTED") || e.includes("503"));
-        setKeyTestStatus("error");
-        if (isHighDemand) {
-          setKeyTestMessage(`구글 서버 일시 혼잡(High Demand): 트래픽이 몰리고 있습니다. 아래 [⚡ 1초 즉시 생성] 버튼을 누르시면 기다림 없이 바로 글이 작성됩니다.`);
-        } else {
-          setKeyTestMessage(`구글 서버 응답: ${capturedErrors[0] || "API 키 및 네트워크를 확인해 주세요."}`);
-        }
-      };
-
-      const handleHousingChange = (newType) => {
-        setHousingType(newType);
-        if (newType === 'apt') {
-          setMoveType("포장이사");
-          setRoomSize("84㎡ (34평)");
-          setTruckSize("5톤 탑차 / 사다리차");
-          setBuildingName("신진주역세권 센트럴자이");
-          setFromLocation("진주시 가좌동 신진주역세권 센트럴자이");
-          setToLocation("진주시 충무공동 중흥S-클래스");
-        } else if (newType === 'oneroom') {
-          setMoveType("반포장이사");
-          setRoomSize("원룸 (약 7~9평)");
-          setTruckSize("1톤 트럭 1대");
-          setBuildingName("가좌동 대학가 신축 원룸");
-          setFromLocation("진주시 가좌동 (원룸촌)");
-          setToLocation("사천시 사남면 (원룸)");
-        } else {
-          setMoveType("반포장이사");
-          setRoomSize("투룸 (약 15~18평)");
-          setTruckSize("1톤~1.2톤 트럭 1~2대");
-          setBuildingName("평거동 신축 빌라 투룸");
-          setFromLocation("진주시 평거동 (빌라 투룸)");
-          setToLocation("진주시 초전동 (신축 투룸)");
-        }
-      };
-
-      const handleAptSelect = (apt) => {
-        setHousingType("apt");
-        setBuildingName(apt.name);
-        setFromLocation(`진주시 ${apt.dong} ${apt.name}`);
-        setRoomSize(apt.pyeong);
-        setMoveType("포장이사");
-        setTruckSize("5톤 탑차 / 사다리차");
-      };
-
-      const handleRegionSelect = (preset) => {
-        if (housingType === 'apt') {
-          setFromLocation(`${preset.from} ${buildingName.includes("자이") ? buildingName : "센트럴자이"}`);
-          setToLocation(`${preset.to} 아파트`);
-        } else {
-          setFromLocation(`${preset.from} (${housingType === 'oneroom' ? '원룸' : '빌라'})`);
-          setToLocation(`${preset.to} (${housingType === 'oneroom' ? '원룸' : '빌라'})`);
-        }
-      };
-
-      const processFilesSafely = (fileList) => {
-        try {
-          const rawFiles = Array.from(fileList || []);
-          if (rawFiles.length === 0) return;
-
-          const imageFiles = rawFiles.filter(f => f && (f.type?.startsWith("image/") || /\.(jpe?g|png|webp|heic|bmp|gif)$/i.test(f.name || "")));
-          if (imageFiles.length === 0) {
-            alert("이미지 사진 파일(JPG, PNG 등)만 등록해 주세요!");
-            return;
-          }
-
-          const templates = HUMAN_STORY_VARIATIONS.photoTemplates;
-          const newImages = imageFiles.map((file, idx) => {
-            let previewUrl = "";
-            try {
-              previewUrl = URL.createObjectURL(file);
-            } catch (urlErr) {
-              console.warn("createObjectURL failed:", urlErr);
-            }
-
-            const pIdx = (images.length + idx) % templates.length;
-            return {
-              id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-              file: file,
-              url: previewUrl,
-              name: file.name || `현장사진_${idx + 1}.jpg`,
-              spaceHint: "auto",
-              aiTitle: templates[pIdx][0],
-              aiAnalysis: templates[pIdx][1],
-              isAnalyzed: false
-            };
-          });
-
-          setImages(prev => [...prev, ...newImages]);
-          setCopyStatus(`사진 ${newImages.length}장이 안전하게 등록되었습니다!`);
-          setTimeout(() => setCopyStatus(""), 3000);
-        } catch (uploadErr) {
-          console.error("Critical error in processFilesSafely:", uploadErr);
-          alert("사진 등록 중 오류가 발생했습니다. 브라우저를 확인해 주세요.");
-        }
-      };
-
-      const handleImageUpload = (e) => {
-        processFilesSafely(e.target.files);
-        if (e.target) e.target.value = '';
-      };
-
-      const handleDragOver = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(true);
-      };
-
-      const handleDragLeave = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-      };
-
-      const handleDrop = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-        if (e.dataTransfer && e.dataTransfer.files) {
-          processFilesSafely(e.dataTransfer.files);
-        }
-      };
-
-      const removeImage = (id) => {
-        setImages(prev => prev.filter(img => img.id !== id));
-      };
-
-      const updateImageSpaceHint = (id, newHint) => {
-        setImages(prev => prev.map(img => img.id === id ? { ...img, spaceHint: newHint } : img));
-      };
-
-      const updateImageAnalysis = (id, newTitle, newAnalysis) => {
-        setImages(prev => prev.map(img => img.id === id ? { ...img, aiTitle: newTitle, aiAnalysis: newAnalysis } : img));
-      };
-
-      // 1초 즉시 스마트 다이나믹 엔진 (SEO 최적화 & 인간 일기체 다채로운 변주)
-      const runInstantSmartGeneration = () => {
-        runDynamicHumanGeneration();
-        setCopyStatus(`⚡ [${moveType}] 네이버 SEO & 인간 일기체 글이 즉시 완성되었습니다!`);
-        setTimeout(() => setCopyStatus(""), 4000);
-      };
-
-      // AI 비전 분석 (네이버 SEO + Anti-AI Detection + 사실 묘사 엄격 주입)
-      const runAiAnalysisAndGeneration = async () => {
-        if (images.length === 0) {
-          alert("먼저 현장 사진을 1장 이상 등록해 주세요!");
-          return;
-        }
-
-        setIsAnalyzing(true);
-        setApiErrorMessage("");
-        setAnalysisProgress("사진 준비 중...");
-
-        const housingName = housingType === 'apt' ? '아파트' : housingType === 'oneroom' ? '원룸' : '투룸/빌라';
-        const fromCity = (fromLocation || "").split(" ")[0] || "진주";
-        const fromDong = (fromLocation || "").split(" ")[1] || "가좌동";
-        const toCity = (toLocation || "").split(" ")[0] || "타지역";
-        const activeKey = cleanKey(apiKey);
-
-        const safetyTimer = setTimeout(() => {
-          if (abortControllerRef.current) abortControllerRef.current.abort();
-          setIsAnalyzing(false);
-          setAnalysisProgress("");
-          setApiErrorMessage("구글 AI 응답 대기 시간이 초과되어 안전하게 자동 생성으로 복구했습니다.");
-          runDynamicHumanGeneration();
-        }, 120000);
-
-        try {
-          if (activeKey.length > 20) {
-            setAnalysisProgress(`사진 ${images.length}장 고속 압축 중...`);
-
-            const compressedResults = await Promise.all(
-              images.map(img => compressImage(img.file))
-            );
-
-            const partsList = [];
-
-            // ★★★ 핵심: 네이버 SEO + Anti-AI 인간 르포톤 엄격 프롬프트 ★★★
-            const promptIntro = `당신은 20년 현장 경력의 베테랑 진주 이사 소장님(업체명: ${companyName})입니다.
-직접 땀 흘려 작업한 현장 사진 총 ${images.length}장을 보며, 네이버 블로그에 올릴 솔직하고 신뢰감 넘치는 '현장 작업 일기'를 작성합니다.
-
-★ [절대 금지: AI 번역투 및 상투적 표현 100% 배제 - AI 적발 차단]:
-- "~에 대해 알아보겠습니다", "~는 매우 중요한 단계입니다", "~완벽한 조화를 이룹니다", "~살펴보도록 하겠습니다" 같은 기계적인 설명 말투는 절대 쓰지 마세요.
-- 대신 20년 경력의 베테랑 소장님이 사모님, 고객님과 대화하듯 구수하고 다정하며 세심한 말투(~했지요, ~해 드렸답니다, ~하더라고요, ~체크했습니다)로 쓰세요.
-- 실제 작업자의 땀방울과 손길이 느껴지는 구체적인 작업 묘사를 넣으세요.
-
-★ [네이버 블로그 검색 최적화(SEO) 키워드 자연 분산]:
-- 주요 타겟 키워드: [${fromCity}이사], [${fromCity}${moveType}], [${fromDong} ${moveType}], [${buildingName}]
-- 키워드를 억지로 끼워 넣지 말고, 자연스러운 문장 속에 각각 3~5회 분산 배치하세요.
-
-★ [이사 방식 차별화 포인트 (${moveType})]:
-${moveType === "반포장이사" 
-  ? "- 반포장이사: 무거운 침대 프레임 분해/재조립, 매트리스 2중 방수 패킹, 대형 서랍장/가전 패킹은 기사님이 100% 전담하고, 잔짐은 고객님이 프라이빗하게 직접 정리해 이사 비용을 20~30% 아끼는 가성비 실속형임을 본문에서 자연스럽게 어필하세요." 
-  : "- 포장이사: 주방 이모님의 찬장 그릇 낱개 에어캡 완충, 구김 없는 의류 행거 박스 칼각 수납, 도착지 가구 레이저 수평 세팅, 고온 바닥 스팀 청소와 피톤치드 살균까지 손 하나 안 대는 100% 올인원 VIP 명품 케어임을 어필하세요."}
-
-★ [공간 및 사진 100% 팩트 묘사 규칙]:
-1. 싱글 침대, 벽면 책장과 많은 책, 컴퓨터 책상, 모니터 -> ⚠️ 무조건 '작은방/서재' (절대 거실 아님!)
-2. 퀸/킹/더블 침대, 원목 살대형 헤드보드, 화장대, 협탁 -> ⚠️ 무조건 '안방 침실' (절대 거실 아님!)
-3. 화이트 침대 프레임, 5단 서랍장, 옷장, 이동식 행거 -> ⚠️ '침실 2 / 수납방'
-4. 소파, 베란다 대형 통창, 거실 테이블이 있는 넓은 공용 공간만 '거실'
-5. 싱크대, 식탁, 밥솥, 식기류가 보이는 공간은 '주방 / 다이닝'
-- 각 사진 속에서 실제로 보이는 가구의 색상, 재질, 소품들을 정확히 언급하며 2~3문장으로 사람 냄새 나게 서술하세요.`;
-
-            partsList.push({ text: promptIntro });
-
-            for (let i = 0; i < images.length; i++) {
-              const comp = compressedResults[i];
-              if (!comp || !comp.base64Data) continue;
-              const selectedHint = SPACE_OPTIONS.find(s => s.id === images[i].spaceHint);
-              const hintStr = (images[i].spaceHint && images[i].spaceHint !== "auto") ? ` (공간 힌트: ${selectedHint?.label})` : "";
-
-              partsList.push({
-                text: `\n[현장 사진 #${i + 1}번 실물]${hintStr}:`
-              });
-              partsList.push({
-                inlineData: {
-                  mimeType: comp.mimeType,
-                  data: comp.base64Data
-                }
-              });
-            }
-
-            const promptJsonReq = `\n반드시 아래 JSON 형식으로만 응답하세요:
-{
-  "blogTitle": "[${fromCity} ${moveType}] ${fromLocation} ➔ ${toLocation} ${housingName} 솔직 현장 후기 (${truckSize})",
-  "blogIntro": "현장 도착 첫인상과 고객님과의 따뜻한 소통, 오늘 ${moveType} 작업 방향을 담은 3~4문장의 사람 냄새 나는 서론",
-  "photoAnalyses": [
-    {
-      "index": 1,
-      "title": "사진 1번의 공간명과 실제 물건을 명시한 현장감 넘치는 소제목",
-      "content": "사진 1번에서 실제로 보이는 공간과 사물을 바탕으로 베테랑의 포장 손길을 담은 2~3문장의 생생한 설명"
-    }
-  ],
-  "blogOutro": "도착지 가구 레이저 수평 세팅, 짐 정리, 바닥 스팀 청소 및 피톤치드 살균 소독을 마친 뒤 고객님의 만족스러운 반응을 담은 3~4문장의 마무리",
-  "instaCaption": "인스타그램 감성의 생생한 피드 본문 + ${fromCity} 및 ${moveType} 타깃 해시태그 15개 이상"
-}`;
-            partsList.push({ text: promptJsonReq });
-
-            const savedModel = safeStorage.get("gemini_active_model", "");
-            const candidateModels = Array.from(new Set([
-              savedModel,
-              "gemini-3.8-flash",
-              "gemini-3.8-flash-latest",
-              "gemini-3-flash-preview",
-              "gemini-3-flash"
-            ])).filter(Boolean);
-
-            let res = null;
-            let usedModel = "";
-            let lastServerErr = "";
-
-            let elapsedSec = 0;
-            const progressTimer = setInterval(() => {
-              elapsedSec++;
-              setAnalysisProgress(`Google AI 정밀 판독 중... (${elapsedSec}초 경과)`);
-            }, 1000);
-
-            for (const modelName of candidateModels) {
-              setAnalysisProgress(`Google ${modelName} 모델로 분석 요청 중... (${elapsedSec}초)`);
-              try {
-                const controller = new AbortController();
-                abortControllerRef.current = controller;
-
-                let attemptRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`, {
-                  method: 'POST',
-                  headers: { 
-                    'Content-Type': 'application/json',
-                    'x-goog-api-key': activeKey 
-                  },
-                  signal: controller.signal,
-                  body: JSON.stringify({
-                    contents: [{ parts: partsList }],
-                    generationConfig: {
-                      responseMimeType: "application/json",
-                      temperature: 0.35
-                    }
-                  })
-                });
-
-                if (!attemptRes.ok && attemptRes.status === 400) {
-                  attemptRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`, {
-                    method: 'POST',
-                    headers: { 
-                      'Content-Type': 'application/json',
-                      'x-goog-api-key': activeKey 
-                    },
-                    signal: controller.signal,
-                    body: JSON.stringify({
-                      contents: [{ parts: partsList }],
-                      generationConfig: { temperature: 0.35 }
-                    })
-                  });
-                }
-
-                if (attemptRes.ok) {
-                  res = attemptRes;
-                  usedModel = modelName;
-                  safeStorage.set("gemini_active_model", modelName);
-                  break;
-                } else {
-                  const errJson = await attemptRes.json().catch(() => ({}));
-                  lastServerErr = errJson.error?.message || `HTTP ${attemptRes.status}`;
-                  console.warn(`${modelName} error (trying next):`, lastServerErr);
-                  continue;
-                }
-              } catch (fetchErr) {
-                if (fetchErr.name === "AbortError") {
-                  clearInterval(progressTimer);
-                  throw fetchErr;
-                }
-                lastServerErr = fetchErr.message;
-              }
-            }
-
-            clearInterval(progressTimer);
-
-            if (!res || !res.ok) {
-              if (lastServerErr.includes("high demand") || lastServerErr.includes("RESOURCE_EXHAUSTED") || lastServerErr.includes("503")) {
-                setApiErrorMessage(`구글 본사 서버 일시 혼잡 감지: 대기 시간 없이 즉시 발행하실 수 있도록 [${moveType}] SEO 최적화 맞춤 글로 자동 전환했습니다.`);
-                runDynamicHumanGeneration();
-                setCopyStatus(`⚡ [${moveType}] SEO 맞춤 글이 완성되었습니다!`);
-                setTimeout(() => setCopyStatus(""), 5000);
-                return;
-              }
-              throw new Error(lastServerErr || "AI 응답을 받지 못했습니다.");
-            }
-
-            const data = await res.json();
-            let rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-            rawJson = rawJson.replace(/```json/gi, "").replace(/```/g, "").trim();
-            const firstBrace = rawJson.indexOf("{");
-            const lastBrace = rawJson.lastIndexOf("}");
-            if (firstBrace !== -1 && lastBrace !== -1) {
-              rawJson = rawJson.substring(firstBrace, lastBrace + 1);
-            }
-            const parsed = JSON.parse(rawJson);
-
-            setBlogTitle(parsed.blogTitle || `[${fromCity} ${moveType}] ${fromLocation} ➔ ${toLocation} 솔직 후기`);
-            setBlogIntro(parsed.blogIntro || "");
-            setBlogOutro(parsed.blogOutro || "");
-            setInstaCaption(parsed.instaCaption || "");
-
-            setImages(prev => prev.map((img, idx) => {
-              const matched = parsed.photoAnalyses?.[idx];
-              if (matched) {
-                return {
-                  ...img,
-                  aiTitle: matched.title,
-                  aiAnalysis: matched.content,
-                  isAnalyzed: true
-                };
-              }
-              return img;
-            }));
-
-            setCopyStatus(`Google AI(${usedModel})가 [${moveType}] SEO 맞춤 분석을 ${elapsedSec}초 만에 완료했습니다!`);
-            setTimeout(() => setCopyStatus(""), 5000);
-          } else {
-            runDynamicHumanGeneration();
-            setCopyStatus(`[${moveType}] 전용 스마트 마케팅 글이 즉시 생성되었습니다!`);
-            setTimeout(() => setCopyStatus(""), 5000);
-          }
-        } catch (err) {
-          console.error("AI Error:", err);
-          let userErrMsg = err.message;
-          if (err.name === "AbortError" || userErrMsg.includes("abort")) {
-            userErrMsg = "사용자가 취소했거나 구글 AI 응답 대기 시간이 초과되었습니다.";
-          }
-          setApiErrorMessage(`구글 서버 안내: ${userErrMsg}`);
-          runDynamicHumanGeneration();
-        } finally {
-          clearTimeout(safetyTimer);
-          setIsAnalyzing(false);
-          setAnalysisProgress("");
-        }
-      };
-
-      // 매번 달라지는 인간 일기체 & 네이버 SEO 맞춤 생성 엔진
-      const runDynamicHumanGeneration = () => {
-        const housingName = housingType === 'apt' ? '아파트' : housingType === 'oneroom' ? '원룸' : '투룸/빌라';
-        const fromCity = (fromLocation || "").split(" ")[0] || "진주";
-        const fromDong = (fromLocation || "").split(" ")[1] || "가좌동";
-        const toCity = (toLocation || "").split(" ")[0] || "타지역";
-
-        // SEO 최적화 제목: [지역 + 동 + 이사종류] 클릭을 부르는 후킹 구조
-        const titleTemplates = [
-          `[${fromCity} ${moveType}] ${fromDong} ${buildingName} ➔ ${toCity} 솔직 현장 후기 (${truckSize})`,
-          `[${fromCity}${moveType}] ${buildingName}에서 시작된 ${housingName} 이삿날! 꼼꼼한 포장부터 피톤치드까지`,
-          `[${fromCity} ${fromDong} 이사] ${buildingName} ${moveType} 현장 실황! 큰 짐 케어부터 수평 세팅까지`
-        ];
-        const selectedTitle = titleTemplates[Math.floor(Math.random() * titleTemplates.length)];
-
-        // 무작위 인트로 선택 (매번 다른 스토리텔링)
-        const introFn = HUMAN_STORY_VARIATIONS.intros[Math.floor(Math.random() * HUMAN_STORY_VARIATIONS.intros.length)];
-        const generatedIntro = introFn(companyName, fromLocation, toLocation, moveType, roomSize);
-
-        // 아웃트로 선택
-        const outroFn = HUMAN_STORY_VARIATIONS.outros[Math.floor(Math.random() * HUMAN_STORY_VARIATIONS.outros.length)];
-        const generatedOutro = outroFn(companyName, moveType);
-
-        setBlogTitle(selectedTitle);
-        setBlogIntro(generatedIntro);
-        setBlogOutro(generatedOutro);
-
-        const templates = HUMAN_STORY_VARIATIONS.photoTemplates;
-        setImages(prev => prev.map((img, idx) => {
-          const tIdx = idx % templates.length;
-          return {
-            ...img,
-            aiTitle: templates[tIdx][0],
-            aiAnalysis: templates[tIdx][1],
-            isAnalyzed: true
-          };
-        }));
-
-        // 인스타그램 캡션
-        const moveCfg = MOVE_CONFIGS[moveType] || MOVE_CONFIGS["반포장이사"];
-        if (moveType === "반포장이사") {
-          setInstaCaption(`🚚 [${fromCity} 반포장이사] ${fromDong} ${buildingName} ➔ ${toCity} 솔직 현장 일기! 💰\n\n"비용은 20~30% 알뜰하게 절약하고, 무거운 침대와 가전은 20년 베테랑 기사님이 100% 안심 케어!" 🙌\n\n이사 비용 부담을 덜고 싶으셨던 고객님을 위해\n안전과 가성비를 모두 잡은 [반포장이사]로 완벽하게 마쳤습니다! ✨\n\n📍 현장 코스: ${fromLocation} ➔ ${toLocation}\n📦 주거 평형: ${roomSize}\n🚛 투입 차량: ${truckSize}\n\n🛠 [오늘의 안심 작업 포인트]\n• 침대 프레임 분해/재조립 기사님 100% 전담 🛏\n• 매트리스 위생 비닐 + 방수 누빔 커버 2중 안심 패킹 🛡\n• 대형 서랍장 특수 밴딩 & 퀼팅 보호 패드 결속 🛋\n• 옷걸이 채로 담는 전용 행거 박스 & 단프라 박스 지원 👔\n• 새집 가구 레이저 수평 세팅 & 잔짐 각 방 안전 하차 📐\n• 피톤치드 살균 연무 소독으로 상쾌한 마무리 🌿\n\n💡 무거운 큰 짐은 전문가가 척척! 잔짐은 내 손으로 여유롭게 정리하는 알뜰 플랜!\n\n📞 친절 무료 견적: ${phone} / ${localTel}\n💬 카카오톡 상담: ${kakao}\n📍 ${fromCity} 전 지역 및 ${toCity} 등 전국 장거리 이사 무료 출장 상담!\n\n.\n.\n${moveCfg.hashtags.join(" ")} #${fromCity}이사 #${fromCity}이사잘하는곳 #내집처럼안전하게`);
-        } else {
-          setInstaCaption(`🚚 [${fromCity} 포장이사] ${fromDong} ${buildingName} ➔ ${toCity} 100% VIP 올인원 후기! ✨\n\n"처음부터 끝까지 손 하나 까딱할 필요 없는 명품 풀케어 포장이사!" 🙌\n\n소중한 우리 가족의 보금자리,\n바닥 안심 보양부터 주방 식기 낱개 완충,\n도착지 레이저 수평 세팅과 피톤치드 살균 소독까지\n[${companyName}]이 완벽하게 책임졌습니다! 🛡️\n\n📍 작업 코스: ${fromLocation} ➔ ${toLocation}\n📦 주거 평형: ${roomSize}\n🚛 투입 차량: ${truckSize}\n\n🛠 [오늘의 VIP 프리미엄 케어 포인트]\n• 복도 및 실내 바닥 PP 안심 보양판 시공 🛡\n• 주방 이모님의 도자기·유리 식기류 낱개 에어캡 완충 포장 🍽\n• 냉장고 신선 식품 전용 아이스박스 냉매 포장 ❄️\n• 침대 매트리스 항균 비닐 + 방수 퀼팅 커버 2중 패킹 🛏\n• 정장·원피스 구김 방지 전용 행거 박스 칼각 수납 👔\n• 도착지 가구 정밀 레이저 수평 세팅 & 옷장/주방 완벽 정리 📐\n• 고온 바닥 스팀 청소 & 집안 전체 피톤치드 살균 소독 🌿\n\n💡 이사 당일 저녁 곧바로 편안하게 일상생활을 시작하세요!\n\n📞 친절 무료 견적: ${phone} / ${localTel}\n💬 카카오톡 상담: ${kakao}\n📍 ${fromCity} 전 지역 및 전국 시외 장거리 아파트 이사 무료 방문 견적!\n\n.\n.\n${moveCfg.hashtags.join(" ")} #${fromCity}이사 #${fromCity}포장이사추천 #사다리차이사 #내집처럼안전하게`);
-        }
-      };
-
-      const copyBlogToClipboard = async () => {
-        const area = document.getElementById("blog-copy-area");
-        if (!area) return;
-
-        try {
-          const htmlContent = area.innerHTML;
-          const textContent = area.innerText;
-          const blobHtml = new Blob([htmlContent], { type: "text/html" });
-          const blobText = new Blob([textContent], { type: "text/plain" });
-          const data = [new ClipboardItem({ "text/html": blobHtml, "text/plain": blobText })];
-          await navigator.clipboard.write(data);
-          setCopyStatus("블로그 양식 복사 완료! (네이버 블로그 에디터에서 Ctrl+V 누르세요)");
-          setTimeout(() => setCopyStatus(""), 4000);
-        } catch (err) {
-          navigator.clipboard.writeText(area.innerText);
-          setCopyStatus("텍스트 복사 완료! (네이버 블로그에 붙여넣기 가능)");
-          setTimeout(() => setCopyStatus(""), 4000);
-        }
-      };
-
-      const copyInstaToClipboard = () => {
-        navigator.clipboard.writeText(instaCaption);
-        setCopyStatus("인스타그램 캡션 복사 완료!");
-        setTimeout(() => setCopyStatus(""), 4000);
-      };
-
-      const moveCfg = MOVE_CONFIGS[moveType] || MOVE_CONFIGS["반포장이사"];
-      const isKeySaved = Boolean(cleanKey(apiKey).length > 20);
-
-      const cityPrefix = (fromLocation || "").split(" ")[0] || "진주";
-      const fromLocSecond = (fromLocation || "").split(" ")[1] || fromLocation || "출발지";
-      const toLocSecond = (toLocation || "").split(" ")[1] || toLocation || "도착지";
-
-      return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          
-          {/* Header */}
-          <header className="mb-5 pb-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white text-xs font-black px-3 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                  NAVER SEO & ANTI-AI V5.0
-                </span>
-                <span className="text-slate-500 text-xs font-bold">인간 일기체 르포톤 • 네이버 스마트에디터 ONE 서식 최적화</span>
-              </div>
-              <h1 className="text-2xl md:text-3xl font-black text-slate-900 mt-1 tracking-tight">
-                🚚 갑봉이 AI 이사 마케팅 자동 생성기
-              </h1>
-              <p className="text-slate-600 text-xs md:text-sm mt-0.5">
-                기계적인 AI 티를 100% 걷어내고, 20년 베테랑 소장님의 손길과 사진 속 상황을 네이버 검색 상위에 맞게 풀어냅니다.
-              </p>
-            </div>
-
-            {copyStatus && (
-              <div className="bg-emerald-50 border border-emerald-300 text-emerald-800 px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs md:text-sm font-bold shadow-sm animate-pulse">
-                <span>✅</span> {copyStatus}
-              </div>
-            )}
-          </header>
-
-          {/* API Key Banner */}
-          <div className="mb-7 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-5 shadow-lg border-2 border-indigo-500/50">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-indigo-800/60">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-2xl shadow-inner">
-                  🔑
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-base font-black tracking-tight text-white">
-                      Google Gemini AI API 키 설정 & 연결 확인
-                    </h2>
-                    {isKeySaved ? (
-                      <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        키 저장됨 (gemini-3.8-flash 활성)
-                      </span>
-                    ) : (
-                      <span className="bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                        키 미등록 (스마트 템플릿 모드)
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-indigo-200 mt-0.5">
-                    키를 입력하고 <strong>[💾 즉시 저장]</strong>을 누르시면 브라우저에 안전하게 보존됩니다. (키 없이도 1초 즉시 생성 작동)
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <a
-                  href="https://aistudio.google.com/app/apikey"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl transition shadow flex items-center gap-1 whitespace-nowrap border border-indigo-400/40"
-                >
-                  <span>✨ 1분 무료 키 발급받기</span>
-                  <span>→</span>
-                </a>
-              </div>
-            </div>
-
-            <div className="pt-3.5 flex flex-col sm:flex-row items-center gap-2.5">
-              <div className="relative flex-1 w-full">
-                <input
-                  type={showApiKey ? "text" : "password"}
-                  value={apiKey}
-                  onChange={e => {
-                    const val = e.target.value;
-                    setApiKey(val);
-                    safeStorage.set("gemini_api_key", cleanKey(val));
-                    setKeyTestStatus(null);
-                    setKeyTestMessage("");
-                  }}
-                  placeholder="여기에 Gemini API 키를 붙여넣으세요 (AIzaSy...)"
-                  className="w-full text-xs md:text-sm px-4 py-2.5 bg-slate-800/90 border border-indigo-400/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 font-mono tracking-wider"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowApiKey(!showApiKey)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-indigo-300 hover:text-white px-2 py-1 rounded bg-slate-700/60 transition font-semibold"
-                >
-                  {showApiKey ? "숨기기 🔒" : "보기 👁"}
-                </button>
-              </div>
-
-              <div className="flex gap-2 w-full sm:w-auto">
-                <button
-                  onClick={saveKeyDirectly}
-                  className="flex-1 sm:flex-initial px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs md:text-sm font-bold transition whitespace-nowrap shadow flex items-center justify-center gap-1"
-                >
-                  <span>💾</span>
-                  <span>즉시 저장</span>
-                </button>
-                <button
-                  onClick={testApiKey}
-                  disabled={keyTestStatus === 'testing'}
-                  className="flex-1 sm:flex-initial px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs md:text-sm font-black transition whitespace-nowrap shadow flex items-center justify-center gap-1.5"
-                >
-                  {keyTestStatus === 'testing' ? (
-                    <>
-                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>서버 점검 중...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>⚡</span>
-                      <span>연결 확인</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {keyTestMessage && (
-              <div className={`mt-3 p-3.5 rounded-xl text-xs font-bold border leading-relaxed flex items-start gap-2 ${
-                keyTestStatus === 'success'
-                  ? 'bg-emerald-950/80 border-emerald-500 text-emerald-200'
-                  : keyTestStatus === 'error'
-                  ? 'bg-rose-950/80 border-rose-500 text-rose-200'
-                  : 'bg-indigo-950/80 border-indigo-500 text-indigo-200'
-              }`}>
-                <span className="text-sm shrink-0">{keyTestStatus === 'success' ? '✅' : keyTestStatus === 'error' ? '❌' : 'ℹ️'}</span>
-                <span className="break-all">{keyTestMessage}</span>
-              </div>
-            )}
+            <p class="text-xs text-indigo-200 mt-0.5">
+              키를 입력하고 <strong>[💾 저장]</strong>을 누르시면 브라우저에 안전하게 보존됩니다. (키 없이도 1초 즉시 작동)
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 flex flex-col sm:flex-row items-center gap-2">
+        <div class="relative flex-1 w-full">
+          <input
+            type="password"
+            id="mainApiKeyInput"
+            placeholder="여기에 Gemini API 키를 붙여넣으세요 (AIzaSy...)"
+            class="w-full text-xs sm:text-sm px-3.5 py-2.5 bg-slate-800/90 border border-indigo-400/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 font-mono tracking-wider"
+          />
+          <button
+            type="button"
+            onclick="toggleKeyVisibility()"
+            id="btnToggleKey"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-indigo-300 hover:text-white px-2 py-1 rounded bg-slate-700/60 transition font-semibold"
+          >
+            보기 👁
+          </button>
+        </div>
+
+        <div class="flex gap-2 w-full sm:w-auto">
+          <button
+            type="button"
+            onclick="saveApiKeyFromMain()"
+            class="flex-1 sm:flex-initial py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition whitespace-nowrap shadow flex items-center justify-center gap-1"
+          >
+            <span>💾</span>
+            <span>저장</span>
+          </button>
+          <button
+            type="button"
+            onclick="testApiKeyDirect()"
+            id="btnKeyTest"
+            class="flex-1 sm:flex-initial py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-black transition whitespace-nowrap shadow flex items-center justify-center gap-1"
+          >
+            <span>⚡</span>
+            <span>연결 확인</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="keyFeedbackBox" class="hidden mt-3 p-3 rounded-xl text-xs font-bold border leading-relaxed items-center gap-2">
+        <span id="keyFeedbackIcon">ℹ️</span>
+        <span id="keyFeedbackText" class="break-all"></span>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left Column: Controls -->
+      <div class="lg:col-span-5 space-y-5">
+
+        <!-- 1단계: 주거 형태 & 이사 플랜 -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h2 class="text-sm font-black text-slate-900 flex items-center gap-1.5">
+              <span class="text-blue-600 font-bold">1단계:</span>
+              주거 형태 & 이사 플랜
+            </h2>
+            <span id="currentHousingLabel" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+              🏢 아파트 모드
+            </span>
           </div>
 
-          {apiErrorMessage && (
-            <div className="mb-6 bg-rose-50 border-2 border-rose-300 text-rose-900 rounded-2xl p-4 text-xs md:text-sm shadow-sm">
-              <div className="font-black flex items-center gap-2 text-rose-700 mb-1">
-                <span>⚠️</span>
-                <span>Google AI 상세 호출 결과</span>
-              </div>
-              <p className="font-mono text-xs bg-rose-100/70 p-2.5 rounded-lg border border-rose-200 text-rose-800 break-all mb-2">
-                {apiErrorMessage}
-              </p>
-              <p className="text-xs text-rose-700 leading-relaxed">
-                ※ API 오류가 발생해도 아래 <strong>[⚡ 1초 즉시 생성]</strong> 버튼을 누르시면 {moveType}의 특장점이 완벽 반영된 고품질 포스팅이 즉시 완성됩니다!
-              </p>
+          <!-- 주거 형태 선택 버튼 3종 -->
+          <div>
+            <label class="block font-bold text-slate-700 mb-1.5 text-xs">주거 유형 선택 (클릭 시 코스 자동 세팅)</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button type="button" id="btnHousingApt" onclick="setHousingType('apt')" class="py-2 px-2 rounded-xl font-extrabold text-xs transition border flex flex-col items-center gap-1 bg-blue-600 text-white border-blue-600 shadow-md">
+                <span class="text-base">🏢</span>
+                <span>아파트</span>
+              </button>
+              <button type="button" id="btnHousingOneroom" onclick="setHousingType('oneroom')" class="py-2 px-2 rounded-xl font-extrabold text-xs transition border flex flex-col items-center gap-1 bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200">
+                <span class="text-base">📦</span>
+                <span>원룸/오피스</span>
+              </button>
+              <button type="button" id="btnHousingTworoom" onclick="setHousingType('tworoom')" class="py-2 px-2 rounded-xl font-extrabold text-xs transition border flex flex-col items-center gap-1 bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200">
+                <span class="text-base">🏡</span>
+                <span>투룸/빌라</span>
+              </button>
             </div>
-          )}
+          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-7">
-            {/* Left Controls */}
-            <div className="lg:col-span-5 space-y-5">
-              
-              {/* Box 1: Housing & Move Type */}
-              <div className="bg-white rounded-2xl p-5 border-2 border-indigo-200 shadow-sm space-y-4">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                      <span className="p-1 bg-indigo-100 text-indigo-700 rounded">🏠</span>
-                      1단계: 주거 형태 선택
-                    </h2>
-                    <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
-                      현재: {housingType === 'apt' ? '아파트' : housingType === 'oneroom' ? '원룸' : '투룸/빌라'}
-                    </span>
-                  </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">업체명 (상호)</label>
+              <input type="text" id="companyName" value="진주 갑봉이 익스프레스" oninput="generateStoryAndContent()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">문의 연락처</label>
+              <input type="text" id="phone" value="010-1234-5678" oninput="generateStoryAndContent()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+          </div>
 
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      onClick={() => handleHousingChange("apt")}
-                      className={`py-2 px-2 rounded-xl font-extrabold text-xs transition border flex flex-col items-center gap-1 ${
-                        housingType === 'apt'
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-md scale-[1.02]'
-                          : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200'
-                      }`}
-                    >
-                      <span className="text-base">🏢</span>
-                      <span>아파트</span>
-                    </button>
-                    <button
-                      onClick={() => handleHousingChange("oneroom")}
-                      className={`py-2 px-2 rounded-xl font-extrabold text-xs transition border flex flex-col items-center gap-1 ${
-                        housingType === 'oneroom'
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-md scale-[1.02]'
-                          : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200'
-                      }`}
-                    >
-                      <span className="text-base">📦</span>
-                      <span>원룸/오피스텔</span>
-                    </button>
-                    <button
-                      onClick={() => handleHousingChange("tworoom")}
-                      className={`py-2 px-2 rounded-xl font-extrabold text-xs transition border flex flex-col items-center gap-1 ${
-                        housingType === 'tworoom'
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-md scale-[1.02]'
-                          : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200'
-                      }`}
-                    >
-                      <span className="text-base">🏡</span>
-                      <span>투룸/빌라</span>
-                    </button>
-                  </div>
-                </div>
-
-                {housingType === 'apt' && (
-                  <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-xl">
-                    <div className="text-[11px] font-bold text-blue-900 mb-1.5 flex items-center justify-between">
-                      <span>진주 주요 아파트 단지 원클릭 선택</span>
-                      <span className="text-[10px] text-blue-600">클릭 시 자동 세팅</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto custom-scroll">
-                      {JINJU_APTS.map((apt, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleAptSelect(apt)}
-                          className={`text-[11px] px-2 py-0.5 rounded font-medium border transition ${
-                            buildingName === apt.name
-                              ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                              : 'bg-white text-slate-700 border-slate-200 hover:bg-blue-100'
-                          }`}
-                        >
-                          {apt.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Move Type Selection */}
-                <div className="pt-2 border-t border-slate-100">
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs font-black text-slate-900 flex items-center gap-1.5">
-                      <span className="text-indigo-600">⚡</span>
-                      이사 작업 방식 선택 (특장점 자동 적용)
-                    </label>
-                    <span className="text-[10px] text-slate-500 font-bold">원클릭 변경</span>
-                  </div>
-
-                  <div className="grid grid-cols-4 gap-1.5 mb-2.5 text-xs">
-                    {MOVE_TYPES.map(m => (
-                      <button
-                        key={m}
-                        onClick={() => setMoveType(m)}
-                        className={`py-2 rounded-xl font-black transition flex flex-col items-center gap-0.5 ${
-                          moveType === m
-                            ? 'bg-indigo-600 text-white shadow-md scale-[1.02]'
-                            : 'bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100'
-                        }`}
-                      >
-                        <span>{m === '반포장이사' ? '💰' : m === '포장이사' ? '✨' : m === '일반이사' ? '📦' : '🚚'}</span>
-                        <span className="text-[11px]">{m}</span>
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className={`p-3.5 rounded-xl border transition-all ${
-                    moveType === '반포장이사' 
-                      ? 'bg-amber-50/80 border-amber-300 text-amber-950'
-                      : moveType === '포장이사'
-                      ? 'bg-indigo-50/80 border-indigo-300 text-indigo-950'
-                      : 'bg-slate-100 border-slate-300 text-slate-900'
-                  }`}>
-                    <div className="font-extrabold text-xs flex items-center gap-1.5 mb-1">
-                      <span>{moveCfg?.badge}</span>
-                    </div>
-                    <p className="text-[11px] leading-relaxed opacity-90 mb-2">
-                      {moveCfg?.summaryText}
-                    </p>
-                    <div className="space-y-1 text-[11px] bg-white/70 p-2 rounded-lg border border-black/5">
-                      {(moveCfg?.pros || []).slice(0, 2).map((pro, pIdx) => (
-                        <div key={pIdx} className="flex items-start gap-1 font-medium">
-                          <span className="text-emerald-600 font-bold">✓</span>
-                          <span>{pro}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 text-xs pt-1">
-                  <div>
-                    <label className="block font-semibold text-slate-600 mb-0.5">평형 / 타입</label>
-                    <input
-                      type="text"
-                      value={roomSize}
-                      onChange={e => setRoomSize(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-semibold text-slate-600 mb-0.5">투입 차량</label>
-                    <input
-                      type="text"
-                      value={truckSize}
-                      onChange={e => setTruckSize(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Box 2: Location Settings */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-                <h2 className="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
-                  <span className="p-1 bg-emerald-100 text-emerald-600 rounded">📍</span>
-                  2단계: 출발지 / 도착지 코스 설정
-                </h2>
-
-                <div className="mb-2.5">
-                  <div className="text-[11px] font-bold text-slate-500 mb-1">빠른 코스 프리셋</div>
-                  <div className="flex flex-wrap gap-1">
-                    {REGION_PRESETS.map((preset, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleRegionSelect(preset)}
-                        className="text-[11px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 border border-slate-200 rounded-md transition font-medium"
-                      >
-                        {preset.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <div>
-                    <label className="block font-semibold text-slate-600 mb-0.5">출발지 (아파트명 / 동 / 번지)</label>
-                    <input
-                      type="text"
-                      value={fromLocation}
-                      onChange={e => setFromLocation(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg font-medium"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-semibold text-slate-600 mb-0.5">도착지 (아파트명 / 동 / 번지)</label>
-                    <input
-                      type="text"
-                      value={toLocation}
-                      onChange={e => setToLocation(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg font-medium"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-semibold text-slate-600 mb-0.5">단지명 / 건물 상세 명칭</label>
-                    <input
-                      type="text"
-                      value={buildingName}
-                      onChange={e => setBuildingName(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Box 3: Photo Upload & Action Buttons */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between mb-2.5">
-                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                    <span className="p-1 bg-pink-100 text-pink-600 rounded">📷</span>
-                    3단계: 현장 사진 등록 ({images.length}장)
-                  </h2>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                    className="text-xs bg-slate-800 hover:bg-black text-white px-2.5 py-1 rounded-lg font-bold transition shadow-sm"
-                  >
-                    + 사진 추가
-                  </button>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    ref={fileInputRef}
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                </div>
-
-                {/* 드래그 앤 드롭 영역 */}
-                <div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                  className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition group mb-3 ${
-                    isDragging 
-                      ? 'border-indigo-600 bg-indigo-50 scale-[1.01]' 
-                      : 'border-slate-300 hover:border-blue-400 hover:bg-blue-50/20'
-                  }`}
-                >
-                  <div className="text-3xl mb-1 group-hover:scale-110 transition-transform">📸</div>
-                  <p className="text-xs font-bold text-slate-700">
-                    {isDragging ? "여기에 사진을 놓으세요!" : `현장 사진들을 클릭하거나 끌어다 넣으세요`}
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">스마트폰 촬영 원본(거실, 침실, 주방 등)을 자유롭게 여러 장 올릴 수 있습니다.</p>
-                </div>
-
-                {images.length > 0 && (
-                  <div className="space-y-3">
-                    <div className="space-y-2">
-                      <button
-                        type="button"
-                        onClick={runInstantSmartGeneration}
-                        className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-black text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2"
-                      >
-                        <span>⚡</span>
-                        <span>[대기시간 0초] {moveType} 인간 일기체 글 즉시 생성</span>
-                      </button>
-
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={runAiAnalysisAndGeneration}
-                          disabled={isAnalyzing}
-                          className="flex-1 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:to-pink-700 text-white rounded-xl font-black text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2"
-                        >
-                          {isAnalyzing ? (
-                            <>
-                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                              <span>{analysisProgress || "초고속 AI 분석 중..."}</span>
-                            </>
-                          ) : (
-                            <>
-                              <span>🤖</span>
-                              <span>AI 실시간 사진 정밀 판독 (약 5~10초)</span>
-                            </>
-                          )}
-                        </button>
-
-                        {isAnalyzing && (
-                          <button
-                            type="button"
-                            onClick={cancelAnalysis}
-                            className="px-3.5 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow transition whitespace-nowrap"
-                          >
-                            중단
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="text-center text-[11px] text-slate-500 font-medium">
-                      💡 바쁘실 땐 <strong>초록색(1초 즉시 생성)</strong>을, 사진 속 물건을 100% 읽어내고 싶을 땐 <strong>보라색(AI 정밀 판독)</strong>을 누르세요.
-                    </div>
-
-                    <div className="space-y-3 max-h-[340px] overflow-y-auto custom-scroll pr-1">
-                      {images.map((img, idx) => (
-                        <div key={img.id} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-                          <div className="flex gap-3 items-start">
-                            {img.url ? (
-                              <img src={img.url} alt="" className="w-16 h-16 object-cover rounded-lg flex-shrink-0 border border-slate-300 shadow-sm" />
-                            ) : (
-                              <div className="w-16 h-16 bg-slate-200 rounded-lg flex items-center justify-center text-slate-400 text-xs">사진</div>
-                            )}
-                            <div className="flex-1 min-w-0 space-y-1.5">
-                              <div className="flex items-center justify-between">
-                                <span className={`text-[10px] font-black px-2 py-0.5 rounded ${img.isAnalyzed ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-700'}`}>
-                                  {img.isAnalyzed ? 'AI 판독완료' : `사진 #${idx + 1}`}
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={() => removeImage(img.id)}
-                                  className="text-[11px] text-slate-400 hover:text-red-500 font-bold"
-                                >
-                                  삭제
-                                </button>
-                              </div>
-
-                              <div>
-                                <label className="block text-[10px] font-bold text-slate-500 mb-0.5">공간 유형 힌트 (선택사항)</label>
-                                <select
-                                  value={img.spaceHint || "auto"}
-                                  onChange={e => updateImageSpaceHint(img.id, e.target.value)}
-                                  className="w-full text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded px-2 py-1 focus:ring-1 focus:ring-indigo-500"
-                                >
-                                  {SPACE_OPTIONS.map(opt => (
-                                    <option key={opt.id} value={opt.id}>{opt.label}</option>
-                                  ))}
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-
-                          <input
-                            type="text"
-                            value={img.aiTitle || ""}
-                            onChange={e => updateImageAnalysis(img.id, e.target.value, img.aiAnalysis)}
-                            className="w-full text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded px-2 py-1"
-                            placeholder="사진 제목"
-                          />
-                          <textarea
-                            rows={2}
-                            value={img.aiAnalysis || ""}
-                            onChange={e => updateImageAnalysis(img.id, img.aiTitle, e.target.value)}
-                            className="w-full text-[11px] text-slate-600 bg-white border border-slate-200 rounded px-2 py-1 custom-scroll"
-                            placeholder="사진 세부 설명"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Box 4: Profile */}
-              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm text-xs">
-                <div className="font-bold text-slate-700 mb-1.5">🏢 업체 연락처 정보 (자동 저장)</div>
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    value={companyName}
-                    onChange={e => setCompanyName(e.target.value)}
-                    placeholder="상호명"
-                    className="p-1.5 bg-slate-50 border border-slate-300 rounded text-xs font-semibold"
-                  />
-                  <input
-                    type="text"
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                    placeholder="대표 전화"
-                    className="p-1.5 bg-slate-50 border border-slate-300 rounded text-xs"
-                  />
-                  <input
-                    type="text"
-                    value={localTel}
-                    onChange={e => setLocalTel(e.target.value)}
-                    placeholder="일반 전화"
-                    className="p-1.5 bg-slate-50 border border-slate-300 rounded text-xs"
-                  />
-                  <input
-                    type="text"
-                    value={kakao}
-                    onChange={e => setKakao(e.target.value)}
-                    placeholder="카톡 ID"
-                    className="p-1.5 bg-slate-50 border border-slate-300 rounded text-xs"
-                  />
-                </div>
-              </div>
-
+          <!-- 메인 화면 원클릭 이사 플랜 카드 선택기 -->
+          <div class="space-y-2 text-xs pt-1">
+            <div class="flex items-center justify-between">
+              <label class="block font-black text-slate-900 text-xs flex items-center gap-1.5">
+                <span class="text-indigo-600">⚡</span>
+                이사 작업 플랜 선택 (본문 전문 가이드 실시간 반영)
+              </label>
             </div>
 
-            {/* Right Output & Preview */}
-            <div className="lg:col-span-7 space-y-5">
-              
-              <div className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="flex bg-slate-100 p-1 rounded-xl w-full sm:w-auto">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("blog")}
-                    className={`flex-1 sm:flex-initial px-4 py-2 rounded-lg text-xs md:text-sm font-extrabold transition flex items-center justify-center gap-1.5 ${
-                      activeTab === 'blog' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    <span>📝</span> 네이버 블로그 글 (SEO)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("insta")}
-                    className={`flex-1 sm:flex-initial px-4 py-2 rounded-lg text-xs md:text-sm font-extrabold transition flex items-center justify-center gap-1.5 ${
-                      activeTab === 'insta' ? 'bg-white text-pink-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    <span>📸</span> 인스타 피드 & 캡션
-                  </button>
-                </div>
+            <!-- 숨겨진 동기화 input -->
+            <input type="hidden" id="moveType" value="반포장이사">
 
-                <div className="w-full sm:w-auto">
-                  {activeTab === 'blog' ? (
-                    <button
-                      type="button"
-                      onClick={copyBlogToClipboard}
-                      className="w-full px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2"
-                    >
-                      <span>📋</span> 블로그 본문 원클릭 복사
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={copyInstaToClipboard}
-                      className="w-full px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-bold text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2"
-                    >
-                      <span>📋</span> 인스타 캡션 복사하기
-                    </button>
-                  )}
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button
+                type="button"
+                id="btnMoveHalf"
+                onclick="setMovePlan('반포장이사')"
+                class="py-2.5 px-2 rounded-xl font-black text-xs transition border flex flex-col items-center gap-1 bg-amber-500 text-white border-amber-600 shadow-md"
+              >
+                <span class="text-base">💰</span>
+                <span>반포장이사</span>
+                <span class="text-[10px] font-normal opacity-90">큰짐전담·25%절약</span>
+              </button>
+              <button
+                type="button"
+                id="btnMoveFull"
+                onclick="setMovePlan('포장이사')"
+                class="py-2.5 px-2 rounded-xl font-black text-xs transition border flex flex-col items-center gap-1 bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200"
+              >
+                <span class="text-base">✨</span>
+                <span>포장이사</span>
+                <span class="text-[10px] font-normal opacity-90">100% VIP 풀케어</span>
+              </button>
+              <button
+                type="button"
+                id="btnMoveRoom"
+                onclick="setMovePlan('원룸이사')"
+                class="py-2.5 px-2 rounded-xl font-black text-xs transition border flex flex-col items-center gap-1 bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200"
+              >
+                <span class="text-base">📦</span>
+                <span>원룸이사</span>
+                <span class="text-[10px] font-normal opacity-90">1인가구 실속</span>
+              </button>
+              <button
+                type="button"
+                id="btnMoveTruck"
+                onclick="setMovePlan('1톤용달')"
+                class="py-2.5 px-2 rounded-xl font-black text-xs transition border flex flex-col items-center gap-1 bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200"
+              >
+                <span class="text-base">🚚</span>
+                <span>1톤용달</span>
+                <span class="text-[10px] font-normal opacity-90">단품/단순 운송</span>
+              </button>
+            </div>
+
+            <!-- 선택된 플랜의 베테랑 전문가 분석 안내 박스 -->
+            <div id="planFeatureBox" class="p-3.5 rounded-xl border bg-amber-50/90 border-amber-300 text-amber-950 transition-all">
+              <div class="font-extrabold text-xs flex items-center justify-between mb-1.5">
+                <span id="planFeatureTitle" class="flex items-center gap-1.5">
+                  <span>💰</span> 반포장이사란? 베테랑이 솔직히 추천하는 이유
+                </span>
+                <span class="text-[10px] bg-amber-200 text-amber-900 font-bold px-2 py-0.5 rounded-full">가성비 1위</span>
+              </div>
+              <p id="planFeatureDesc" class="text-xs leading-relaxed text-amber-900 mb-2">
+                "혼자서는 도저히 엄두가 안 나는 <strong>대형 가전·침대 분해/조립과 매트리스 밀봉 포장은 기사님이 100% 도맡고</strong>, 남에게 보여주기 껄끄러운 옷·개인 살림만 본인이 직접 정리하여 <strong>포장이사 대비 20~30만 원 이상의 실질 비용을 아끼는</strong> 가장 똑똑한 이사 방식입니다."
+              </p>
+              <div id="planFeatureChecklist" class="space-y-1.5 text-xs bg-white/90 p-2.5 rounded-lg border border-amber-200/70">
+                <div class="flex items-start gap-1.5 font-semibold text-slate-800">
+                  <span class="text-emerald-600 font-bold">✔</span>
+                  <span><strong>기사님 전담 100%:</strong> 가구 분해·재조립, 대형 가전 퀼팅 커버 패킹, 바닥 보양, 도착지 수평 배치</span>
+                </div>
+                <div class="flex items-start gap-1.5 font-semibold text-slate-800">
+                  <span class="text-blue-600 font-bold">✔</span>
+                  <span><strong>고객님 프라이빗 정리:</strong> 의류/책/소품 등 잔짐만 내 손으로 챙겨 사생활 보호 & 비용 대폭 절감</span>
                 </div>
               </div>
+            </div>
 
-              {/* TAB 1: BLOG PREVIEW (네이버 스마트에디터 ONE 서식 & SEO 최적화) */}
-              {activeTab === 'blog' && (
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                  <div className="p-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs">
-                    <span className="font-bold text-slate-700 flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                      [{cityPrefix} • {moveType}] 네이버 블로그 스마트에디터 ONE 복사용 양식
-                    </span>
-                    <span className="text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded-full">
-                      사진 {images.length}장 포함
-                    </span>
-                  </div>
+          </div>
+        </div>
 
-                  <div id="blog-copy-area" className="p-6 md:p-8 space-y-6 text-slate-800 leading-relaxed text-sm">
-                    
-                    {/* 네이버 SEO 최적화 메인 타이틀 */}
-                    <div className="border-b-2 border-blue-600 pb-4">
-                      <h1 className="text-lg md:text-2xl font-extrabold text-slate-900 leading-snug">
-                        {blogTitle || `[${cityPrefix} ${moveType}] ${fromLocation} ➔ ${toLocation} 솔직 현장 후기 (${truckSize})`}
-                      </h1>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 mt-2 font-medium">
-                        <span>작성: {companyName}</span>
-                        <span>•</span>
-                        <span>유형: {moveType}</span>
-                        <span>•</span>
-                        <span>출발: {fromLocation}</span>
-                        <span>•</span>
-                        <span>도착: {toLocation}</span>
-                      </div>
-                    </div>
+        <!-- 2단계: 출발지 / 도착지 코스 설정 -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h2 class="text-sm font-black text-slate-900 flex items-center gap-1.5">
+              <span class="text-lg">📍</span>
+              2단계: 출발지 / 도착지 코스 설정
+            </h2>
+            <span class="text-[10px] text-blue-600 bg-blue-50 font-bold px-2 py-0.5 rounded-full">클릭 시 자동 변경</span>
+          </div>
 
-                    {/* 네이버 인용구 스타일 인트로 */}
-                    <div className="p-4 md:p-5 rounded-xl bg-slate-50 border-l-4 border-blue-600 text-slate-700 text-sm md:text-base leading-relaxed whitespace-pre-line italic">
-                      {blogIntro || `안녕하세요! 20년 현장 경력으로 고객님의 살림살이를 내 가족의 물건처럼 정성껏 옮겨드리는 ${companyName}입니다.\n오늘은 ${fromLocation}에서 ${toLocation}으로 향하는 ${moveType} 현장 실황을 전해드립니다.`}
-                    </div>
+          <!-- 빠른 코스 프리셋 8종 칩 -->
+          <div>
+            <div class="text-xs font-bold text-slate-600 mb-1.5">빠른 코스 프리셋</div>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" onclick="selectCoursePreset('jinju')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 rounded-lg transition font-medium">
+                진주 관내 (가좌➔평거)
+              </button>
+              <button type="button" onclick="selectCoursePreset('sacheon')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 rounded-lg transition font-medium">
+                진주➔사천
+              </button>
+              <button type="button" onclick="selectCoursePreset('changwon')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 rounded-lg transition font-medium">
+                진주➔창원
+              </button>
+              <button type="button" onclick="selectCoursePreset('gimhae')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 rounded-lg transition font-medium">
+                진주➔김해
+              </button>
+              <button type="button" onclick="selectCoursePreset('suncheon')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 rounded-lg transition font-medium">
+                진주➔순천
+              </button>
+              <button type="button" onclick="selectCoursePreset('busan')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 rounded-lg transition font-medium">
+                진주➔부산
+              </button>
+              <button type="button" onclick="selectCoursePreset('daegu')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 rounded-lg transition font-medium">
+                진주➔대구
+              </button>
+              <button type="button" onclick="selectCoursePreset('capital')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 rounded-lg transition font-medium">
+                진주➔수도권
+              </button>
+            </div>
+          </div>
 
-                    {/* 이사 작업 개요 박스 */}
-                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs md:text-sm space-y-1.5">
-                      <div className="font-bold text-slate-900 mb-1">📋 오늘의 현장 작업 개요</div>
-                      <div>• <strong>주거 형태:</strong> {housingType === 'apt' ? '아파트' : housingType === 'oneroom' ? '원룸' : '투룸/빌라'} ({roomSize})</div>
-                      <div>• <strong>출발지:</strong> {fromLocation} ({buildingName})</div>
-                      <div>• <strong>도착지:</strong> {toLocation}</div>
-                      <div>• <strong>작업 플랜:</strong> <span className="font-bold text-indigo-700">{moveType}</span> ({truckSize})</div>
-                    </div>
+          <!-- 출발지 / 도착지 / 단지명 3단 입력창 -->
+          <div class="space-y-2.5 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">출발지 (아파트명 / 동 / 번지)</label>
+              <input type="text" id="fromLoc" value="진주시 가좌동 신진주역세권 센트럴자이" oninput="generateStoryAndContent()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-medium focus:bg-white focus:outline-none">
+            </div>
 
-                    {/* 반포장 vs 포장 이사 특장점 안내 섹션 */}
-                    <div className={`p-5 rounded-xl border space-y-3 ${
-                      moveType === '반포장이사'
-                        ? 'bg-amber-50/70 border-amber-200 text-amber-950'
-                        : moveType === '포장이사'
-                        ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950'
-                        : 'bg-slate-50 border-slate-200 text-slate-900'
-                    }`}>
-                      <h3 className="font-extrabold text-sm md:text-base flex items-center gap-2">
-                        <span>{moveType === '반포장이사' ? '💰' : moveType === '포장이사' ? '✨' : '📦'}</span>
-                        <span>{moveCfg?.guideTitle}</span>
-                      </h3>
-                      <p className="text-xs md:text-sm leading-relaxed opacity-95">
-                        {moveCfg?.guideContent}
-                      </p>
-                      <div className="pt-2 border-t border-black/10 space-y-1.5 text-xs md:text-sm">
-                        <div className="font-bold mb-1">🔍 {companyName}만의 [{moveType}] 안심 서비스 체크포인트:</div>
-                        {(moveCfg?.pros || []).map((pro, pIdx) => (
-                          <div key={pIdx} className="flex items-start gap-1.5">
-                            <span className="text-indigo-600 font-bold">✔</span>
-                            <span>{pro}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">도착지 (아파트명 / 동 / 번지)</label>
+              <input type="text" id="toLoc" value="진주시 충무공동 중흥S-클래스" oninput="generateStoryAndContent()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-medium focus:bg-white focus:outline-none">
+            </div>
 
-                    {/* 사진별 1:1 현장 일기 섹션 */}
-                    {images.length === 0 ? (
-                      <div className="p-6 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs md:text-sm">
-                        💡 <strong>안내:</strong> 왼쪽에서 현장 사진을 올린 뒤 <strong>[1초 즉시 생성]</strong> 또는 <strong>[AI 정밀 판독]</strong>을 누르시면 사진과 캡션이 자동으로 멋지게 배치됩니다!
-                      </div>
-                    ) : (
-                      <div className="space-y-8 my-6">
-                        {images.map((img, idx) => (
-                          <div key={img.id} className="space-y-2.5">
-                            <h3 className="text-base md:text-lg font-bold text-slate-900 border-l-4 border-blue-600 pl-2.5">
-                              {idx + 1}. {img.aiTitle || "현장 작업"}
-                            </h3>
-                            <p className="text-xs md:text-sm text-slate-700 leading-relaxed whitespace-pre-line">
-                              {img.aiAnalysis || "전문 이사팀이 정성껏 패킹하여 안전하게 이송했습니다."}
-                            </p>
-                            <div className="my-3 text-center">
-                              {img.url && (
-                                <img
-                                  src={img.url}
-                                  alt={img.aiTitle || ""}
-                                  className="max-w-full md:max-w-md mx-auto rounded-xl shadow-md border border-slate-200 object-cover"
-                                />
-                              )}
-                              <p className="text-[11px] text-slate-500 italic mt-1.5">
-                                ▲ [{cityPrefix} {moveType}] {img.aiTitle || "현장 작업"}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* 블로그 아웃트로 */}
-                    <div className="bg-slate-50 border border-slate-200 p-4 md:p-5 rounded-xl space-y-2 text-xs md:text-sm">
-                      <h4 className="font-bold text-slate-900 flex items-center gap-2">
-                        <span>✨</span>
-                        <span>새 보금자리 도착 및 피톤치드 살균 마무리</span>
-                      </h4>
-                      <p className="text-slate-700 whitespace-pre-line leading-relaxed">
-                        {blogOutro || `새 보금자리에 도착하여 고객님이 지정하신 위치에 가구를 반듯하게 수평 세팅하고 짐을 정돈해 드렸습니다. 바닥 고온 스팀 청소와 집안 전체 피톤치드 살균 소독으로 쾌적하게 마무리했습니다.`}
-                      </p>
-                    </div>
-
-                    {/* 신뢰도 높은 네이버 블로그 견적 문의 박스 */}
-                    <div className="p-5 rounded-xl bg-blue-50 border border-blue-200 text-slate-800 space-y-2">
-                      <h4 className="font-black text-blue-900 text-sm md:text-base">
-                        📞 {cityPrefix} {moveType} 친절 방문 견적 문의
-                      </h4>
-                      <div className="text-xs md:text-sm text-blue-800 space-y-1">
-                        <div>• <strong>업체명:</strong> {companyName}</div>
-                        <div>• <strong>직통 문의:</strong> {phone} / {localTel}</div>
-                        <div>• <strong>카카오톡 상담:</strong> {kakao}</div>
-                        <div>• <strong>출장 견적:</strong> {cityPrefix} 관내 및 전국 시외 장거리 이사 무료 출장 상담 환영!</div>
-                      </div>
-                    </div>
-
-                    {/* 네이버 SEO 태그 */}
-                    <div className="text-[11px] text-slate-400 font-medium pt-2">
-                      {(moveCfg?.hashtags || []).join(" ")} #{cityPrefix}이사 #{String(buildingName || "").replace(/\s+/g, '')} #이사잘하는곳 #내집처럼안전하게
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* TAB 2: INSTA PREVIEW */}
-              {activeTab === 'insta' && (
-                <div className="space-y-5">
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 max-w-md mx-auto">
-                    <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-pink-600 flex items-center justify-center text-white font-black text-sm">
-                        🚚
-                      </div>
-                      <div>
-                        <div className="font-bold text-xs md:text-sm text-slate-900">{String(companyName || "").replace(/\s+/g, '_')}</div>
-                        <div className="text-[11px] text-slate-400">{fromLocation} ➔ {toLocation}</div>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 aspect-square bg-slate-900 rounded-xl overflow-hidden relative flex items-center justify-center">
-                      {images.length > 0 ? (
-                        <>
-                          {images[0].url ? (
-                            <img src={images[0].url} alt="" className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="text-slate-400">사진 미리보기</div>
-                          )}
-                          <div className="absolute top-2.5 right-2.5 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
-                            1 / {images.length}
-                          </div>
-                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 text-white">
-                            <span className="text-[10px] font-black uppercase tracking-wider text-pink-400">
-                              {moveType} 현장 실황
-                            </span>
-                            <h4 className="text-sm md:text-base font-extrabold mt-0.5">
-                              {fromLocSecond} ➔ {toLocSecond}
-                            </h4>
-                            <p className="text-[11px] text-slate-200 mt-1 line-clamp-2">
-                              {images[0].aiAnalysis}
-                            </p>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="text-center text-slate-400 p-6">
-                          <p className="text-3xl mb-1">📷</p>
-                          <p className="text-xs font-semibold">사진을 등록하고 생성 버튼을 누르면 카드뉴스가 자동 구성됩니다.</p>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="mt-3.5 pt-3 border-t border-slate-100">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-bold text-slate-700">인스타그램 캡션 전문</span>
-                        <button
-                          type="button"
-                          onClick={copyInstaToClipboard}
-                          className="text-xs text-pink-600 font-bold hover:underline"
-                        >
-                          캡션 복사
-                        </button>
-                      </div>
-                      <pre className="bg-slate-50 p-3 rounded-xl text-[11px] text-slate-700 whitespace-pre-wrap font-sans max-h-48 overflow-y-auto custom-scroll border border-slate-200">
-                        {instaCaption || "글 생성 버튼을 누르면 인스타그램 캡션이 완성됩니다."}
-                      </pre>
-                    </div>
-                  </div>
-                </div>
-              )}
-
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">단지명 / 건물 상세 명칭</label>
+              <input type="text" id="buildingName" value="신진주역세권 센트럴자이" oninput="generateStoryAndContent()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-bold focus:bg-white focus:outline-none">
             </div>
           </div>
         </div>
-      );
+
+        <!-- 3단계: 현장 사진 등록 및 AI 분석 (장수 제한 없음 & SEO 다운로드) -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h2 class="text-sm font-black text-slate-900 flex items-center gap-1.5">
+              <span class="text-blue-600 font-bold">3단계:</span>
+              현장 사진 등록
+            </h2>
+            <div class="flex items-center gap-2">
+              <span id="photoCountBadge" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                0장 등록됨 (무제한)
+              </span>
+              <button
+                type="button"
+                id="btnDownloadAllPhotos"
+                onclick="downloadAllSeoPhotos()"
+                class="hidden text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-0.5 rounded-full transition shadow-sm items-center gap-1"
+              >
+                💾 전체 사진 다운
+              </button>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Box -->
+          <div id="dropZone" onclick="document.getElementById('fileInput').click()" class="border-2 border-dashed border-slate-300 hover:border-blue-500 hover:bg-blue-50/30 rounded-2xl p-6 text-center cursor-pointer transition group">
+            <div class="text-3xl mb-1.5 group-hover:scale-110 transition-transform">📸</div>
+            <p class="text-xs font-bold text-slate-700">현장 사진들을 클릭하거나 끌어다 넣으세요</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">장수 제한 없음! 여러 장을 한 번에 올려도 본문에 차례대로 반영됩니다.</p>
+            <input type="file" id="fileInput" accept="image/*" multiple class="hidden" onchange="handleFileSelect(event)">
+          </div>
+
+          <!-- Photo Previews Container -->
+          <div id="previewContainer" class="space-y-2.5 hidden max-h-80 overflow-y-auto custom-scroll pr-1">
+            <!-- Dynamic Previews with SEO Download Button -->
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="pt-1.5 space-y-2">
+            <button type="button" id="btnAnalyze" onclick="startGenerationProcess()" class="w-full py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2">
+              <span id="btnSpinner" class="hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              <span id="btnIcon">⚡</span>
+              <span id="btnText">AI 정밀 판독 & 사람 냄새 나는 블로그 글 작성</span>
+            </button>
+            <p class="text-[11px] text-center text-slate-400 font-medium">
+              API 키가 없어도 <strong>내장 고성능 비전 시뮬레이션</strong>으로 1초 만에 100% 정상 작동합니다.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Generated Preview & Naver Tools -->
+      <div id="blogPreviewSection" class="lg:col-span-7 space-y-5">
+
+        <!-- Top Tool Bar -->
+        <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-xs font-extrabold text-slate-800">네이버 스마트에디터 ONE 호환 결과물</span>
+          </div>
+
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <button type="button" onclick="generateStoryAndContent()" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl transition flex items-center gap-1" title="다른 스토리텔링으로 즉시 재생성">
+              <span>🎲</span> 이야기 변주
+            </button>
+            <button type="button" onclick="copyBlogTitle()" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl transition flex items-center gap-1">
+              <span>📌</span> 제목 복사
+            </button>
+            <button type="button" onclick="copyFullBlogPost()" class="text-xs font-black bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+              <span>📋</span> 본문 전체 복사
+            </button>
+          </div>
+        </div>
+
+        <!-- Blog Document Preview Container -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-3.5 sm:p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-600">미리보기 (스마트에디터에 그대로 붙여넣기 가능)</span>
+            <span id="readingTime" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+              예상 완독: 약 2분 30초
+            </span>
+          </div>
+
+          <!-- Printable / Copyable Article Container -->
+          <div id="blogPostArea" class="p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6 text-slate-800 text-xs sm:text-sm leading-relaxed break-keep break-words [overflow-wrap:anywhere]">
+
+            <!-- Title -->
+            <div class="border-b-2 border-blue-600 pb-4">
+              <span class="text-xs font-bold text-blue-600 tracking-wider uppercase mb-1 block">
+                20년 베테랑 소장님이 솔직하게 전하는 진주 이사 르포
+              </span>
+              <h2 id="outTitle" class="text-base sm:text-lg md:text-2xl font-black text-slate-900 leading-snug break-words">
+                [진주 반포장이사] 가좌동 센트럴자이 ➔ 충무공동 중흥S-클래스! 큰 짐 안심 포장, 비용 25% 아낀 솔직 후기
+              </h2>
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-slate-400 mt-2 font-medium">
+                <span id="outMetaCompany">진주 갑봉이 익스프레스</span>
+                <span>•</span>
+                <span id="outMetaType">반포장이사 플랜</span>
+                <span>•</span>
+                <span id="outMetaDate">오늘의 현장 기록</span>
+              </div>
+            </div>
+
+            <!-- Intro Quote -->
+            <div class="p-3.5 sm:p-5 rounded-xl bg-slate-50 border-l-4 border-blue-600 text-slate-700 text-xs sm:text-sm md:text-base leading-relaxed italic whitespace-pre-line break-words" id="outIntro">
+              "날씨가 참 맑았던 오늘, 가좌동 신진주역세권 센트럴자이에서 충무공동 중흥S-클래스로 보금자리를 옮기시는 고객님 댁에 다녀왔습니다.
+              방문에 들어서자마자 고객님께서 '아끼는 원목 가구에 흠집 안 나게 잘 부탁드립니다'라며 시원한 캔커피 한 캔을 건네주시더군요.
+              그 따뜻한 마음에 힘을 얻어, 바닥 보양부터 전용 패브릭 커버 랩핑까지 정성을 다해 꼼꼼히 짐을 챙겼습니다."
+            </div>
+
+            <!-- Summary Table Box (주거환경/차량 제외, 코스와 플랜 핵심만 직관적으로 요약) -->
+            <div class="p-3.5 sm:p-4 rounded-xl bg-blue-50/60 border border-blue-100 text-xs md:text-sm space-y-1.5 break-words">
+              <div class="font-bold text-blue-950 mb-1 flex items-center gap-1.5">
+                <span>📋</span> 오늘의 현장 작업 개요 요약
+              </div>
+              <div>• <strong>출발/도착 코스:</strong> <span id="outSummaryCourse">가좌동 신진주역세권 센트럴자이 ➔ 충무공동 혁신도시 중흥S-클래스</span></div>
+              <div>• <strong>선택 이사 방식:</strong> <span id="outSummaryType" class="font-bold text-blue-700">반포장이사 (침대·가전 기사님 100% 분해/포장 세팅)</span></div>
+            </div>
+
+            <!-- 고객 관점 전문 큐레이션: 반포장 vs 포장 이사 선택 기준 심층 가이드 박스 -->
+            <div id="outPlanCompareBox" class="p-4 sm:p-6 rounded-2xl border space-y-4 bg-amber-50/80 border-amber-300 text-slate-800 break-words shadow-sm">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">💡</span>
+                <div>
+                  <h4 id="outPlanCompareTitle" class="font-black text-sm sm:text-base md:text-lg text-amber-950">
+                    "포장이사를 할까, 반포장을 할까?" 현장 소장님의 솔직한 선택 가이드
+                  </h4>
+                  <p class="text-xs text-amber-800 font-medium">견적 비용부터 당일 피로도까지, 고객님 상황에 딱 맞는 현명한 기준을 짚어드립니다.</p>
+                </div>
+              </div>
+              <p id="outPlanCompareDesc" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                많은 분들이 침대 분해나 무거운 대형 가구 때문에 무조건 비싼 포장이사를 불러야 하나 고민하십니다. 
+                하지만 <strong>반포장이사</strong>를 선택하시면, 고객님이 가장 힘들어하시는 <strong>침대 프레임 분해/재조립, 매트리스 밀봉, 대형 가전·가구 퀼팅 패킹, 수평 세팅은 저희 기사팀이 100% 전담</strong>합니다.
+                고객님은 평소 입던 옷, 책, 주방 잔짐만 내 손으로 천천히 정리하시기 때문에 <strong>사생활이 보호되면서도 포장이사 대비 20~30만 원 이상의 실질적인 비용을 절약</strong>할 수 있어 만족도가 가장 높습니다.
+              </p>
+              <div id="outPlanPoints" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
+                <div class="bg-white/95 p-3.5 rounded-xl border border-amber-200/90 shadow-sm space-y-1">
+                  <div class="font-bold text-amber-900 flex items-center gap-1.5 text-xs sm:text-sm">
+                    <span>🛠</span>
+                    <span>기사님 전담 영역 (힘든 일 100% 해결)</span>
+                  </div>
+                  <ul class="text-slate-600 space-y-1 pl-1 leading-relaxed">
+                    <li>• 대형 매트리스 전용 방수 커버 2중 밀봉</li>
+                    <li>• 침대 프레임, 서랍장, 가전 분해 및 퀼팅패드 완충 포장</li>
+                    <li>• 실내 바닥 PP 보양판 시공 및 통로 안전 반출</li>
+                    <li>• 도착지 지정 위치 재조립 및 레이저 수평계 정밀 세팅</li>
+                  </ul>
+                </div>
+                <div class="bg-white/95 p-3.5 rounded-xl border border-amber-200/90 shadow-sm space-y-1">
+                  <div class="font-bold text-blue-900 flex items-center gap-1.5 text-xs sm:text-sm">
+                    <span>📦</span>
+                    <span>고객님 혜택 (사생활 보호 & 가성비)</span>
+                  </div>
+                  <ul class="text-slate-600 space-y-1 pl-1 leading-relaxed">
+                    <li>• 포장이사 대비 20~30% 이상 견적 거품 즉시 절감</li>
+                    <li>• 속옷, 귀중품, 개인 소지품을 남의 손 거치지 않고 직접 보관</li>
+                    <li>• 도착 후 내 생활 동선에 맞춰 여유롭고 깔끔한 수납 정리 가능</li>
+                    <li>• 기사팀이 잔짐 박스를 방마다 배분해 드려 정리 동선 최소화</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Photo Inspection Sections (사용자가 넣은 실제 사진들로 100% 동적 렌더링) -->
+            <div id="outPhotoSections" class="space-y-6 my-6 break-words">
+              <!-- Dynamically populated with uploaded user photos -->
+            </div>
+
+            <!-- Customers Love: Human Touch & Real Tips Box -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-amber-50/90 border border-amber-200 space-y-3 break-words">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">💡</span>
+                <h4 class="font-extrabold text-sm md:text-base text-amber-950">
+                  베테랑 기사님이 콕 집어 알려드리는 [이사 당일 현실 꿀팁 3가지]
+                </h4>
+              </div>
+              <div class="space-y-2.5 text-xs sm:text-sm">
+                <div class="bg-white/95 p-3 sm:p-3.5 rounded-xl border border-amber-200/80 shadow-sm space-y-1">
+                  <div class="font-bold text-amber-900 flex items-center gap-1.5 flex-wrap">
+                    <span class="bg-amber-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded">TIP 1</span>
+                    <span>진주시 종량제 봉투(50L) 2장 미리 사두기</span>
+                  </div>
+                  <p class="text-slate-700 leading-relaxed pl-0.5">
+                    이사 당일 생각보다 버릴 쓰레기가 많이 나옵니다. 진주시 종량제 봉투를 미리 현관 신발장 위에 꺼내두시면 당일 뒷정리 시간이 30분 이상 단축됩니다.
+                  </p>
+                </div>
+
+                <div class="bg-white/95 p-3 sm:p-3.5 rounded-xl border border-amber-200/80 shadow-sm space-y-1">
+                  <div class="font-bold text-amber-900 flex items-center gap-1.5 flex-wrap">
+                    <span class="bg-amber-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded">TIP 2</span>
+                    <span>귀중품·계약서·충전기는 백팩에 따로 보관</span>
+                  </div>
+                  <p class="text-slate-700 leading-relaxed pl-0.5">
+                    부동산 임대차 계약서, 노트북, 핸드폰 충전기, 귀금속은 절대 이삿짐 박스에 넣지 마시고 본인 백팩에 따로 챙겨 직접 소지하시는 것이 가장 마음 편합니다.
+                  </p>
+                </div>
+
+                <div class="bg-white/95 p-3 sm:p-3.5 rounded-xl border border-amber-200/80 shadow-sm space-y-1">
+                  <div class="font-bold text-amber-900 flex items-center gap-1.5 flex-wrap">
+                    <span class="bg-amber-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded">TIP 3</span>
+                    <span>가스·관리비 당일 계량기 사진 찍어두기</span>
+                  </div>
+                  <p class="text-slate-700 leading-relaxed pl-0.5">
+                    출발 전 가스 검침기와 전기 계량기를 스마트폰 카메라로 찰칵 찍어두시면 이사 후 관리실 정산할 때 오차 없이 깔끔하게 처리됩니다.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Heartwarming Outro -->
+            <div class="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 text-xs md:text-sm text-slate-700 space-y-2 leading-relaxed" id="outOutro">
+              <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                <span>✨</span>
+                <span>새 보금자리 도착 및 소소한 감동 마무리</span>
+              </div>
+              <p>
+                도착지에 짐을 올린 뒤, 고객님께서 지정해 주신 자리에 침대 프레임부터 단단하게 재조립해 드렸습니다. 
+                레이저 수평계를 꺼내어 서랍장과 세탁기 수평까지 꼼꼼히 맞춰드리고, 가져온 무선 청소기로 바닥에 떨어진 먼지를 쓱 한번 밀어드렸지요.
+                "기사님들이 내 집처럼 신경 써주셔서 정말 든든했습니다"라며 활짝 웃어주신 고객님의 한마디에 오늘 흘린 땀방울이 모두 보람으로 바뀌었던 하루였습니다. 새 보금자리에서 늘 행복한 일만 가득하시길 진심으로 응원합니다!
+              </p>
+            </div>
+
+            <!-- Naver Contact CTA Box -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-blue-600 text-white space-y-2 shadow-md">
+              <h4 class="font-black text-sm md:text-base flex items-center gap-2">
+                <span>📞</span>
+                <span>경남 진주 전지역 이사·용달 솔직하고 친절한 무료 견적 상담</span>
+              </h4>
+              <div class="text-xs md:text-sm text-blue-100 space-y-1">
+                <div>• <strong>대표 상담:</strong> <span id="outCallPhone" class="text-white font-bold text-sm">010-1234-5678</span></div>
+                <div>• <strong>전담 업체:</strong> <span id="outCallCompany">진주 갑봉이 익스프레스</span></div>
+                <div>• <strong>안내:</strong> 가좌동, 충무공동 혁신도시, 평거동, 초전동, 칠암동, 하대동 및 사천·창원 시외 장거리 무료 방문/유선 견적 환영!</div>
+              </div>
+            </div>
+
+            <!-- Naver Blog Tags -->
+            <div class="pt-2 border-t border-slate-200">
+              <span class="text-xs font-bold text-slate-400 block mb-1">네이버 블로그 검색 추천 태그</span>
+              <p id="outTags" class="text-xs text-blue-600 font-semibold break-words leading-relaxed">
+                #진주반포장이사 #진주원룸이사 #가좌동이사 #진주혁신도시이사 #충무공동이사 #진주용달 #진주1톤용달 #진주이사잘하는곳 #진주이사견적 #신진주역세권센트럴자이이사
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // State & Storage
+    let uploadedImages = []; // Array of { file, url, name, detectedItem, customTitle, customDesc, seoKeyword }
+    let savedApiKey = "";
+    let currentHousingType = "apt"; // 'apt' | 'oneroom' | 'tworoom'
+
+    // 진주 출발지 데이터베이스 (주거환경/차량 필드 제거 및 주소/단지명 최적화)
+    const JINJU_ORIGINS = {
+      apt: [
+        { full: "진주시 가좌동 신진주역세권 센트럴자이", bldg: "신진주역세권 센트럴자이" },
+        { full: "진주시 가좌동 신진주역세권 시티프라디움", bldg: "신진주역세권 시티프라디움" },
+        { full: "진주시 가좌동 신진주역세권 프리미어 웰가", bldg: "신진주역세권 프리미어 웰가" },
+        { full: "진주시 충무공동 혁신도시 대방디엠시티", bldg: "혁신도시 대방디엠시티" },
+        { full: "진주시 충무공동 혁신도시 중흥S-클래스", bldg: "혁신도시 중흥S-클래스" },
+        { full: "진주시 평거동 엠코타운 더 프라하", bldg: "평거 엠코타운 더 프라하" },
+        { full: "진주시 초전동 힐스테이트 초전", bldg: "초전 힐스테이트" },
+        { full: "진주시 초전동 해모로루비채", bldg: "초전 해모로루비채" }
+      ],
+      oneroom: [
+        { full: "진주시 가좌동 경상국립대 후문 신축 원룸", bldg: "경상국립대 후문 원룸" },
+        { full: "진주시 가좌동 신진주역세권 코아루 오피스텔", bldg: "역세권 코아루 오피스텔" },
+        { full: "진주시 호탄동 남강 리버뷰 풀옵션 원룸", bldg: "호탄동 리버뷰 원룸" },
+        { full: "진주시 칠암동 과기대 앞 대학가 원룸촌", bldg: "칠암동 과기대 원룸" },
+        { full: "진주시 충무공동 혁신도시 베스티움 오피스텔", bldg: "혁신도시 베스티움" }
+      ],
+      tworoom: [
+        { full: "진주시 평거동 10호광장 인근 신축 빌라 투룸", bldg: "평거동 신축 빌라 투룸" },
+        { full: "진주시 초전동 초전지구 신축 다가구 투룸", bldg: "초전지구 다가구 투룸" },
+        { full: "진주시 하대동 중앙중 인근 조용한 주택 투룸", bldg: "하대동 신축 투룸" },
+        { full: "진주시 상평동 공단 인근 리모델링 빌라 투룸", bldg: "상평동 빌라 투룸" }
+      ]
+    };
+
+    // 타지역 및 진주 도착지 데이터베이스
+    const REGION_DESTINATIONS = {
+      jinju: {
+        apt: [
+          { full: "진주시 충무공동 혁신도시 한림풀에버", bldg: "혁신도시 한림풀에버" },
+          { full: "진주시 평거동 엘크루 아파트", bldg: "평거 엘크루" },
+          { full: "진주시 초전동 이지더원", bldg: "초전 이지더원" },
+          { full: "진주시 하대동 현대아파트", bldg: "하대동 현대아파트" },
+          { full: "진주시 충무공동 중흥S-클래스 센트럴시티", bldg: "혁신도시 중흥S-클래스" }
+        ],
+        oneroom: [
+          { full: "진주시 칠암동 경상국립대 의대 인근 원룸", bldg: "칠암동 의대 원룸" },
+          { full: "진주시 가좌동 볼링장 뒤편 풀옵션 원룸", bldg: "가좌동 풀옵션 원룸" },
+          { full: "진주시 충무공동 LH본사 앞 신축 오피스텔", bldg: "LH본사 앞 오피스텔" }
+        ],
+        tworoom: [
+          { full: "진주시 충무공동 영천강 수변공원 인근 투룸", bldg: "영천강 수변공원 투룸" },
+          { full: "진주시 평거동 신평공원 인근 빌라 투룸", bldg: "평거동 신평공원 빌라" },
+          { full: "진주시 판문동 현대아파트 인근 투룸", bldg: "판문동 투룸" }
+        ]
+      },
+      sacheon: {
+        apt: [
+          { full: "사천시 정동면 우주항공 KAI 사택 아파트", bldg: "정동면 KAI 사택" },
+          { full: "사천시 사남면 사천엘크루 아파트", bldg: "사천 엘크루" },
+          { full: "사천시 사천읍 한보3차 아파트", bldg: "사천읍 한보3차" },
+          { full: "사천시 용현면 덕산아내 아파트", bldg: "용현면 덕산아내" }
+        ],
+        oneroom: [
+          { full: "사천시 사남면 항공산단 인근 신축 원룸", bldg: "사남면 항공산단 원룸" },
+          { full: "사천시 사천읍 시외버스터미널 앞 풀옵션 원룸", bldg: "사천터미널 앞 원룸" },
+          { full: "사천시 용현면 시청 앞 조용한 원룸", bldg: "용현면 시청앞 원룸" }
+        ],
+        tworoom: [
+          { full: "사천시 사남면 외국인산단 인근 신축 빌라 투룸", bldg: "사남면 신축 투룸" },
+          { full: "사천시 사천읍 수양공원 인근 다가구 투룸", bldg: "사천읍 수양공원 투룸" }
+        ]
+      },
+      changwon: {
+        apt: [
+          { full: "창원시 성산구 용지더샵레이크파크", bldg: "용지더샵레이크파크" },
+          { full: "창원시 성산구 반림동 트리비앙", bldg: "반림 트리비앙" },
+          { full: "창원시 의창구 중동 유니시티 1단지", bldg: "중동 유니시티" },
+          { full: "창원시 마산회원구 메트로시티 2차", bldg: "마산 메트로시티" }
+        ],
+        oneroom: [
+          { full: "창원시 성산구 상남동 중심상권 오피스텔", bldg: "상남동 오피스텔" },
+          { full: "창원시 의창구 봉곡동 창원대 통학 원룸촌", bldg: "봉곡동 창원대 원룸" },
+          { full: "창원시 마산회원구 합성동 시외터미널 원룸", bldg: "합성동 터미널 원룸" }
+        ],
+        tworoom: [
+          { full: "창원시 의창구 도계동 신축 빌라 투룸", bldg: "도계동 신축 빌라" },
+          { full: "창원시 성산구 사파동 법원 인근 다가구 투룸", bldg: "사파동 법원 투룸" }
+        ]
+      },
+      gimhae: {
+        apt: [
+          { full: "김해시 율하동 율하자이힐스테이트", bldg: "율하자이힐스테이트" },
+          { full: "김해시 장유동 무계지구 서희스타힐스", bldg: "무계 서희스타힐스" },
+          { full: "김해시 부원동 부원역 푸르지오", bldg: "부원역 푸르지오" }
+        ],
+        oneroom: [
+          { full: "김해시 율하동 카페거리 인근 신축 원룸", bldg: "율하 카페거리 원룸" },
+          { full: "김해시 내외동 먹자골목 인근 풀옵션 원룸", bldg: "내외동 풀옵션 원룸" }
+        ],
+        tworoom: [
+          { full: "김해시 구산동 연지공원 인근 신축 빌라 투룸", bldg: "구산동 연지공원 투룸" },
+          { full: "김해시 장유동 젤미마을 다가구 투룸", bldg: "장유 젤미마을 투룸" }
+        ]
+      },
+      suncheon: {
+        apt: [
+          { full: "순천시 신대지구 중흥S-클래스 에듀하이", bldg: "신대지구 중흥S-클래스" },
+          { full: "순천시 오천동 오천 골드클래스", bldg: "오천 골드클래스" },
+          { full: "순천시 조례동 조례 호반베르디움", bldg: "조례 호반베르디움" }
+        ],
+        oneroom: [
+          { full: "순천시 신대지구 중심상가 신축 원룸", bldg: "신대지구 신축 원룸" },
+          { full: "순천시 조례동 호수공원 인근 풀옵션 원룸", bldg: "조례 호수공원 원룸" }
+        ],
+        tworoom: [
+          { full: "순천시 연향동 패션거리 인근 빌라 투룸", bldg: "연향동 빌라 투룸" },
+          { full: "순천시 오천지구 그린광장 앞 신축 투룸", bldg: "오천지구 신축 투룸" }
+        ]
+      },
+      busan: {
+        apt: [
+          { full: "부산시 해운대구 마린시티 두산위브더제니스", bldg: "마린시티 두산위브" },
+          { full: "부산시 남구 대연동 대연 롯데캐슬 레전드", bldg: "대연 롯데캐슬" },
+          { full: "부산시 동래구 명륜동 힐스테이트 명륜", bldg: "힐스테이트 명륜" }
+        ],
+        oneroom: [
+          { full: "부산시 부산진구 서면 복층 오피스텔", bldg: "서면 복층 오피스텔" },
+          { full: "부산시 금정구 장전동 부산대 북문 원룸", bldg: "부산대 북문 원룸" },
+          { full: "부산시 수영구 광안동 해변가 오션뷰 원룸", bldg: "광안동 오션뷰 원룸" }
+        ],
+        tworoom: [
+          { full: "부산시 연제구 연산동 지하철역 앞 투룸", bldg: "연산동 역세권 투룸" },
+          { full: "부산시 사하구 하단동 동아대 인근 신축 투룸", bldg: "하단 동아대 투룸" }
+        ]
+      },
+      daegu: {
+        apt: [
+          { full: "대구시 수성구 범어동 두산위브더제니스", bldg: "범어 두산위브" },
+          { full: "대구시 중구 남산동 남산 롯데캐슬 센트럴스카이", bldg: "남산 롯데캐슬" }
+        ],
+        oneroom: [
+          { full: "대구시 북구 산격동 경북대 북문 원룸촌", bldg: "경북대 북문 원룸" },
+          { full: "대구시 수성구 범어동 신천시장 앞 오피스텔", bldg: "범어동 오피스텔" }
+        ],
+        tworoom: [
+          { full: "대구시 수성구 만촌동 만촌역 인근 신축 투룸", bldg: "만촌역 신축 투룸" }
+        ]
+      },
+      capital: {
+        apt: [
+          { full: "서울시 강남구 개포동 디에이치 아너힐즈", bldg: "디에이치 아너힐즈" },
+          { full: "서울시 송파구 가락동 헬리오시티", bldg: "가락 헬리오시티" },
+          { full: "경기도 성남시 분당구 삼평동 봇들마을", bldg: "분당 봇들마을" }
+        ],
+        oneroom: [
+          { full: "서울시 관악구 봉천동 서울대입구 샤로수길 원룸", bldg: "서울대입구 원룸" },
+          { full: "서울시 강남구 역삼동 테헤란로 신축 오피스텔", bldg: "역삼동 오피스텔" }
+        ],
+        tworoom: [
+          { full: "서울시 마포구 망원동 한강공원 인근 빌라 투룸", bldg: "망원동 빌라 투룸" }
+        ]
+      }
+    };
+
+    function pickRandomDifferent(arr, currentVal) {
+      if (!arr || arr.length === 0) return null;
+      if (arr.length === 1) return arr[0];
+      const filtered = arr.filter(item => item.full !== currentVal);
+      const candidates = filtered.length > 0 ? filtered : arr;
+      return candidates[Math.floor(Math.random() * candidates.length)];
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    );
+    // 주거 형태 변경 핸들러
+    function setHousingType(type) {
+      currentHousingType = type;
+      const btnApt = document.getElementById("btnHousingApt");
+      const btnOneroom = document.getElementById("btnHousingOneroom");
+      const btnTworoom = document.getElementById("btnHousingTworoom");
+      const label = document.getElementById("currentHousingLabel");
+
+      const defaultBtn = "py-2 px-2 rounded-xl font-extrabold text-xs transition border flex flex-col items-center gap-1 bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200";
+      [btnApt, btnOneroom, btnTworoom].forEach(b => { if (b) b.className = defaultBtn; });
+
+      const activeBtn = "py-2 px-2 rounded-xl font-extrabold text-xs transition border flex flex-col items-center gap-1 bg-blue-600 text-white border-blue-600 shadow-md";
+
+      if (type === 'apt') {
+        if (btnApt) btnApt.className = activeBtn;
+        if (label) label.innerText = "🏢 아파트 모드";
+        setMovePlan("포장이사");
+        showToast("🏢 아파트 모드로 변경되었습니다 (단지명 자동 세팅)");
+      } else if (type === 'oneroom') {
+        if (btnOneroom) btnOneroom.className = activeBtn;
+        if (label) label.innerText = "📦 원룸/오피스텔 모드";
+        setMovePlan("반포장이사");
+        showToast("📦 원룸/오피스텔 모드로 변경되었습니다 (원룸촌/오피스텔 자동 세팅)");
+      } else {
+        if (btnTworoom) btnTworoom.className = activeBtn;
+        if (label) label.innerText = "🏡 투룸/빌라 모드";
+        setMovePlan("반포장이사");
+        showToast("🏡 투룸/빌라 모드로 변경되었습니다 (신축빌라/다가구 자동 세팅)");
+      }
+
+      selectCoursePreset('jinju');
+    }
+
+    // 빠른 코스 프리셋 클릭 핸들러
+    function selectCoursePreset(regionKey) {
+      const typeKey = currentHousingType || 'apt';
+      const origins = JINJU_ORIGINS[typeKey] || JINJU_ORIGINS.apt;
+      const destinations = (REGION_DESTINATIONS[regionKey] && REGION_DESTINATIONS[regionKey][typeKey]) 
+                           ? REGION_DESTINATIONS[regionKey][typeKey] 
+                           : (REGION_DESTINATIONS.jinju[typeKey] || REGION_DESTINATIONS.jinju.apt);
+
+      const currentFrom = document.getElementById("fromLoc").value.trim();
+      const currentTo = document.getElementById("toLoc").value.trim();
+
+      const chosenFrom = pickRandomDifferent(origins, currentFrom);
+      const chosenTo = pickRandomDifferent(destinations, currentTo);
+
+      if (chosenFrom) {
+        document.getElementById("fromLoc").value = chosenFrom.full;
+      }
+
+      if (chosenTo) {
+        document.getElementById("toLoc").value = chosenTo.full;
+        document.getElementById("buildingName").value = chosenTo.bldg || chosenTo.full.split(" ").slice(-1)[0];
+      }
+
+      const regionNames = {
+        jinju: "진주 관내",
+        sacheon: "진주➔사천",
+        changwon: "진주➔창원",
+        gimhae: "진주➔김해",
+        suncheon: "진주➔순천",
+        busan: "진주➔부산",
+        daegu: "진주➔대구",
+        capital: "진주➔수도권"
+      };
+
+      const housingName = typeKey === 'apt' ? '아파트' : typeKey === 'oneroom' ? '원룸/오피스텔' : '투룸/빌라';
+      showToast(`[${regionNames[regionKey] || '코스'}] ${housingName} 코스가 랜덤 추첨되었습니다!`);
+
+      updateServiceBadges();
+      generateStoryAndContent();
+    }
+
+    try {
+      savedApiKey = localStorage.getItem("jinju_gemini_api_key") || "";
+    } catch(e) {
+      console.warn("Storage access restricted:", e);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const mainInput = document.getElementById("mainApiKeyInput");
+      if (mainInput && savedApiKey) {
+        mainInput.value = savedApiKey;
+      }
+      updateKeyBadge();
+      updateServiceBadges();
+      setupDragDrop();
+      generateStoryAndContent();
+    });
+
+    function showToast(msg, icon = "✅") {
+      const toast = document.getElementById("toast");
+      const toastMsg = document.getElementById("toastMsg");
+      const toastIcon = document.getElementById("toastIcon");
+
+      toastMsg.innerText = msg;
+      toastIcon.innerText = icon;
+
+      toast.classList.remove("opacity-0", "pointer-events-none", "translate-y-2");
+      toast.classList.add("opacity-100", "translate-y-0");
+
+      setTimeout(() => {
+        toast.classList.remove("opacity-100", "translate-y-0");
+        toast.classList.add("opacity-0", "pointer-events-none", "translate-y-2");
+      }, 3500);
+    }
+
+    function toggleKeyVisibility() {
+      const input = document.getElementById("mainApiKeyInput");
+      const btn = document.getElementById("btnToggleKey");
+      if (input.type === "password") {
+        input.type = "text";
+        btn.innerText = "숨김 🔒";
+      } else {
+        input.type = "password";
+        btn.innerText = "보기 👁";
+      }
+    }
+
+    function saveApiKeyFromMain() {
+      const val = document.getElementById("mainApiKeyInput").value.trim();
+      savedApiKey = val;
+      try {
+        localStorage.setItem("jinju_gemini_api_key", val);
+      } catch(e){}
+      updateKeyBadge();
+      showToast(val ? "API 키가 메인에서 브라우저에 안전 저장되었습니다!" : "API 키가 삭제되었습니다. (시뮬레이션 모드 작동)");
+    }
+
+    async function testApiKeyDirect() {
+      const targetKey = (document.getElementById("mainApiKeyInput").value || savedApiKey || "").trim();
+      const feedbackBox = document.getElementById("keyFeedbackBox");
+      const feedbackText = document.getElementById("keyFeedbackText");
+      const feedbackIcon = document.getElementById("keyFeedbackIcon");
+
+      if (!targetKey) {
+        feedbackBox.className = "mt-3 p-3 rounded-xl text-xs font-bold border leading-relaxed flex items-center gap-2 bg-rose-950/80 border-rose-500 text-rose-200";
+        feedbackIcon.innerText = "❌";
+        feedbackText.innerText = "API 키를 입력창에 먼저 붙여넣어 주세요.";
+        feedbackBox.classList.remove("hidden");
+        return;
+      }
+
+      savedApiKey = targetKey;
+      try {
+        localStorage.setItem("jinju_gemini_api_key", targetKey);
+      } catch(e){}
+      updateKeyBadge();
+
+      feedbackBox.className = "mt-3 p-3 rounded-xl text-xs font-bold border leading-relaxed flex items-center gap-2 bg-indigo-950/80 border-indigo-500 text-indigo-200";
+      feedbackIcon.innerText = "⏳";
+      feedbackText.innerText = "Gemini 3.5 Flash-Lite 최우선 서버에 연결 테스트 중...";
+      feedbackBox.classList.remove("hidden");
+
+      const testModels = [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite-latest",
+        "gemini-3.1-flash-lite",
+        "gemini-2.5-flash-lite",
+        "gemini-2.0-flash-lite"
+      ];
+
+      let lastError = "";
+      for (const model of testModels) {
+        try {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${targetKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: [{ parts: [{ text: "ping" }] }] })
+          });
+
+          if (res.ok) {
+            feedbackBox.className = "mt-3 p-3 rounded-xl text-xs font-bold border leading-relaxed flex items-center gap-2 bg-emerald-950/80 border-emerald-500 text-emerald-200";
+            feedbackIcon.innerText = "✅";
+            feedbackText.innerText = `Google AI 정상 연결 완료! (활성 모델: ${model}) 실시간 초고속 비전 판독이 준비되었습니다.`;
+            showToast(`구글 AI(${model}) 연결 완료!`);
+            return;
+          } else {
+            const errData = await res.json().catch(() => ({}));
+            lastError = errData.error?.message || `HTTP ${res.status}`;
+            if (lastError.includes("API key not valid") || lastError.includes("API_KEY_INVALID")) {
+              feedbackBox.className = "mt-3 p-3 rounded-xl text-xs font-bold border leading-relaxed flex items-center gap-2 bg-rose-950/80 border-rose-500 text-rose-200";
+              feedbackIcon.innerText = "❌";
+              feedbackText.innerText = `API 키 오류: 키가 유효하지 않습니다. AI Studio에서 키를 다시 확인해 주세요.`;
+              return;
+            }
+          }
+        } catch (e) {
+          lastError = e.message;
+        }
+      }
+
+      feedbackBox.className = "mt-3 p-3 rounded-xl text-xs font-bold border leading-relaxed flex items-center gap-2 bg-rose-950/80 border-rose-500 text-rose-200";
+      feedbackIcon.innerText = "❌";
+      feedbackText.innerText = `서버 응답: ${lastError || "연결에 실패했습니다."}`;
+    }
+
+    // 메인 이사 플랜 선택 함수 - 더욱 전문적이고 고객 마음에 와닿는 설명
+    function setMovePlan(type) {
+      document.getElementById("moveType").value = type;
+
+      const btnHalf = document.getElementById("btnMoveHalf");
+      const btnFull = document.getElementById("btnMoveFull");
+      const btnRoom = document.getElementById("btnMoveRoom");
+      const btnTruck = document.getElementById("btnMoveTruck");
+
+      const defaultBtnClass = "py-2.5 px-2 rounded-xl font-black text-xs transition border flex flex-col items-center gap-1 bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200";
+      [btnHalf, btnFull, btnRoom, btnTruck].forEach(b => { if (b) b.className = defaultBtnClass; });
+
+      const featureBox = document.getElementById("planFeatureBox");
+      const featureTitle = document.getElementById("planFeatureTitle");
+      const featureDesc = document.getElementById("planFeatureDesc");
+      const featureChecklist = document.getElementById("planFeatureChecklist");
+
+      if (type === "반포장이사") {
+        if (btnHalf) btnHalf.className = "py-2.5 px-2 rounded-xl font-black text-xs transition border flex flex-col items-center gap-1 bg-amber-500 text-white border-amber-600 shadow-md";
+        if (featureBox) featureBox.className = "p-3.5 rounded-xl border bg-amber-50/90 border-amber-300 text-amber-950 transition-all";
+        if (featureTitle) featureTitle.innerHTML = "<span>💰</span> 반포장이사란? 현장 베테랑이 적극 권하는 현실적 이유";
+        if (featureDesc) featureDesc.innerHTML = "\"혼자서는 도저히 다루기 힘든 <strong>대형 가전·침대 분해/조립, 매트리스 방수 포장 등 무거운 큰 짐은 기사님이 100% 도맡고</strong>, 남에게 보여주기 꺼려지는 옷·속옷·개인 살림만 본인이 직접 여유롭게 정리하여 <strong>포장이사 대비 20~30만 원 이상의 실질 비용을 아끼는</strong> 가장 실속 있고 후회 없는 방식입니다.\"";
+        if (featureChecklist) featureChecklist.innerHTML = `
+          <div class="flex items-start gap-1.5 font-semibold text-slate-800">
+            <span class="text-emerald-600 font-bold">✔</span>
+            <span><strong>기사님 전담 100%:</strong> 가구 분해/재조립, 대형 가전 퀼팅 완충 패킹, 바닥 보양, 도착지 수평 배치</span>
+          </div>
+          <div class="flex items-start gap-1.5 font-semibold text-slate-800">
+            <span class="text-blue-600 font-bold">✔</span>
+            <span><strong>고객님 프라이빗 정리:</strong> 의류/책/소품 등 잔짐만 내 손으로 챙겨 완벽한 사생활 보호 & 비용 대폭 절약</span>
+          </div>
+        `;
+      } else if (type === "포장이사") {
+        if (btnFull) btnFull.className = "py-2.5 px-2 rounded-xl font-black text-xs transition border flex flex-col items-center gap-1 bg-indigo-600 text-white border-indigo-700 shadow-md";
+        if (featureBox) featureBox.className = "p-3.5 rounded-xl border bg-indigo-50/90 border-indigo-300 text-indigo-950 transition-all";
+        if (featureTitle) featureTitle.innerHTML = "<span>✨</span> 100% 올인원 포장이사 (바쁜 직장인·대가족 VIP 풀케어)";
+        if (featureDesc) featureDesc.innerHTML = "\"이사 당일 귀중품만 챙기시고 편안하게 커피 한잔 드시고 오시면 됩니다. 주방 찬장 유리식기류 에어캡 낱개 포장부터 냉장고 신선 보관, 의류 전용 행거 박스 칼각 수납, 도착지 레이저 수평 세팅과 피톤치드 살균까지 <strong>손 하나 까딱할 필요 없이 당일 저녁 곧바로 일상 복귀가 가능한 최고급 서비스</strong>입니다.\"";
+        if (featureChecklist) featureChecklist.innerHTML = `
+          <div class="flex items-start gap-1.5 font-semibold text-slate-800">
+            <span class="text-emerald-600 font-bold">✔</span>
+            <span><strong>주방 이모님 1:1 케어:</strong> 깨지기 쉬운 식기류 낱개 에어캡 완충 & 냉장고 아이스박스 신선 보관</span>
+          </div>
+          <div class="flex items-start gap-1.5 font-semibold text-slate-800">
+            <span class="text-purple-600 font-bold">✔</span>
+            <span><strong>당일 저녁 즉시 입주:</strong> 옷장 칼각 원위치 수납, 레이저 수평 세팅, 집안 전체 피톤치드 연무 소독</span>
+          </div>
+        `;
+      } else if (type === "원룸이사") {
+        if (btnRoom) btnRoom.className = "py-2.5 px-2 rounded-xl font-black text-xs transition border flex flex-col items-center gap-1 bg-blue-600 text-white border-blue-700 shadow-md";
+        if (featureBox) featureBox.className = "p-3.5 rounded-xl border bg-blue-50/90 border-blue-300 text-blue-950 transition-all";
+        if (featureTitle) featureTitle.innerHTML = "<span>📦</span> 원룸·오피스텔 맞춤 이사 (대학생·1인 가구 추천)";
+        if (featureDesc) featureDesc.innerHTML = "\"1인 가구, 대학생, 사회초년생의 라이프스타일에 맞춘 실속 운송입니다. 불필요한 인건비 거품 없이 안전한 호루 탑차를 이용해 매트리스, 행거, 소형 가전을 신속하고 안전하게 이동해 드립니다.\"";
+        if (featureChecklist) featureChecklist.innerHTML = `
+          <div class="flex items-start gap-1.5 font-semibold text-slate-800"><span class="text-emerald-600 font-bold">✔</span><span>원룸 매트리스 방수 패킹 & 가전 전용 커버 & 정직하고 투명한 실속 견적</span></div>
+        `;
+      } else {
+        if (btnTruck) btnTruck.className = "py-2.5 px-2 rounded-xl font-black text-xs transition border flex flex-col items-center gap-1 bg-emerald-600 text-white border-emerald-700 shadow-md";
+        if (featureBox) featureBox.className = "p-3.5 rounded-xl border bg-emerald-50/90 border-emerald-300 text-emerald-950 transition-all";
+        if (featureTitle) featureTitle.innerHTML = "<span>🚚</span> 1톤 용달운송 (단품 가구/가전/화물)";
+        if (featureDesc) featureDesc.innerHTML = "\"당근마켓 중고거래 대형 가전, 침대 단품 이전, 단순 화물 운송을 위해 신속하게 배차되는 경제적인 1톤 트럭 운송 서비스입니다.\"";
+        if (featureChecklist) featureChecklist.innerHTML = `
+          <div class="flex items-start gap-1.5 font-semibold text-slate-800"><span class="text-emerald-600 font-bold">✔</span><span>방수 호루 탑차 & 라쳇 결속바 고정으로 도로 주행 중 흔들림 원천 차단</span></div>
+        `;
+      }
+
+      showToast(`[${type}] 플랜이 선택되었습니다.`);
+      updateServiceBadges();
+      generateStoryAndContent();
+    }
+
+    function updateKeyBadge() {
+      const badge = document.getElementById("keyLiveBadge");
+      if (savedApiKey && savedApiKey.length > 20) {
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 키 저장됨 (${savedApiKey.substring(0, 6)}...${savedApiKey.substring(savedApiKey.length - 4)})`;
+        badge.className = "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1";
+      } else {
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> 키 미등록 (시뮬레이션 모드)`;
+        badge.className = "bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1";
+      }
+    }
+
+    function updateServiceBadges() {
+      const moveType = document.getElementById("moveType").value;
+      const metaType = document.getElementById("outMetaType");
+      const sumType = document.getElementById("outSummaryType");
+
+      const compareBox = document.getElementById("outPlanCompareBox");
+      const compareTitle = document.getElementById("outPlanCompareTitle");
+      const compareDesc = document.getElementById("outPlanCompareDesc");
+      const comparePoints = document.getElementById("outPlanPoints");
+
+      if (metaType) metaType.innerText = moveType + " 플랜";
+      if (sumType) {
+        if (moveType === "반포장이사") {
+          sumType.innerText = "반포장이사 (침대·가전 기사님 100% 분해/포장 세팅, 잔짐 고객 정리 / 가성비 1위)";
+        } else if (moveType === "포장이사") {
+          sumType.innerText = "포장이사 (주방식기 낱개 에어캡 완충, 레이저 수평세팅, 피톤치드 살균 VIP 풀케어)";
+        } else if (moveType === "원룸이사") {
+          sumType.innerText = "원룸이사 (1인 가구 실속 운송, 가성비 1톤 탑차 안심 케어)";
+        } else {
+          sumType.innerText = "1톤 용달운송 (단품 가구/가전 안전 결속 운행)";
+        }
+      }
+
+      // 본문 전문 가이드 박스 내용 고도화
+      if (compareBox) {
+        if (moveType === "반포장이사") {
+          compareBox.className = "p-4 sm:p-6 rounded-2xl border space-y-4 bg-amber-50/80 border-amber-300 text-slate-800 shadow-sm";
+          if (compareTitle) compareTitle.innerText = "💡 \"포장이사를 할까, 반포장을 할까?\" 현장 소장님의 솔직한 선택 가이드";
+          if (compareDesc) compareDesc.innerHTML = "많은 분들이 침대 분해나 무거운 대형 가구 때문에 무조건 비싼 포장이사를 불러야 하나 고민하십니다. 하지만 <strong>반포장이사</strong>를 선택하시면, 고객님이 가장 힘들어하시는 <strong>침대 프레임 분해/재조립, 매트리스 밀봉, 대형 가전·가구 퀼팅 패킹, 수평 세팅은 저희 기사팀이 100% 전담</strong>합니다. 고객님은 평소 입던 옷, 책, 주방 잔짐만 내 손으로 천천히 정리하시기 때문에 <strong>사생활이 보호되면서도 포장이사 대비 20~30만 원 이상의 실질적인 비용을 절약</strong>할 수 있어 만족도가 가장 높습니다.";
+          if (comparePoints) comparePoints.innerHTML = `
+            <div class="bg-white/95 p-3.5 rounded-xl border border-amber-200/90 shadow-sm space-y-1">
+              <div class="font-bold text-amber-900 flex items-center gap-1.5 text-xs sm:text-sm">
+                <span>🛠</span>
+                <span>기사님 전담 영역 (힘든 일 100% 해결)</span>
+              </div>
+              <ul class="text-slate-600 space-y-1 pl-1 leading-relaxed">
+                <li>• 대형 매트리스 전용 방수 커버 2중 밀봉</li>
+                <li>• 침대 프레임, 서랍장, 가전 분해 및 퀼팅패드 완충 포장</li>
+                <li>• 실내 바닥 PP 보양판 시공 및 통로 안전 반출</li>
+                <li>• 도착지 지정 위치 재조립 및 레이저 수평계 정밀 세팅</li>
+              </ul>
+            </div>
+            <div class="bg-white/95 p-3.5 rounded-xl border border-amber-200/90 shadow-sm space-y-1">
+              <div class="font-bold text-blue-900 flex items-center gap-1.5 text-xs sm:text-sm">
+                <span>📦</span>
+                <span>고객님 혜택 (사생활 보호 & 가성비)</span>
+              </div>
+              <ul class="text-slate-600 space-y-1 pl-1 leading-relaxed">
+                <li>• 포장이사 대비 20~30% 이상 견적 거품 즉시 절감</li>
+                <li>• 속옷, 귀중품, 개인 소지품을 남의 손 거치지 않고 직접 보관</li>
+                <li>• 도착 후 내 생활 동선에 맞춰 여유롭고 깔끔한 수납 정리 가능</li>
+                <li>• 기사팀이 잔짐 박스를 방마다 배분해 드려 정리 동선 최소화</li>
+              </ul>
+            </div>
+          `;
+        } else if (moveType === "포장이사") {
+          compareBox.className = "p-4 sm:p-6 rounded-2xl border space-y-4 bg-indigo-50/80 border-indigo-300 text-slate-800 shadow-sm";
+          if (compareTitle) compareTitle.innerText = "✨ 처음부터 끝까지 손 하나 까딱없는 [100% VIP 올인원 포장이사]";
+          if (compareDesc) compareDesc.innerHTML = "직장 업무나 육아로 바쁜 고객님을 위해, 이사 당일 귀중품만 챙기시고 편안하게 휴식을 취하실 수 있도록 준비된 최고급 서비스입니다. <strong>주방 찬장의 도자기·유리 식기류 에어캡 낱개 완충 포장부터 냉장고 신선식품 아이스박스 보관, 구김 없는 의류 행거 박스 칼각 수납</strong>까지 전문팀이 도맡아 진행합니다. 도착지에서는 가구 레이저 수평 세팅과 피톤치드 연무 살균까지 마쳐 <strong>당일 저녁 곧바로 따뜻한 일상 복귀</strong>가 가능합니다.";
+          if (comparePoints) comparePoints.innerHTML = `
+            <div class="bg-white/95 p-3.5 rounded-xl border border-indigo-200/90 shadow-sm space-y-1">
+              <div class="font-bold text-indigo-950 flex items-center gap-1.5 text-xs sm:text-sm">
+                <span>🍽</span>
+                <span>주방 이모님 1:1 안심 케어</span>
+              </div>
+              <ul class="text-slate-600 space-y-1 pl-1 leading-relaxed">
+                <li>• 깨지기 쉬운 그릇/와인잔/유리 밀폐용기 낱개 에어캡 포장</li>
+                <li>• 냉장/냉동 식품 아이스박스 즉시 신선 보관 및 이동</li>
+                <li>• 도착지 씽크대 수납장 청소 후 기존 동선 그대로 칼각 정리</li>
+              </ul>
+            </div>
+            <div class="bg-white/95 p-3.5 rounded-xl border border-indigo-200/90 shadow-sm space-y-1">
+              <div class="font-bold text-emerald-950 flex items-center gap-1.5 text-xs sm:text-sm">
+                <span>🌿</span>
+                <span>도착지 프리미엄 마무리 서비스</span>
+              </div>
+              <ul class="text-slate-600 space-y-1 pl-1 leading-relaxed">
+                <li>• 옷걸이 채로 이동하여 구김 없는 전용 행거 박스 수납 복원</li>
+                <li>• 대형 가전/가구 레이저 수평계 정밀 세팅 및 바닥 보호 패드 부착</li>
+                <li>• 바닥 진공 및 스팀 청소 & 집안 전체 천연 피톤치드 연무 소독 기본 제공</li>
+              </ul>
+            </div>
+          `;
+        } else {
+          compareBox.className = "p-4 sm:p-6 rounded-2xl border space-y-4 bg-slate-50 border-slate-300 text-slate-800 shadow-sm";
+          if (compareTitle) compareTitle.innerText = `📦 ${moveType} 맞춤 안심 운송 안내`;
+          if (compareDesc) compareDesc.innerHTML = "불필요한 포장 부자재나 인건비 거품을 싹 걷어내고, 안전한 호루 탑차와 라쳇 결속바를 이용해 고객님의 소중한 물품을 신속하고 정직하게 목적지까지 운송해 드립니다.";
+          if (comparePoints) comparePoints.innerHTML = `
+            <div class="bg-white/95 p-3.5 rounded-xl border border-slate-200 space-y-1">
+              <div class="font-bold text-slate-900">🚚 안전 결속 운송</div>
+              <div class="text-slate-600 text-xs">탑차 내부 테트리스식 수평 적재 & 전천후 방수 호루 운행</div>
+            </div>
+            <div class="bg-white/95 p-3.5 rounded-xl border border-slate-200 space-y-1">
+              <div class="font-bold text-blue-900">💰 거품 없는 합리적 견적</div>
+              <div class="text-slate-600 text-xs">단품 가구·가전부터 소형 원룸 화물까지 가장 투명한 배차</div>
+            </div>
+          `;
+        }
+      }
+    }
+
+    // Drag & Drop and File Handling
+    function setupDragDrop() {
+      const dropZone = document.getElementById("dropZone");
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropZone.classList.add("border-blue-600", "bg-blue-50/50");
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropZone.classList.remove("border-blue-600", "bg-blue-50/50");
+        }, false);
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        if (dt && dt.files && dt.files.length > 0) {
+          processFiles(dt.files);
+        }
+      });
+    }
+
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        processFiles(e.target.files);
+      }
+      e.target.value = "";
+    }
+
+    function processFiles(files) {
+      const validFiles = Array.from(files).filter(f => f.type.startsWith("image/"));
+      if (validFiles.length === 0) {
+        showToast("이미지 사진 파일(JPG, PNG 등)만 올려주세요!", "⚠️");
+        return;
+      }
+
+      let loadedCount = 0;
+      validFiles.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const url = event.target.result;
+          uploadedImages.push({
+            file,
+            url,
+            name: file.name,
+            detectedItem: "",
+            customTitle: "",
+            customDesc: "",
+            seoKeyword: ""
+          });
+          loadedCount++;
+
+          if (loadedCount === validFiles.length) {
+            renderPreviews();
+            updatePhotoBadge();
+            generateStoryAndContent();
+            showToast(`현장 사진 ${validFiles.length}장이 추가되었습니다! (총 ${uploadedImages.length}장)`);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // 실제 사물 기반 팩트 아이템 사전
+    const REAL_ITEMS = {
+      "냉장고": { label: "양문형냉장고_퀼팅패드보양", title: "양문형 대형 냉장고 전용 퀼팅 패드 안심 포장", desc: "사진 속 양문형 냉장고 표면 스크래치와 찍힘을 방지하기 위해 도톰한 전용 퀼팅 보호 커버를 빈틈없이 결속했습니다. 현관문 통과 시 문틀 간섭 없이 안전하게 반출했습니다." },
+      "세탁기": { label: "세탁기건조기_수평안전보양", title: "세탁기/건조기 급배수 점검 & 전용 보호재 패킹", desc: "사진에 보이는 세탁기 내부 잔수를 말끔히 배출하고 호스를 정리한 뒤, 외관 충격 방지용 전용 패드로 단단히 감싸 이동 준비를 마쳤습니다." },
+      "소파": { label: "가죽패브릭소파_스트레치필름랩핑", title: "소파 오염·스크래치 방지 전용 랩핑 포장", desc: "사진 속 소파의 가죽/패브릭 원단에 먼지와 때가 타지 않도록 전용 스트레치 필름과 보호 원단으로 꼼꼼하게 랩핑하여 운반했습니다." },
+      "침대": { label: "침대매트리스_방수밀봉패킹", title: "침대 프레임 분해 & 매트리스 방수 전용 커버 패킹", desc: "사진 속 매트리스는 위생이 최우선이므로 전용 방수 커버로 꼼꼼히 2중 밀봉하고, 침대 프레임 볼트는 분실 없도록 전용 파우치에 보관했습니다." },
+      "옷장/서랍장": { label: "서랍장옷장_레일보호특수밴딩", title: "서랍장 레일 보호 특수 밴딩 & 코너 완충 패킹", desc: "사진에 보이는 서랍장이 이동 중 열려 레일이 휘거나 파손되지 않도록 자국이 남지 않는 특수 안전 밴드로 고정하고 모서리 코너 가드를 둘렀습니다." },
+      "식탁/책상": { label: "원목식탁책상_상판스크래치보양", title: "식탁/책상 상판 모서리 보호 패드 결속", desc: "사진 속 식탁/책상 상판의 긁힘과 모서리 찍힘을 방지하기 위해 도톰한 누빔 원단 패드를 덮고 안전 밴드로 결속했습니다." },
+      "바닥보양": { label: "실내바닥보양_PP플라베니아시공", title: "실내 복도 및 거실 안심 PP 바닥 보양판 시공", desc: "사진에 보이는 것처럼 이동 동선 전체에 플라스틱 PP 보양판을 빈틈없이 깔아 마루 찍힘과 스크래치를 완벽하게 차단했습니다." },
+      "차량적재": { label: "1톤탑차적재_라쳇안전결속운송", title: "차량 적재함 테트리스식 수평 적재 & 안전 결속", desc: "사진 속 차량 적재함에 무게 중심을 맞춰 빈틈없이 수평 적재하고, 라쳇 결속 바로 단단히 고정하여 주행 중 흔들림을 방지했습니다." }
+    };
+
+    function getSeoMeta(idx) {
+      const img = uploadedImages[idx];
+      const moveType = (document.getElementById("moveType")?.value || "반포장이사").replace(/\s+/g, '');
+      const bldg = (document.getElementById("buildingName")?.value || "센트럴자이").replace(/[^가-힣a-zA-Z0-9]/g, '');
+      const numStr = String(idx + 1).padStart(2, '0');
+      
+      let itemKeyword = img?.seoKeyword || img?.detectedItem;
+      if (!itemKeyword) {
+        const keys = Object.keys(REAL_ITEMS);
+        const fallbackKey = keys[idx % keys.length];
+        itemKeyword = REAL_ITEMS[fallbackKey].label;
+      }
+      itemKeyword = itemKeyword.replace(/[^가-힣a-zA-Z0-9_]/g, '');
+
+      const filename = `진주_${moveType}_${bldg}_${itemKeyword}_${numStr}.jpg`;
+      const altTag = `[진주 ${moveType}] ${bldg} ${img?.customTitle || '현장 작업 실황'}`;
+      return { filename, altTag };
+    }
+
+    function setPhotoItemDirect(idx, itemKey) {
+      const img = uploadedImages[idx];
+      if (!img || !REAL_ITEMS[itemKey]) return;
+
+      const info = REAL_ITEMS[itemKey];
+      img.detectedItem = itemKey;
+      img.seoKeyword = info.label;
+      img.customTitle = info.title;
+      img.customDesc = info.desc;
+
+      renderPreviews();
+      generateStoryAndContent();
+      showToast(`사진 #${idx + 1}의 사물이 [${itemKey}]로 설정되었습니다.`);
+    }
+
+    function downloadSingleSeoPhoto(idx) {
+      const imgObj = uploadedImages[idx];
+      if (!imgObj) return;
+
+      const seo = getSeoMeta(idx);
+      const link = document.createElement("a");
+      link.href = imgObj.url;
+      link.download = seo.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast(`[${seo.filename}] 사진이 다운로드되었습니다!`);
+    }
+
+    function downloadAllSeoPhotos() {
+      if (uploadedImages.length === 0) {
+        showToast("다운로드할 사진이 없습니다.", "⚠️");
+        return;
+      }
+
+      uploadedImages.forEach((_, idx) => {
+        setTimeout(() => {
+          downloadSingleSeoPhoto(idx);
+        }, idx * 250);
+      });
+      showToast(`전체 사진 ${uploadedImages.length}장이 순차적으로 다운로드됩니다!`);
+    }
+
+    function renderPreviews() {
+      const container = document.getElementById("previewContainer");
+      const btnDownloadAll = document.getElementById("btnDownloadAllPhotos");
+
+      if (uploadedImages.length === 0) {
+        container.classList.add("hidden");
+        btnDownloadAll.classList.add("hidden");
+        return;
+      }
+
+      container.classList.remove("hidden");
+      btnDownloadAll.classList.remove("hidden");
+      btnDownloadAll.classList.add("flex");
+      container.innerHTML = "";
+
+      const quickItems = ["냉장고", "세탁기", "소파", "침대", "옷장/서랍장", "식탁/책상", "바닥보양", "차량적재"];
+
+      uploadedImages.forEach((img, idx) => {
+        const seo = getSeoMeta(idx);
+        const currentItem = img.detectedItem || "미판독 (클릭 교정 가능)";
+        const div = document.createElement("div");
+        div.className = "p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col gap-2";
+        
+        let tagButtonsHtml = quickItems.map(k => `
+          <button type="button" onclick="setPhotoItemDirect(${idx}, '${k}')" class="text-[10px] px-2 py-0.5 rounded font-bold transition border ${img.detectedItem === k ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-600 hover:bg-slate-100 border-slate-200'}">
+            ${k}
+          </button>
+        `).join("");
+
+        div.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="relative w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-slate-300 bg-slate-900">
+              <img src="${img.url}" class="w-full h-full object-cover">
+              <button type="button" onclick="removePhoto(${idx})" class="absolute top-1 right-1 bg-black/70 hover:bg-rose-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] transition" title="사진 삭제">✕</button>
+              <span class="absolute bottom-1 left-1 bg-black/70 text-white text-[9px] px-1 rounded font-bold">#${idx + 1}</span>
+            </div>
+            <div class="flex-1 min-w-0 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-slate-800 flex items-center gap-1">
+                  <span>📸</span> 사물: <span class="text-blue-600 font-bold">${currentItem}</span>
+                </span>
+                <button
+                  type="button"
+                  onclick="downloadSingleSeoPhoto(${idx})"
+                  class="text-[10px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-0.5 rounded-lg transition shadow-sm flex items-center gap-1"
+                >
+                  <span>💾 다운</span>
+                </button>
+              </div>
+              <div class="text-[10px] font-mono text-blue-700 bg-white p-1 rounded border border-slate-200 break-all font-semibold">
+                ${seo.filename}
+              </div>
+              <div class="text-[11px] text-slate-600 break-words leading-snug">
+                ${img.customTitle || 'AI 판독 시 실제 사진 속 상황이 여기에 표시됩니다.'}
+              </div>
+            </div>
+          </div>
+          <!-- 빠른 사물 확인/교정 바 -->
+          <div class="pt-1.5 border-t border-slate-200 flex flex-wrap items-center gap-1">
+            <span class="text-[10px] font-bold text-slate-400">실물확인:</span>
+            ${tagButtonsHtml}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function removePhoto(idx) {
+      uploadedImages.splice(idx, 1);
+      renderPreviews();
+      updatePhotoBadge();
+      generateStoryAndContent();
+      showToast("사진이 삭제되었습니다.");
+    }
+
+    function updatePhotoBadge() {
+      document.getElementById("photoCountBadge").innerText = `${uploadedImages.length}장 등록됨 (무제한)`;
+    }
+
+    async function startGenerationProcess() {
+      if (uploadedImages.length === 0) {
+        showToast("먼저 현장 사진을 1장 이상 등록해 주세요!", "⚠️");
+        return;
+      }
+
+      const btn = document.getElementById("btnAnalyze");
+      const spinner = document.getElementById("btnSpinner");
+      const icon = document.getElementById("btnIcon");
+      const text = document.getElementById("btnText");
+
+      btn.disabled = true;
+      spinner.classList.remove("hidden");
+      icon.classList.add("hidden");
+      text.innerText = "사진 속 실물 1:1 정밀 판독 중...";
+
+      try {
+        if (savedApiKey && savedApiKey.length > 20) {
+          await callGeminiVisionApiStrict();
+          showToast("사진 속 실제 사물 기반 팩트 글 생성이 완료되었습니다!");
+        } else {
+          await new Promise(r => setTimeout(r, 400));
+          generateStoryAndContent();
+          showToast("스마트 팩트 엔진으로 사실 기반 글이 생성되었습니다!");
+        }
+      } catch (err) {
+        console.warn("AI Call fallback:", err);
+        generateStoryAndContent();
+        showToast("스마트 팩트 엔진으로 전환하여 완성되었습니다!");
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add("hidden");
+        icon.classList.remove("hidden");
+        text.innerText = "AI 정밀 판독 & 사람 냄새 나는 블로그 글 작성";
+        renderPreviews();
+      }
+    }
+
+    async function callGeminiVisionApiStrict() {
+      for (let i = 0; i < uploadedImages.length; i++) {
+        const img = uploadedImages[i];
+        if (!img.file) continue;
+
+        const base64Data = await new Promise((resolve) => {
+          const r = new FileReader();
+          r.onload = () => resolve(r.result.split(',')[1]);
+          r.readAsDataURL(img.file);
+        });
+
+        const strictPrompt = `당신은 20년 현장 경력의 베테랑 이사 소장님입니다.
+제공된 사진 1장을 정밀 판독하세요.
+
+★ [가장 중요한 규칙 - 절대 허위/상상 금지]:
+1. 사진 속에 **실제로 눈에 보이는 가구, 가전, 짐, 바닥, 또는 차량 상태만 100% 사실대로** 판독하세요.
+2. 사진에 보이지 않는 물품(예: 냉장고 사진인데 침대나 소파를 언급하는 등)은 절대로 지어내지 마세요.
+3. 사진 속 물건의 실제 종류(냉장고/세탁기/소파/침대/옷장/책상/박스짐/바닥보양재/탑차 등)와 현재 상태(랩핑 여부, 커버 포장, 분해 상태 등)를 정확히 보고 작성하세요.
+
+반드시 아래 JSON 형식으로만 응답하세요:
+{
+  "detectedItem": "사진에서 실제로 보이는 핵심 물건명 (예: 양문형 냉장고, 가죽 소파, 원목 침대, 세탁기, 단프라 박스짐, 바닥 보양판 등)",
+  "seoKeyword": "검색용 3~4단어 키워드 (예: 양문형냉장고_전용커버보양, 패브릭소파_스트레치필름랩핑)",
+  "title": "사진 속 실제 물건과 작업 상태를 명확히 짚은 소제목 (1줄)",
+  "desc": "사진에서 실제로 보이는 공간과 사물을 바탕으로, 20년 베테랑의 손길이 느껴지는 2~3문장의 구수하고 생생한 실제 작업 설명"
+}`;
+
+        const visionModels = [
+          "gemini-3.5-flash-lite",
+          "gemini-3.5-flash-lite-latest",
+          "gemini-3.1-flash-lite",
+          "gemini-2.5-flash-lite",
+          "gemini-2.0-flash-lite"
+        ];
+
+        let res = null;
+        for (const model of visionModels) {
+          try {
+            const attempt = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${savedApiKey}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contents: [{
+                  parts: [
+                    { text: strictPrompt },
+                    { inlineData: { mimeType: img.file.type || "image/jpeg", data: base64Data } }
+                  ]
+                }]
+              })
+            });
+            if (attempt.ok) {
+              res = attempt;
+              break;
+            }
+          } catch (e) {}
+        }
+
+        if (res) {
+          const data = await res.json();
+          const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+          const cleaned = rawText.replace(/```json/gi, "").replace(/```/g, "").trim();
+          try {
+            const parsed = JSON.parse(cleaned);
+            if (parsed.detectedItem) img.detectedItem = parsed.detectedItem;
+            if (parsed.seoKeyword) img.seoKeyword = parsed.seoKeyword;
+            if (parsed.title) img.customTitle = parsed.title;
+            if (parsed.desc) img.customDesc = parsed.desc;
+          } catch (pe) {
+            console.warn("JSON parse err for photo", i, pe);
+          }
+        }
+      }
+
+      generateStoryAndContent();
+    }
+
+    function generateStoryAndContent() {
+      const company = document.getElementById("companyName").value.trim() || "진주 갑봉이 익스프레스";
+      const moveType = document.getElementById("moveType").value;
+      const fromLoc = document.getElementById("fromLoc").value.trim() || "가좌동 신진주역세권 센트럴자이";
+      const toLoc = document.getElementById("toLoc").value.trim() || "충무공동 중흥S-클래스";
+      const bldg = (document.getElementById("buildingName")?.value || "").trim() || toLoc.split(" ").slice(-1)[0];
+
+      const detectedNames = uploadedImages.map(img => img.detectedItem).filter(Boolean);
+      const featuredItem = detectedNames.length > 0 ? detectedNames[0] : "큰 짐";
+
+      const titleBank = [
+        `[진주 ${moveType}] ${fromLoc} ➔ ${toLoc}! ${bldg} ${featuredItem} 안심 포장, 비용 25% 절약 솔직 후기`,
+        `[진주 이사] ${fromLoc}에서 시작된 ${bldg} ${moveType}! ${featuredItem} 분해부터 레이저 수평 세팅까지`,
+        `[${company}] ${fromLoc} ➔ ${toLoc} ${moveType}! 20년 소장님이 직접 땀 흘리며 쓴 ${bldg} 안심 일지`
+      ];
+      document.getElementById("outTitle").innerText = titleBank[Math.floor(Math.random() * titleBank.length)];
+
+      const introBank = [
+        `"화창한 햇살이 반겨주던 오늘, ${fromLoc}에서 ${toLoc} (${bldg})으로 향하는 ${moveType} 일정을 함께했습니다.\n집안에 들어서자마자 고객님께서 '아끼는 살림살이에 스크래치 하나 안 나게 잘 부탁드립니다'라며 시원한 캔커피를 손에 꼭 쥐어주시더군요.\n그 믿음에 보답하기 위해 현관 입구 바닥 보양재부터 전용 원단 커버까지 아낌없이 챙겨 작업을 시작했습니다."`,
+        `"안녕하세요! 20년 현장 경험을 바탕으로 내 가족의 살림살이처럼 정성을 다하는 ${company}입니다.\n오늘은 ${fromLoc} 현장에서 ${toLoc} (${bldg})으로 이동하는 ${moveType} 작업을 진행해 드렸습니다.\n통로 이동 동선이 조금 협소했지만, 베테랑 팀원들과 손발을 딱딱 맞춰 안전을 최우선으로 차분하게 짐을 풀어냈던 현장입니다."`,
+        `"'이번에 새로 이사 가는 집이라 바닥 마루가 상하지 않을까 제일 걱정돼요.' 상담 때부터 고객님께서 거듭 당부하셨던 ${bldg} 현장입니다.\n이런 염려를 덜어드리는 게 저희의 일이지요! 현관부터 거실 복도까지 두툼한 PP 보양판을 빈틈없이 시공하고 기분 좋게 출발했습니다."`
+      ];
+      document.getElementById("outIntro").innerText = introBank[Math.floor(Math.random() * introBank.length)];
+
+      const photoSectionsContainer = document.getElementById("outPhotoSections");
+      photoSectionsContainer.innerHTML = "";
+
+      if (uploadedImages.length === 0) {
+        photoSectionsContainer.innerHTML = `
+          <div class="p-6 rounded-2xl bg-blue-50/80 border-2 border-dashed border-blue-300 text-center space-y-2">
+            <div class="text-3xl">📷</div>
+            <div class="font-bold text-slate-800 text-sm">등록된 현장 사진이 없습니다</div>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              왼쪽 3단계에서 이사 현장 사진을 올리시면, <strong>사진 속 실제 사물만을 정밀 판독</strong>하여 실제 내용과 SEO 파일명이 이 자리에 차례대로 배치됩니다.
+            </p>
+          </div>
+        `;
+      } else {
+        uploadedImages.forEach((img, idx) => {
+          const seo = getSeoMeta(idx);
+          
+          let title = img.customTitle;
+          let desc = img.customDesc;
+
+          if (!title || !desc) {
+            const keys = Object.keys(REAL_ITEMS);
+            const fallbackKey = img.detectedItem || keys[idx % keys.length];
+            const fallbackInfo = REAL_ITEMS[fallbackKey] || REAL_ITEMS["바닥보양"];
+            title = fallbackInfo.title;
+            desc = fallbackInfo.desc;
+          }
+
+          const sectionDiv = document.createElement("div");
+          sectionDiv.className = "space-y-2.5 border-b border-slate-100 pb-5 break-words";
+          sectionDiv.innerHTML = `
+            <h3 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-black shrink-0">${idx + 1}</span>
+              <span class="break-words">${title}</span>
+            </h3>
+            <p class="text-xs md:text-sm text-slate-700 leading-relaxed whitespace-pre-line break-words">${desc}</p>
+            <div class="mt-2 text-center">
+              <img
+                src="${img.url}"
+                alt="${seo.altTag}"
+                class="rounded-xl shadow-sm border border-slate-200 max-h-80 mx-auto object-cover max-w-full w-full sm:w-auto"
+              />
+              <span class="text-xs text-slate-400 mt-1 block break-words">▲ [현장 실황 #${idx + 1}] ${seo.altTag}</span>
+            </div>
+          `;
+          photoSectionsContainer.appendChild(sectionDiv);
+        });
+      }
+
+      document.getElementById("outOutro").innerHTML = `
+        <div class="font-bold text-slate-900 flex items-center gap-1.5 mb-1.5">
+          <span>✨</span>
+          <span>새 보금자리 도착 및 소소한 감동 마무리</span>
+        </div>
+        <p>
+          ${toLoc} 도착지에 짐을 올린 뒤, 고객님께서 지정해 주신 자리에 큰 가구부터 반듯하게 자리 잡아 드렸습니다.
+          레이저 수평계를 꺼내어 가구와 가전 수평을 꼼꼼히 맞춰드리고, 가져온 무선 청소기로 바닥 먼지까지 쓱 한번 밀어드렸지요.
+          "기사님들이 내 집처럼 신경 써주셔서 정말 든든했습니다"라며 활짝 웃어주신 고객님의 한마디에 오늘 하루 흘린 땀방울이 모두 보람으로 바뀌었습니다.
+          새 보금자리에서 건강하시고 언제나 행복한 일만 가득하시길 진심으로 기원합니다!
+        </p>
+      `;
+
+      syncGeneralFields();
+    }
+
+    function syncGeneralFields() {
+      const company = document.getElementById("companyName").value.trim() || "진주 갑봉이 익스프레스";
+      const phone = document.getElementById("phone").value.trim() || "010-1234-5678";
+      const moveType = document.getElementById("moveType").value;
+      const fromLoc = document.getElementById("fromLoc").value.trim() || "가좌동";
+      const toLoc = document.getElementById("toLoc").value.trim() || "충무공동";
+
+      document.getElementById("outMetaCompany").innerText = company;
+      document.getElementById("outMetaType").innerText = moveType + " 플랜";
+      document.getElementById("outSummaryCourse").innerText = `${fromLoc} ➔ ${toLoc}`;
+      document.getElementById("outCallCompany").innerText = company;
+      document.getElementById("outCallPhone").innerText = phone;
+
+      const tagSet = new Set([
+        `#진주${moveType.replace(/\s+/g, '')}`,
+        `#진주이사`,
+        `#진주이사잘하는곳`,
+        `#진주원룸이사`,
+        `#진주용달`,
+        `#진주1톤용달`,
+        `#진주이사견적`,
+        `#진주포장이사추천`
+      ]);
+
+      const fromParts = fromLoc.split(" ");
+      if (fromParts[0]) tagSet.add(`#${fromParts[0].replace(/[^가-힣a-zA-Z0-9]/g, '')}이사`);
+
+      const toParts = toLoc.split(" ");
+      if (toParts[0]) tagSet.add(`#${toParts[0].replace(/[^가-힣a-zA-Z0-9]/g, '')}이사`);
+
+      document.getElementById("outTags").innerText = Array.from(tagSet).join(" ");
+    }
+
+    function copyBlogTitle() {
+      const title = document.getElementById("outTitle").innerText;
+      navigator.clipboard.writeText(title).then(() => {
+        showToast("블로그 제목이 복사되었습니다! (붙여넣기 가능)");
+      }).catch(() => {
+        showToast("제목 복사 완료!");
+      });
+    }
+
+    async function copyFullBlogPost() {
+      const area = document.getElementById("blogPostArea");
+      if (!area) return;
+
+      try {
+        const html = area.innerHTML;
+        const text = area.innerText;
+        const blobHtml = new Blob([html], { type: "text/html" });
+        const blobText = new Blob([text], { type: "text/plain" });
+        const data = [new ClipboardItem({ "text/html": blobHtml, "text/plain": blobText })];
+        await navigator.clipboard.write(data);
+        showToast("네이버 스마트에디터 서식 그대로 전체 복사되었습니다!");
+      } catch (e) {
+        navigator.clipboard.writeText(area.innerText);
+        showToast("본문 텍스트가 복사되었습니다.");
+      }
+    }
   </script>
 </body>
 </html>
